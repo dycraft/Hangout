@@ -1,39 +1,69 @@
-from mongoengine import *
-from django.http import HttpResponse
-from datetime import datetime
+from django.db import models
+from django.contrib import admin
 
 # Create your models here.
 
-class User(Document):
-    name = StringField(required=True, max_length=100)
-    password = StringField(required=True, max_length=100)
-    cellphone = StringField(required=True)
-    score = FloatField(default=0.0)
-    portrait = ImageField()
-    email = URLField()
-    org_acts = ListField(IntField())
-    join_acts = ListField(IntField())
-    coll_acts = ListField(IntField())
-    fix_times = ListField(IntField())
-    tmp_times = ListField(IntField())
-    tags = ListField(StringField(max_length=100))
-    friends = ListField(IntField())
-    messages = ListField(DictField())
-    # from: IntField(), content: StringField()
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+### users: has defined in User
+### acts: has defined in Activity
 
-class Activity(Document):
-    name = StringField(required=True, max_length=100)
-    intro = StringField(required=True)
-    tags = ListField(required=True, StringField(max_length=100))
-    cost = FloatField(default=0.0)
-    organizer = IntField(required=True)
-    admins = ListField(IntField())
-    applicants = ListField(IntField())
-    members = ListField(IntField())
-    notices = ListField(DictField())
-    # from: IntField(), content: StringField()
-    messages = ListField(DictField())
-    # from: IntField(), content: StringField()
-    
+class Message(models.Model):
+    from_user = models.ForeignKey('User', related_name='sent_messages')
+    to_user = models.ForeignKey('User', related_name='messages')
+    content = models.CharField(max_length=1000)
 
-# no need for site.admin.register
+class Notice(models.Model):
+    from_user = models.ForeignKey('User', related_name='sent_notice')
+    content = models.CharField(max_length=1000)
+
+class Activity(models.Model):
+    name = models.CharField(max_length=100)
+    intro = models.CharField(max_length=1000)
+    tags = models.ManyToManyField(Tag, related_name='acts')
+    cost = models.FloatField(default=0.0)
+    organizer = models.ForeignKey('User', related_name='org_acts')
+### admins: has defined in User
+### applicants: has defined in User
+### members: has defined in User
+### notices: has defined in Notice
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    cellphone = models.CharField(max_length=20)
+    score = models.FloatField(default=0.0)
+    portrait = models.ImageField()
+    email = models.URLField()
+### org_acts: has defined in Activity
+    apply_acts = models.ManyToManyField(Activity, related_name='applicants')
+    join_acts = models.ManyToManyField(Activity, related_name='members')
+    admin_acts = models.ManyToManyField(Activity, related_name='admins')
+    coll_acts = models.ManyToManyField(Activity, related_name='collected')
+    # everyday divide into 4 time period, stored with 0/1, so 4*7 = 28 bit used totally
+    fix_times = models.IntegerField(default=0)
+    tmp_times = models.IntegerField(default=0)
+    tags = models.ManyToManyField(Tag, related_name='users')
+### messages: has defined in Message
+    # Usage see: http://charlesleifer.com/blog/self-referencing-many-many-through/
+    follow = models.ManyToManyField('self', through='Relationship',
+                                     symmetrical=False,
+                                     related_name='followed')
+
+RELATIONSHIP_FOLLOWING = 1
+RELATIONSHIP_BLOCKED = 2
+RELATIONSHIP_STATUSES = (
+    (RELATIONSHIP_FOLLOWING, 'Following'),
+    (RELATIONSHIP_BLOCKED, 'Blocked'),
+)
+class Relationship(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_people')
+    to_user = models.ForeignKey(User, related_name='to_people')
+    status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+
+admin.site.register(Tag)
+admin.site.register(Message)
+admin.site.register(Notice)
+admin.site.register(User)
+admin.site.register(Activity)
+admin.site.register(Relationship)

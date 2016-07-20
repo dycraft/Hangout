@@ -21,4 +21,8 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
+#    url(r'^$', 'app.view.index'),
+
+    # User
+#    url(r'')
 )
