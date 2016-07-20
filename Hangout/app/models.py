@@ -67,3 +67,4 @@ admin.site.register(Notice)
 admin.site.register(User)
 admin.site.register(Activity)
 admin.site.register(Relationship)
+

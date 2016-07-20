@@ -21,8 +21,12 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
-#    url(r'^$', 'app.view.index'),
+    url(r'^$', 'app.view.index'),
 
     # User
-#    url(r'')
+    url(r'^api/user/create$', 'app.user.create_user'),
+    url(r'^api/user/(?P<user_id>.*?)/request', 'app.user.get_user'),
+    url(r'^api/user/(?P<user_id>.*?)/update', 'app.user.update_user'),
+    url(r'^api/user/(?P<user_id>.*?)/delete', 'app.user.delete_user'),
+    
 )
