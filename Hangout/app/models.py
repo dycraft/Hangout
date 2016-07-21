@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib import admin
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager
 
 # Create your models here.
 
@@ -28,13 +30,32 @@ class Activity(models.Model):
 ### members: has defined in User
 ### notices: has defined in Notice
 
-class User(models.Model):
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **kwargs):
+        if not email:
+            raise ValueError('Users must have a valid email address.')
+        if not kwargs.get('name'):
+            raise ValueError('Users must have a valid username.')
+        user = self.model(
+            email=self.normalize_email(email), name=kwargs.get('name')
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password, **kwargs):
+        user = self.create_user(email, password, **kwargs)
+        user.is_admin = True
+        user.save()
+        return user
+
+
+class User(AbstractBaseUser):
     name = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
     cellphone = models.CharField(max_length=20)
     score = models.FloatField(default=0.0)
     portrait = models.ImageField()
-    email = models.URLField()
+    email = models.EmailField(unique=True)
 ### org_acts: has defined in Activity
     apply_acts = models.ManyToManyField(Activity, related_name='applicants')
     join_acts = models.ManyToManyField(Activity, related_name='members')
@@ -49,6 +70,11 @@ class User(models.Model):
     follow = models.ManyToManyField('self', through='Relationship',
                                      symmetrical=False,
                                      related_name='followed')
+    objects = UserManager()
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name']
+
+
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2

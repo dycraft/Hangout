@@ -21,7 +21,8 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'app.view.index'),
+    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^$', 'app.views.index'),
 
     # User
     url(r'^api/user/create$', 'app.user.create_user'),
