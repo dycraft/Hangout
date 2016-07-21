@@ -24,6 +24,11 @@ urlpatterns = patterns(
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^$', 'app.views.index'),
 
+    #login/logout
+    url(r'^api/login', 'app.user.user_login'),
+    url(r'^api/logout', 'app.user.user_logout'),
+    url(r'^api/register', 'app.user.user_register'),
+    
     # User
     url(r'^api/user/create$', 'app.user.create_user'),
     url(r'^api/user/(?P<user_id>.*?)/request', 'app.user.get_user'),

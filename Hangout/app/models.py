@@ -73,7 +73,9 @@ class User(AbstractBaseUser):
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
-
+    
+    def __unicode__(self):
+        return self.email
 
 
 RELATIONSHIP_FOLLOWING = 1
