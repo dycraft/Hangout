@@ -44,3 +44,12 @@ def get_activity_detail(request):
 		except Activity.DoesNotExist:
 			ret['error'] = 'act not exist'
 	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+# @require_http_methods(['POST'])
+# def update_activity(request):
+# 	ret = dict()
+# 	act_id = request.POST.get('act_id')
+# 	if not act_id:
+# 		ret['error'] = 'need act_id'
+# 	else:
+# 		

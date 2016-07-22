@@ -27,6 +27,7 @@ class Activity(models.Model):
     intro = models.CharField(max_length=1000)
     tags = models.ManyToManyField(Tag, related_name='acts')
     cost = models.FloatField(default=0.0)
+    state = models.IntegerField(default=0)
     organizer = models.ForeignKey('User', related_name='org_acts')
 
     def __str__(self):
@@ -77,7 +78,7 @@ class User(AbstractBaseUser):
                                      symmetrical=False,
                                      related_name='followed')
     is_admin = models.BooleanField(default=False)
-    
+
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
@@ -96,10 +97,10 @@ class Relationship(models.Model):
     to_user = models.ForeignKey(User, related_name='to_people')
     status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
 
-admin.site.register(Tag)
-admin.site.register(Message)
-admin.site.register(Notice)
-admin.site.register(User)
-admin.site.register(Activity)
-admin.site.register(Relationship)
+# admin.site.register(Tag)
+# admin.site.register(Message)
+# admin.site.register(Notice)
+# admin.site.register(User)
+# admin.site.register(Activity)
+# admin.site.register(Relationship)
 
