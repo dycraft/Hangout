@@ -20,18 +20,30 @@
       getAuthenticatedAccount: getAuthenticatedAccount,
       isAuthenticated: isAuthenticated,
       login: login,
+      logout: logout,
       register: register,
       setAuthenticatedAccount: setAuthenticatedAccount,
       unauthenticate: unauthenticate
     };
     return Authentication;
 
-    function register(email, password, username) {
-      return $http.post('/api/register', {
+    function register(email, password, username, fix_times, tags) {
+      return $http.post('/api/register', $.param({
         name: username,
         password: password,
         email: email,
-      });
+        fix_times: fix_times,
+        tags: tags,
+        portrait: 'afda',
+      })).then(registerSuccessFn, registerErrorFn);
+
+      function registerSuccessFn(data, status, headers, config) {
+        Authentication.login(email, password);
+      }
+
+      function registerErrorFn(data, status, headers, config) {
+        console.error('Epic failure!');
+      }
     }
 
     function login(email, password) {
@@ -48,6 +60,19 @@
 
       function loginErrorFn(data, status, headers, config) {
         console.log(data.data);
+        console.error('Epic failure!');
+      }
+    }
+
+    function logout() {
+      return $http.post('/api/logout')
+        .then(logoutSuccessFn, logoutErrorFn);
+      function logoutSuccessFn(data, status, headers, config) {
+        Authentication.unauthenticate();
+        $rootScope.$broadcast('logout_done');
+        $location.url('/');
+      }
+      function logoutErrorFn(data, status, headers, config) {
         console.error('Epic failure!');
       }
     }

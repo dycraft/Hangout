@@ -138,7 +138,13 @@ def user_register(request):
                 user.fix_times = ret['fix_times']
                 for s in ret['tags']:
                     if not s == '':
-                        user.tags.add(get_user(s))
+                        try:
+                            tag = Tag.objects.get(name=s)
+                        except:
+                            tag = Tag()
+                            tag.name = s
+                            tag.save()
+                        user.tags.add(tag)
                 user.save()
                 ret['response'] = 'success'
         else:
