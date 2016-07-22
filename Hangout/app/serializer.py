@@ -1,4 +1,4 @@
-from .models import User
+from .models import User, Activity
 
 def user_serialize(user):
 	
@@ -20,15 +20,19 @@ def user_serialize(user):
 		'admin_acts',
 		'coll_acts',
 	]
-
+### normal fields
 	for f in normal_fields:
 		ret[f] = getattr(user, f)
-
+### activity fields
 	for f in activity_fields:
 		ret[f] = []
 		for i in getattr(user, f).all():
 			ret[f].append(activity_serialize(i))
-
+### tags
+	ret['tags'] = []
+	for t in user.tags.all():
+		ret['tags'].append(t.name)
+	
 	return ret
 
 def activity_serialize(act):
@@ -42,11 +46,12 @@ def activity_serialize(act):
 		'cost',		
 		'organizer_id'
 	]
-	manytomany_fields = [
-		'tags'
-	]
-
+### normal fields
 	for f in normal_fields:
 		ret[f] = getattr(act, f)
+### tags
+	ret['tags'] = []
+	for t in act.tags.all():
+		ret['tags'].append(t.name)
 
 	return ret

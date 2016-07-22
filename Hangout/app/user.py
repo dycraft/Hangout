@@ -11,12 +11,15 @@ from .serializer import user_serialize
 def create_user(request):
     ret = dict()
     if request.method == 'POST':
-        user = User()
-        user.name = request.POST.get('name', '')
-        
-
-        
-        ret['response'] = 'success'
+        # user = User()
+        # user.name = request.POST.get('name', '')
+        name = request.POST.get('name', '')
+        try:
+            user = User.objects.get(name=name)
+            ret['error'] = 'user ' + name + ' already exists' 
+        except User.DoesNotExist:
+            User.objects.create_user()
+            ret['response'] = 'success'
         
     else:
         ret['error'] = 'need post'
@@ -32,11 +35,32 @@ def get_user(request, user_id):
         ret['error'] = 'User does not exist'
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
+def login_detail(request):
+    ret = dict()
+    user = request.user
+    if not user.is_authenticated():
+        ret['error'] = 'user not logged in'
+    else: 
+        return get_user(request, user.id)
+
 def update_user(request, user_id):
     ...
 
 def delete_user(request, user_id):
-    ...
+    ret = dict()
+    user = request.user
+    if not user.is_authenticated():
+        ret['error'] = 'user not logged in'
+    elif not (user.id == user_id or user.is_admin == True):
+        ret['error'] = 'permission denied'
+    else:
+        try:
+            u = User.objects.get(id=user_id)
+            u.delete()
+            ret['response'] = 'success'
+        except User.DoesNotExist:
+            ret['error'] = 'User not exist'
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 def user_register(request):
     ret = dict()

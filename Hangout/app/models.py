@@ -76,6 +76,8 @@ class User(AbstractBaseUser):
     follow = models.ManyToManyField('self', through='Relationship',
                                      symmetrical=False,
                                      related_name='followed')
+    is_admin = models.BooleanField(default=False)
+    
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
