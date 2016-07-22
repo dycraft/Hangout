@@ -1,7 +1,7 @@
 # coding=utf-8
 from app.models import *
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 import json
 
 
@@ -76,4 +76,10 @@ def user_login(request):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 def user_logout(request):
-    pass
+    ret = dict()
+    if request.method == 'POST':
+        logout(request)
+        ret['error'] = 'success'
+    else:
+        ret['error'] = 'need post'
+    return HttpResponse(json.dumps(ret), content_type='application/json')

@@ -77,7 +77,6 @@ class User(AbstractBaseUser):
     def __unicode__(self):
         return self.email
 
-
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
 RELATIONSHIP_STATUSES = (
