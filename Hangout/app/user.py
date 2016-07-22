@@ -2,6 +2,7 @@
 from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.http import require_http_methods
 
 import json
 
@@ -9,13 +10,18 @@ from .serializer import user_serialize
 
 # @user_permission(0)
 ### get user detail by user_id
-def get_user(request, user_id):
+@require_http_methods(['POST'])
+def get_user(request):
     ret = dict()
-    try:
-        user = User.objects.get(id=user_id)
-        ret = user_serialize(user)
-    except User.DoesNotExist:
-        ret['error'] = 'User does not exist'
+    user_id = request.POST.get('user_id')
+    if not user_id:
+        ret['error'] = 'need user_id'
+    else: 
+        try:
+            user = User.objects.get(id=user_id)
+            ret = user_serialize(user)
+        except User.DoesNotExist:
+            ret['error'] = 'User does not exist'
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### get user detail that is currently logged in
@@ -25,12 +31,17 @@ def login_detail(request):
     if not user.is_authenticated():
         ret['error'] = 'user not logged in'
     else: 
-        return get_user(request, user.id)
+        ret = user_serialize(user)
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### update user info(only by admin and user itself)
-def update_user(request, user_id):
+@require_http_methods(['POST'])
+def update_user(request):
     ret = dict()
-    if not request.user.is_authenticated():
+    user_id = request.POST.get('user_id')
+    if not user_id:
+        ret['error'] = 'need user_id'
+    elif not request.user.is_authenticated():
         ret['error'] = 'user not logged in'
     elif (not str(request.user.id) == user_id) and (not request.user.is_admin == True):
         ret['error'] = 'permission denied'
@@ -57,9 +68,14 @@ def update_user(request, user_id):
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
-def update_password(request, user_id):
+
+@require_http_methods(['POST'])
+def update_password(request):
     ret = dict()
-    if not request.user.is_authenticated():
+    user_id = request.POST.get('user_id')
+    if not user_id:
+        ret['error'] = 'need user_id'
+    elif not request.user.is_authenticated():
         ret['error'] = 'user not logged in'
     elif not (str(request.user.id) == user_id or request.user.is_admin == True):
         ret['error'] = 'permission denied'
@@ -72,15 +88,20 @@ def update_password(request, user_id):
             else:
                 user.set_password(password)
                 ret['response'] = 'success'
+                user.save()
         except User.DoesNotExist:
             ret['error'] = 'User not exist'
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### delete user account(only admin and user itself)
-def delete_user(request, user_id):
+@require_http_methods(['POST'])
+def delete_user(request):
     ret = dict()
+    user_id = request.POST.get('user_id')
     user = request.user
-    if not user.is_authenticated():
+    if not user_id:
+        ret['error'] = 'need user_id'
+    elif not user.is_authenticated():
         ret['error'] = 'user not logged in'
     elif not (user.id == user_id or user.is_admin == True):
         ret['error'] = 'permission denied'
@@ -94,11 +115,12 @@ def delete_user(request, user_id):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### register a new user
+@require_http_methods(['POST'])
 def user_register(request):
     ret = dict()
     if request.user.is_authenticated():
         ret['error'] = 'user already logged in'
-    elif request.method == 'POST':
+    else:
         ret['name'] = request.POST.get('name', 'anonymous')
         ret['password'] = request.POST.get('password', '')
         ret['portrait'] = request.POST.get('portrait')
@@ -118,16 +140,15 @@ def user_register(request):
                 ret['response'] = 'success'
         else:
             ret['error'] = 'invalide email address'
-    else:
-        ret['error'] = 'need post'
     return HttpResponse(json.dumps(ret), content_type='application/json')
             
 ### user login
+@require_http_methods(['POST'])
 def user_login(request):
     ret = dict()
     if request.user.is_authenticated():
         ret['response'] = 'Already logged in'
-    elif request.method == 'POST':
+    else:
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
         user = authenticate(email=email, password=password)
@@ -143,18 +164,15 @@ def user_login(request):
             ret['email'] = email
             ret['password'] = password
             ret['error'] = 'wrong email/password'
-    else:
-        ret['error'] = 'need post'
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### user logout
+@require_http_methods(['POST'])
 def user_logout(request):
     ret = dict()
     if not request.user.is_authenticated():
         ret['error'] = 'not logged in yet'
-    elif request.method == 'POST':
+    else:
         logout(request)
         ret['response'] = 'success'
-    else:
-        ret['error'] = 'need post'
     return HttpResponse(json.dumps(ret), content_type='application/json')

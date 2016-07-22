@@ -1,16 +1,19 @@
 # coding=utf-8
-from .models import *
 from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 from .tag import *
 from .serializer import *
+from .models import *
 
 import json
 
+### create an activity, user that is currently logged in will be the organizer
+@require_http_methods(['POST'])
 def create_activity(request):
 	ret = dict()
 	if not request.user.is_authenticated():
 		ret['error'] = 'user not logged in'
-	elif request.method == 'POST':
+	else:
 		ret['name'] = request.POST.get('name', 'untitled')
 		ret['intro'] = request.POST.get('intro', 'No intro available')
 		ret['tags'] = request.POST.get('tag', '').split('&&')
@@ -25,12 +28,19 @@ def create_activity(request):
 		for t in ret['tags']:
 			act.tags.add(get_tag(t))
 		act.save()
-	else:
-		ret['error'] = 'need post'
 
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
+@require_http_methods(['POST'])
 def get_activity_detail(request):
 	ret = dict()
-	if :
-		pass
+	act_id = request.POST.get('act_id')
+	if not act_id:
+		ret['error'] = 'need act_id'
+	else:
+		try:
+			act = Activity.objects.get(id=act_id)
+			ret = activity_serialize(act)
+		except Activity.DoesNotExist:
+			ret['error'] = 'act not exist'
+	return HttpResponse(json.dumps(ret), content_type='application/json')
