@@ -1,11 +1,10 @@
 # coding=utf-8
-from app.models import *
+from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
 import json
 
-from .models import User
 from .serializer import user_serialize
 
 # @user_permission(0)
@@ -56,6 +55,25 @@ def update_user(request, user_id):
         except User.DoesNotExist:
             ret['error'] = 'user does not exist'
 
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+def update_password(request, user_id):
+    ret = dict()
+    if not request.user.is_authenticated():
+        ret['error'] = 'user not logged in'
+    elif not (str(request.user.id) == user_id or request.user.is_admin == True):
+        ret['error'] = 'permission denied'
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            password = request.POST.get('password')
+            if not password:
+                ret['error'] = 'must set a password'
+            else:
+                user.set_password(password)
+                ret['response'] = 'success'
+        except User.DoesNotExist:
+            ret['error'] = 'User not exist'
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### delete user account(only admin and user itself)

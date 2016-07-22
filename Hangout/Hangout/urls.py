@@ -33,5 +33,9 @@ urlpatterns = patterns(
     url(r'^api/user/(?P<user_id>.*?)/detail', 'app.user.get_user'),
     url(r'^api/user/(?P<user_id>.*?)/update', 'app.user.update_user'),
     url(r'^api/user/(?P<user_id>.*?)/delete', 'app.user.delete_user'),
+    url(r'^api/user/(?P<user_id>.*?)/update_password', 'app.user.update_password'),
+
     
+    # Activity
+    url(r'^api/activity/create', 'app.activity.create_activity'),
 )
