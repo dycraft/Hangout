@@ -29,7 +29,6 @@ urlpatterns = patterns(
     url(r'^api/register', 'app.user.user_register'),
     
     # User
-    url(r'^api/user/create$', 'app.user.create_user'),
     url(r'^api/user/detail$', 'app.user.login_detail'),
     url(r'^api/user/(?P<user_id>.*?)/detail', 'app.user.get_user'),
     url(r'^api/user/(?P<user_id>.*?)/update', 'app.user.update_user'),
