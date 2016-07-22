@@ -58,7 +58,9 @@ def user_register(request):
 
 def user_login(request):
     ret = dict()
-    if request.method == 'POST':
+    if request.user.is_authenticated():
+        ret['response'] = 'Already logged in'
+    elif request.method == 'POST':
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
         user = authenticate(email=email, password=password)
@@ -79,9 +81,11 @@ def user_login(request):
 
 def user_logout(request):
     ret = dict()
-    if request.method == 'POST':
+    if not request.user.is_authenticated():
+        ret['error'] = 'not logged in yet'
+    elif request.method == 'POST':
         logout(request)
-        ret['error'] = 'success'
+        ret['response'] = 'success'
     else:
         ret['error'] = 'need post'
     return HttpResponse(json.dumps(ret), content_type='application/json')
