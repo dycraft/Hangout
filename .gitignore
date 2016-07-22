@@ -94,3 +94,6 @@ ENV/
 .DS_Store
 __MACOSX
 ._*
+
+# Database
+Hangout/hangout.db
