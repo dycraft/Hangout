@@ -70,6 +70,8 @@ def user_login(request):
             else:
                 ret['error'] = 'freezed user'
         else:
+            ret['email'] = email
+            ret['password'] = password
             ret['error'] = 'wrong email/password'
     else:
         ret['error'] = 'need post'
