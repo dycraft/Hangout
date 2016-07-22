@@ -7,6 +7,9 @@ from django.contrib.auth.models import BaseUserManager
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 ### users: has defined in User
 ### acts: has defined in Activity
 
@@ -25,6 +28,9 @@ class Activity(models.Model):
     tags = models.ManyToManyField(Tag, related_name='acts')
     cost = models.FloatField(default=0.0)
     organizer = models.ForeignKey('User', related_name='org_acts')
+
+    def __str__(self):
+        return self.name
 ### admins: has defined in User
 ### applicants: has defined in User
 ### members: has defined in User

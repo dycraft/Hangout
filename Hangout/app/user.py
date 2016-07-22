@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 import json
 
+from .models import User
+from .serializer import user_serialize
 
 # @user_permission(0)
 def create_user(request):
@@ -11,9 +13,10 @@ def create_user(request):
     if request.method == 'POST':
         user = User()
         user.name = request.POST.get('name', '')
-        ...
-        ...
-        ret['error'] = 'success'
+        
+
+        
+        ret['response'] = 'success'
         
     else:
         ret['error'] = 'need post'
@@ -21,7 +24,13 @@ def create_user(request):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 def get_user(request, user_id):
-    ...
+    ret = dict()
+    try:
+        user = User.objects.get(id=user_id)
+        ret = user_serialize(user)
+    except User.DoesNotExist:
+        ret['error'] = 'User does not exist'
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 def update_user(request, user_id):
     ...
