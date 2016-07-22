@@ -18,24 +18,11 @@ from django.contrib import admin
 
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'app.views.index'),
+urlpatterns = [
 
-    #login/logout
-    url(r'^api/login', 'app.user.user_login'),
-    url(r'^api/logout', 'app.user.user_logout'),
-    url(r'^api/register', 'app.user.user_register'),
-    
-    # User
-    url(r'^api/user/detail$', 'app.user.login_detail'),
-    url(r'^api/user/(?P<user_id>.*?)/detail', 'app.user.get_user'),
-    url(r'^api/user/(?P<user_id>.*?)/update', 'app.user.update_user'),
-    url(r'^api/user/(?P<user_id>.*?)/delete', 'app.user.delete_user'),
-    url(r'^api/user/(?P<user_id>.*?)/update_password', 'app.user.update_password'),
+    url(r'^admin/', admin.site.urls),
 
+    url(r'^api/', include('app.urls')),
     
-    # Activity
-    url(r'^api/activity/create', 'app.activity.create_activity'),
-)
+    url(r'^', 'app.views.index'),
+]
