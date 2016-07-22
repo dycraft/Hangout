@@ -5,13 +5,13 @@
     .module('hangout.services', ['ngCookies'])
     .factory('Authentication', Authentication);
 
-  Authentication.$inject = ['$cookies', '$http'];
+  Authentication.$inject = ['$cookies', '$http', '$rootScope', '$location'];
 
   /**
   * @namespace Authentication
   * @returns {Factory}
   */
-  function Authentication($cookies, $http) {
+  function Authentication($cookies, $http, $rootScope, $location) {
     /**
     * @name Authentication
     * @desc The Factory to be returned
@@ -41,9 +41,9 @@
       })).then(loginSuccessFn, loginErrorFn);
         
       function loginSuccessFn(data, status, headers, config) {
-        console.log(data.data);
         Authentication.setAuthenticatedAccount(data.data);
-        window.location = '/';
+        $rootScope.$broadcast('login_done');
+        $location.url('/');
       }
 
       function loginErrorFn(data, status, headers, config) {

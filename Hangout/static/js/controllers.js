@@ -23,4 +23,10 @@
         Authentication.login(vm.email, vm.password);
       }
     }])
+    .controller('navbarCtrl', ['$scope', '$rootScope', 'Authentication', function($scope, $rootScope, Authentication){
+      $scope.displayName = Authentication.getAuthenticatedAccount()['name'];
+      $rootScope.$on('login_done', function(){
+        $scope.displayName = Authentication.getAuthenticatedAccount()['name'];
+      })
+    }]);
 })();
