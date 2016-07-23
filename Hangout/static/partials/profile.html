@@ -6,7 +6,7 @@
     <h1>Register</h1>
 
     <div class="well">
-      <form role="form" ng-submit="vm.register()">
+      <form role="form" ng-submit="vm.update_profile()">
         <div class="form-group">
           <label for="register__email">Email</label>
           <input type="email" class="form-control" id="register__email" ng-model="vm.email" />
@@ -28,8 +28,8 @@
         </div>
 
         <div class="form-group">
-          <label for="register__password">Tags</label>
-          <input type="text" class="form-control" id="register__password" ng-model="vm.tags" />
+          <label for="register__tags">Tags</label>
+          <input type="text" class="form-control" id="register__tags" ng-model="vm.tags" data-role="tagsinput" />
         </div>
 
         <div class="form-group">

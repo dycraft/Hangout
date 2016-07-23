@@ -23,7 +23,8 @@
       logout: logout,
       register: register,
       setAuthenticatedAccount: setAuthenticatedAccount,
-      unauthenticate: unauthenticate
+      unauthenticate: unauthenticate,
+      update_profile: update_profile,
     };
     return Authentication;
 
@@ -108,8 +109,9 @@
     }
 
     function setAuthenticatedAccount(account) {
-        console.log(account);
-      $cookies.authenticatedAccount = JSON.stringify(account);
+      if (account.user_info) {
+        $cookies.authenticatedAccount = JSON.stringify(account);
+      }
     }
 
     function unauthenticate() {
