@@ -10,6 +10,7 @@
         <script src="/static/lib/angular-route.min.js"></script>
         <script src="/static/lib/angular-cookies.min.js"></script>
         <script src="/static/lib/jquery-1.11.0.min.js"></script>
+        <script src="/static/lib/bootstrap.min.js"></script>
     </head>
     <body>
 
@@ -18,12 +19,20 @@
             <nav class="navbar navbar-default" ng-controller='navbarCtrl'>
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Home</a>
+                        <a class="navbar-brand" href="/">Home</a>
                     </div>
 
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href='#' ng-click="register()">[[ displayName ]]</a></li>
+                            <li id="nav_register"><a href='#' ng-click="register()">[[ displayName ]]</a></li>
+                            <li id="nav_user" class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">[[ displayName ]] <span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="/profile">Profile</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Anything</a></li>
+                              </ul>
+                            </li>
                             <li><a href='#' ng-click="login_logout()">[[ logger ]]</a></li>
                         </ul>
                     </div>

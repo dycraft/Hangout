@@ -32,6 +32,12 @@ angular.module('hangout', [
             controllerAs: 'vm',
             title: 'register', 
             tag_name: 'register'});
+        $routeProvider.when('/profile',{
+            templateUrl: urls.part + '/profile.html', 
+            controller: 'profileCtrl', 
+            controllerAs: 'vm',
+            title: 'profile', 
+            tag_name: 'profile'});
 	    $routeProvider.otherwise({redirectTo: '/'});
     }]).
     run(['$location', '$rootScope', function($location, $rootScope){

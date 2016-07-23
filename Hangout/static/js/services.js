@@ -46,6 +46,25 @@
       }
     }
 
+    function update_profile(email, password, username, fix_times, tags) {
+      return $http.post('/api/user/update', $.param({
+        name: username,
+        password: password,
+        email: email,
+        fix_times: fix_times,
+        tags: tags,
+        portrait: 'afda',
+      })).then(updateSuccessFn, updateErrorFn);
+
+      function updateSuccessFn(data, status, headers, config) {
+        Authentication.login(email, password);
+      }
+
+      function updateErrorFn(data, status, headers, config) {
+        console.error('Epic failure!');
+      }
+    }
+
     function login(email, password) {
       return $http.post('/api/login', $.param({
         email: email, 

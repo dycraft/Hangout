@@ -30,6 +30,14 @@
         Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
       }
     }])
+    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http'], function($scope, $location, Authentication, $http){
+      console.log('profile');
+      var vm = this;
+      vm.update_profile = update_profile;
+      function update_profile() {
+        Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
+      }
+    })
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {
         $location.url('/login');
@@ -40,27 +48,32 @@
       function register() {
         $location.url('/register');
       }
+      $scope.register = register;
       if (Authentication.getAuthenticatedAccount()) {
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
-        $scope.register = function(){};
+        $('#nav_user').css({'display': 'block'});
+        $('#nav_register').css({'display': 'none'});
         $scope.logger = 'logout';
         $scope.login_logout = logout;
       }
       else {
         $scope.displayName = 'register';
-        $scope.register = register;
+        $('#nav_user').css({'display': 'none'});
+        $('#nav_register').css({'display': 'block'});
         $scope.logger = 'login';
         $scope.login_logout = login;
       }
       $rootScope.$on('login_done', function(){
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
-        $scope.register = function(){}
+        $('#nav_user').css({'display': 'block'});
+        $('#nav_register').css({'display': 'none'});
         $scope.logger = 'logout';
         $scope.login_logout = logout;
       })
       $rootScope.$on('logout_done', function(){
         $scope.displayName = 'register';
-        $scope.register = register;
+        $('#nav_user').css({'display': 'none'});
+        $('#nav_register').css({'display': 'block'});
         $scope.logger = 'login';
         $scope.login_logout = login;
       })
