@@ -43,8 +43,8 @@ def activity_serialize(act):
 		'id',
 		'name',
 		'intro',
-		'cost',		
-		'organizer_id'
+		'cost',
+		'state',
 	]
 ### normal fields
 	for f in normal_fields:
@@ -53,5 +53,7 @@ def activity_serialize(act):
 	ret['tags'] = []
 	for t in act.tags.all():
 		ret['tags'].append(t.name)
+
+	ret['organizer'] = act.organizer.email
 
 	return ret

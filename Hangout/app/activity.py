@@ -12,22 +12,24 @@ import json
 def create_activity(request):
 	ret = dict()
 	if not request.user.is_authenticated():
-		ret['error'] = 'user not logged in'
+		ret['state_code'] = 1
 	else:
-		ret['name'] = request.POST.get('name', 'untitled')
-		ret['intro'] = request.POST.get('intro', 'No intro available')
-		ret['tags'] = request.POST.get('tag', '').split('&&')
-		ret['cost'] = request.POST.get('cost', 0)
-		ret['organizer_id'] = request.user.id
+		act_info = dict()
+		act_info['name'] = request.POST.get('name', 'untitled')
+		act_info['intro'] = request.POST.get('intro', 'No intro available')
+		act_info['tags'] = request.POST.get('tag', '').split('&&')
+		act_info['cost'] = request.POST.get('cost', 0)
+		act_info['organizer'] = request.user.email
 		act = Activity.objects.create(
-				name=ret['name'],
-				intro=ret['intro'],
-				cost=ret['cost'],
+				name=act_info['name'],
+				intro=act_info['intro'],
+				cost=act_info['cost'],
 				organizer_id=request.user.id,
 			)
-		for t in ret['tags']:
+		for t in act_info['tags']:
 			act.tags.add(get_tag(t))
 		act.save()
+		ret['state_code'] = 0
 
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -36,13 +38,14 @@ def get_activity_detail(request):
 	ret = dict()
 	act_id = request.POST.get('act_id')
 	if not act_id:
-		ret['error'] = 'need act_id'
+		ret['state_code'] = 51
 	else:
 		try:
 			act = Activity.objects.get(id=act_id)
-			ret = activity_serialize(act)
+			ret['act_info'] = activity_serialize(act)
+			ret['state_code'] = 0
 		except Activity.DoesNotExist:
-			ret['error'] = 'act not exist'
+			ret['state_code'] = 52
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 # @require_http_methods(['POST'])
@@ -50,6 +53,6 @@ def get_activity_detail(request):
 # 	ret = dict()
 # 	act_id = request.POST.get('act_id')
 # 	if not act_id:
-# 		ret['error'] = 'need act_id'
+# 		ret['state_code'] = 'need act_id'
 # 	else:
 # 		

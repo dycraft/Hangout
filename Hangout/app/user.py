@@ -10,19 +10,20 @@ from .serializer import user_serialize
 from .tag import get_tag
 
 # @user_permission(0)
-### get user detail by user_id
+### get user detail by email
 @require_http_methods(['POST'])
 def get_user(request):
     ret = dict()
-    user_id = request.POST.get('user_id')
-    if not user_id:
-        ret['error'] = 'need user_id'
-    else: 
+    email = request.POST.get('email')
+    if not email:
+        ret['state_code'] = 4
+    else:
         try:
-            user = User.objects.get(id=user_id)
-            ret = user_serialize(user)
+            user = User.objects.get(email=email)
+            ret['user_info'] = user_serialize(user)
+            ret['state_code'] = 0
         except User.DoesNotExist:
-            ret['error'] = 'User does not exist'
+            ret['state_code'] = 2
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### get user detail that is currently logged in
@@ -30,9 +31,10 @@ def login_detail(request):
     ret = dict()
     user = request.user
     if not user.is_authenticated():
-        ret['error'] = 'user not logged in'
+        ret['state_code'] = 1
     else: 
-        ret = user_serialize(user)
+        ret['user_info'] = user_serialize(user)
+        ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### update user info(only by admin and user itself)
@@ -41,15 +43,16 @@ def update_user(request):
     ret = dict()
     email = request.POST.get('email')
     if not email:
-        ret['error'] = 'need email'
+        ret['state_code'] = 4
     elif not request.user.is_authenticated():
-        ret['error'] = 'user not logged in'
+        ret['state_code'] = 1
     elif (not str(request.user.email) == email) and (not request.user.is_admin == True):
-        ret['error'] = 'permission denied'
+        ret['state_code'] = 3
     else:
         try:
             user = User.objects.get(email=email)
             
+            ### update normal fields
             editable_fields = [
                 'name',
                 'cellphone',
@@ -60,7 +63,7 @@ def update_user(request):
             for (k, v) in items:
                 if k in editable_fields:
                     setattr(user, k, v)
-
+            ### update tags
             for tag in user.tags.all():
                 user.tags.remove(tag)
 
@@ -69,10 +72,10 @@ def update_user(request):
 
             user.save()
 
-            ret['response'] = 'success'
-
+            ret['state_code'] = 0
+            ret['user_info'] = user_serialize(user)
         except User.DoesNotExist:
-            ret['error'] = 'user does not exist'
+            ret['state_code'] = 2
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -80,46 +83,46 @@ def update_user(request):
 @require_http_methods(['POST'])
 def update_password(request):
     ret = dict()
-    user_id = request.POST.get('user_id')
-    if not user_id:
-        ret['error'] = 'need user_id'
+    email = request.POST.get('email')
+    if not email:
+        ret['state_code'] = 4
     elif not request.user.is_authenticated():
-        ret['error'] = 'user not logged in'
-    elif not (str(request.user.id) == user_id or request.user.is_admin == True):
-        ret['error'] = 'permission denied'
+        ret['state_code'] = 1
+    elif not (str(request.user.email) == email or request.user.is_admin == True):
+        ret['state_code'] = 3
     else:
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(email=email)
             password = request.POST.get('password')
             if not password:
-                ret['error'] = 'must set a password'
+                ret['state_code'] = 5
             else:
                 user.set_password(password)
-                ret['response'] = 'success'
+                ret['state_code'] = 0
                 user.save()
         except User.DoesNotExist:
-            ret['error'] = 'User not exist'
+            ret['state_code'] = 2
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### delete user account(only admin and user itself)
 @require_http_methods(['POST'])
 def delete_user(request):
     ret = dict()
-    user_id = request.POST.get('user_id')
+    email = request.POST.get('email') 
     user = request.user
-    if not user_id:
-        ret['error'] = 'need user_id'
+    if not email:
+        ret['state_code'] = 4
     elif not user.is_authenticated():
-        ret['error'] = 'user not logged in'
-    elif not (user.id == user_id or user.is_admin == True):
-        ret['error'] = 'permission denied'
+        ret['state_code'] = 1
+    elif not (user.email == email or user.is_admin == True):
+        ret['state_code'] = 3
     else:
         try:
-            u = User.objects.get(id=user_id)
+            u = User.objects.get(email=email)
             u.delete()
-            ret['response'] = 'success'
+            ret['state_code'] = 0
         except User.DoesNotExist:
-            ret['error'] = 'User not exist'
+            ret['state_code'] = 2
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### register a new user
@@ -127,23 +130,25 @@ def delete_user(request):
 def user_register(request):
     ret = dict()
     if request.user.is_authenticated():
-        ret['error'] = 'user already logged in'
+        ret['state_code'] = 6
+        ret['user_info'] = user_serialize(request.user)
     else:
-        ret['name'] = request.POST.get('name', 'anonymous')
-        ret['password'] = request.POST.get('password', '')
-        ret['portrait'] = request.POST.get('portrait')
-        ret['email'] = request.POST.get('email', '')
-        ret['fix_times'] = request.POST.get('fix_times', 0)
-        ret['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
-        if ret['email'] != '':
+        user_info = dict()
+        user_info['name'] = request.POST.get('name', 'anonymous')
+        user_info['password'] = request.POST.get('password', '')
+        user_info['portrait'] = request.POST.get('portrait')
+        user_info['email'] = request.POST.get('email', '')
+        user_info['fix_times'] = request.POST.get('fix_times', 0)
+        user_info['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
+        if user_info['email'] != '' and user_info['password'] != '':
             try:
-                User.objects.get(email=ret['email'])
-                ret['error'] = 'repeated email address'
+                User.objects.get(email=user_info['email'])
+                user_info['state_code'] = 10
             except User.DoesNotExist:
-                user = User.objects.create_user(ret['email'], ret['password'], name = ret['name'])
-                user.portrait = ret['portrait']
-                user.fix_times = ret['fix_times']
-                for s in ret['tags']:
+                user = User.objects.create_user(user_info['email'], user_info['password'], name = user_info['name'])
+                user.portrait = user_info['portrait']
+                user.fix_times = user_info['fix_times']
+                for s in user_info['tags']:
                     if not s == '':
                         try:
                             tag = Tag.objects.get(name=s)
@@ -153,10 +158,10 @@ def user_register(request):
                             tag.save()
                         user.tags.add(tag)
                 user.save()
-                ret['response'] = 'success'
+                ret['state_code'] = 0
                 ret['user_info'] = user_serialize(user)
         else:
-            ret['error'] = 'invalide email address'
+            ret['state_code'] = 9
     return HttpResponse(json.dumps(ret), content_type='application/json')
             
 ### user login
@@ -164,7 +169,7 @@ def user_register(request):
 def user_login(request):
     ret = dict()
     if request.user.is_authenticated():
-        ret['error'] = 'Already logged in'
+        ret['state_code'] = 6
         ret['user_info'] = user_serialize(request.user)
     else:
         email = request.POST.get('email', '')
@@ -174,22 +179,20 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
                 name = user.name
-                ret['response'] = 'success'
+                ret['state_code'] = 0
                 ret['user_info'] = user_serialize(user)
             else:
-                ret['error'] = 'freezed user'
+                ret['state_code'] = 7
         else:
-            ret['email'] = email
-            ret['password'] = password
-            ret['error'] = 'wrong email/password'
+            ret['state_code'] = 8
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 ### user logout
 def user_logout(request):
     ret = dict()
     if not request.user.is_authenticated():
-        ret['error'] = 'not logged in yet'
+        ret['state_code'] = 1
     else:
         logout(request)
-        ret['response'] = 'success'
+        ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
