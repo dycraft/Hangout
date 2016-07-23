@@ -25,10 +25,12 @@
     .controller('registerCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
       console.log('register');
       var vm = this;
+      vm.placeholder = "cat dog";
       vm.register = register;
       function register() {
         Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
       }
+      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
     .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
