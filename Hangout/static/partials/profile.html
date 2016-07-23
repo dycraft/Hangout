@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="/static/lib/blueimp-gallery.min.css">
 <noscript><link rel="stylesheet" href="/static/lib/jquery.fileupload-ui-noscript.css"></noscript>
 <div class="row">
-  <div class="col-md-4 col-md-offset-4">
-    <h1>Register</h1>
+  <div class="col-md-6 col-md-offset-3">
+    <h1>Profile</h1>
 
     <div class="well">
       <form role="form" ng-submit="vm.update_profile()">
@@ -23,13 +23,63 @@
         </div>
 
         <div class="form-group">
-          <label for="register__password">Fixed times</label>
-          <input type="text" class="form-control" id="register__password" ng-model="vm.fix_times" />
+          <label for="register__fixed">Fixed times</label>
+          <table class="table table-selectable" id="register__fixed" ng-model="vm.fix_times">
+              <thead>
+                  <tr>
+                      <th>周日</th>
+                      <th>周一</th>
+                      <th>周二</th>
+                      <th>周三</th>
+                      <th>周四</th>
+                      <th>周五</th>
+                      <th>周六</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr class="tr-selectable">
+                      <td onclick="selectDate(0)">0:00-7:00</td>
+                      <td onclick="selectDate(1)">0:00-7:00</td>
+                      <td onclick="selectDate(2)">0:00-7:00</td>
+                      <td onclick="selectDate(3)">0:00-7:00</td>
+                      <td onclick="selectDate(4)">0:00-7:00</td>
+                      <td onclick="selectDate(5)">0:00-7:00</td>
+                      <td onclick="selectDate(6)">0:00-7:00</td>
+                  </tr>
+                  <tr class="tr-selectable">
+                      <td onclick="selectDate(7)">7:00-12:00</td>
+                      <td onclick="selectDate(8)">7:00-12:00</td>
+                      <td onclick="selectDate(9)">7:00-12:00</td>
+                      <td onclick="selectDate(10)">7:00-12:00</td>
+                      <td onclick="selectDate(11)">7:00-12:00</td>
+                      <td onclick="selectDate(12)">7:00-12:00</td>
+                      <td onclick="selectDate(13)">7:00-12:00</td>
+                  </tr>
+                  <tr class="tr-selectable">
+                      <td onclick="selectDate(14)">12:00-18:00</td>
+                      <td onclick="selectDate(15)">12:00-18:00</td>
+                      <td onclick="selectDate(16)">12:00-18:00</td>
+                      <td onclick="selectDate(17)">12:00-18:00</td>
+                      <td onclick="selectDate(18)">12:00-18:00</td>
+                      <td onclick="selectDate(19)">12:00-18:00</td>
+                      <td onclick="selectDate(20)">12:00-18:00</td>
+                  </tr>
+                  <tr class="tr-selectable">
+                      <td onclick="selectDate(21)">18:00-24:00</td>
+                      <td onclick="selectDate(22)">18:00-24:00</td>
+                      <td onclick="selectDate(23)">18:00-24:00</td>
+                      <td onclick="selectDate(24)">18:00-24:00</td>
+                      <td onclick="selectDate(25)">18:00-24:00</td>
+                      <td onclick="selectDate(26)">18:00-24:00</td>
+                      <td onclick="selectDate(27)">18:00-24:00</td>
+                  </tr>
+              </tbody>
+          </table>
         </div>
 
         <div class="form-group">
           <label for="register__tags">Tags</label>
-          <input type="text" class="form-control" id="register__tags" ng-model="vm.tags" data-role="tagsinput" />
+          <input type="text" class="form-control" id="profile__tags" ng-model="vm.tags" data-role="tagsinput" />
         </div>
 
         <div class="form-group">

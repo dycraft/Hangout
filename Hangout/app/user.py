@@ -39,16 +39,16 @@ def login_detail(request):
 @require_http_methods(['POST'])
 def update_user(request):
     ret = dict()
-    user_id = request.POST.get('user_id')
-    if not user_id:
-        ret['error'] = 'need user_id'
+    email = request.POST.get('email')
+    if not email:
+        ret['error'] = 'need email'
     elif not request.user.is_authenticated():
         ret['error'] = 'user not logged in'
-    elif (not str(request.user.id) == user_id) and (not request.user.is_admin == True):
+    elif (not str(request.user.email) == email) and (not request.user.is_admin == True):
         ret['error'] = 'permission denied'
     else:
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(email=email)
             
             editable_fields = [
                 'name',
@@ -61,7 +61,14 @@ def update_user(request):
                 if k in editable_fields:
                     setattr(user, k, v)
 
+            for tag in user.tags.all():
+                user.tags.remove(tag)
+
+            for tag in request.POST.get('tags', '').split(','):
+                user.tags.add(get_tag(tag.strip()))
+
             user.save()
+
             ret['response'] = 'success'
 
         except User.DoesNotExist:
@@ -127,7 +134,7 @@ def user_register(request):
         ret['portrait'] = request.POST.get('portrait')
         ret['email'] = request.POST.get('email', '')
         ret['fix_times'] = request.POST.get('fix_times', 0)
-        ret['tags'] = request.POST.get('tags', '').split('&&')
+        ret['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
         if ret['email'] != '':
             try:
                 User.objects.get(email=ret['email'])
@@ -147,6 +154,7 @@ def user_register(request):
                         user.tags.add(tag)
                 user.save()
                 ret['response'] = 'success'
+                ret['user_info'] = user_serialize(user)
         else:
             ret['error'] = 'invalide email address'
     return HttpResponse(json.dumps(ret), content_type='application/json')
@@ -156,7 +164,8 @@ def user_register(request):
 def user_login(request):
     ret = dict()
     if request.user.is_authenticated():
-        ret['response'] = 'Already logged in'
+        ret['error'] = 'Already logged in'
+        ret['user_info'] = user_serialize(request.user)
     else:
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')

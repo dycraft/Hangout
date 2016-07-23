@@ -23,7 +23,7 @@ angular.module('hangout', [
 	    $routeProvider.when('/login',{
             templateUrl: urls.part + '/login.html', 
             controller: 'loginCtrl', 
-            controllerAs: 'vm',
+            controllerAs: 'vm', 
             title: 'login', 
             tag_name: 'login'});
         $routeProvider.when('/register',{

@@ -32,7 +32,7 @@ def user_serialize(user):
 	ret['tags'] = []
 	for t in user.tags.all():
 		ret['tags'].append(t.name)
-	ret['tags'] = "&&".join(ret['tags'])
+	ret['tags'] = ",".join(ret['tags'])
 	return ret
 
 def activity_serialize(act):

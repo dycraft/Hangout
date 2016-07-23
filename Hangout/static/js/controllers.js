@@ -25,10 +25,10 @@
     .controller('registerCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
       console.log('register');
       var vm = this;
-      vm.tags = "man&&student";
+      vm.tags = "student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), vm.tags);
+        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val());
       }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       $.getScript('/static/js/register.js');
@@ -48,9 +48,11 @@
         $location.url('/login');
       }
       function update_profile() {
-        Authentication.update_profile(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
+        console.log($('#profile__tags').val());
+        Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val());
       }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+      $.getScript('/static/js/register.js');
     }])
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {

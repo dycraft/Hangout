@@ -109,9 +109,10 @@
     }
 
     function setAuthenticatedAccount(account) {
-      if (account.user_info) {
-        $cookies.authenticatedAccount = JSON.stringify(account);
-      }
+      console.log(account);
+        if (account.error) {
+          $cookies.authenticatedAccount = JSON.stringify(account);
+        }
     }
 
     function unauthenticate() {
