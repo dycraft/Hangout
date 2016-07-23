@@ -30,14 +30,24 @@
         Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
       }
     }])
-    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http'], function($scope, $location, Authentication, $http){
+    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
       var vm = this;
       vm.update_profile = update_profile;
-      function update_profile() {
-        Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
+      if (Authentication.getAuthenticatedAccount()) {
+        vm.email = Authentication.getAuthenticatedAccount().user_info.email;
+        vm.password = Authentication.getAuthenticatedAccount().user_info.password;
+        vm.username = Authentication.getAuthenticatedAccount().user_info.name;
+        vm.fix_times = Authentication.getAuthenticatedAccount().user_info.fix_times;
+        vm.tags = Authentication.getAuthenticatedAccount().user_info.tags;
       }
-    })
+      else {
+        $location.url('/login');
+      }
+      function update_profile() {
+        Authentication.update_profile(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
+      }
+    }])
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {
         $location.url('/login');
