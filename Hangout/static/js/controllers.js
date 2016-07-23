@@ -28,9 +28,10 @@
       vm.tags = "man&&student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, vm.fix_times, vm.tags);
+        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), vm.tags);
       }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+      $.getScript('/static/js/register.js');
     }])
     .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
