@@ -17,4 +17,4 @@ Error code
 
 ### activity
 51: act_id not provided
-52: act not exist
+52: act does not exist
