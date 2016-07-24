@@ -227,7 +227,7 @@ def reply_application(request):
 		if len(act) == 0:
 			ret['state_code'] = 72
 		elif has_permission(request.user, app[0].activity):
-
+			pass
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')

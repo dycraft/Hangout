@@ -8,7 +8,7 @@ def user_serialize(user, detailed=True):
 		'id',
 		'name', 
 		'cellphone',
-                'intro',
+        'intro',
 		'score', 
 		'email',
 		'fix_times',
@@ -84,6 +84,7 @@ def activity_serialize(act, detailed=False):
 
 def application_serialize(app):
 	ret = dict()
+
 	ret['id'] = app.id
 	ret['applicant'] = app.applicant.email
 	ret['application_type'] = app.get_application_type_display()
