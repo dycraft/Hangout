@@ -1,4 +1,4 @@
-from .models import User, Activity
+from .models import *
 
 def user_serialize(user, detailed=True):
 	
@@ -79,4 +79,17 @@ def activity_serialize(act, detailed=False):
 			for m in getattr(act, field).all():
 				ret[field].append(m.email)
 
+	return ret
+
+def application_serialize(app):
+	ret = dict()
+	ret['id'] = app.id
+	ret['applicant'] = app.applicant.email
+	ret['application_type'] = app.get_application_type_display()
+	ret['activity'] = {
+		'id': app.activity.id,
+		'name': app.activity.name,
+	}
+	ret['intro'] = app.intro
+	ret['time'] = app.time.strftime('%Y-%m-%d %H:%M')
 	return ret

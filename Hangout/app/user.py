@@ -9,9 +9,6 @@ import json
 from .serializer import user_serialize
 from .tag import get_tag
 
-# @user_permission(0)
-
-
 '''
 ger_user:
     get user info by email
@@ -22,6 +19,11 @@ POST params
 |===================================================================|
 | email     | email address of user          | REQUIRED             |
 |===================================================================|
+
+returns:
+    'state_code'
+    'user_info' -- when (state_code == 0)
+
 '''
 @require_http_methods(['POST'])
 def get_user(request):
@@ -43,6 +45,11 @@ login_detail:
     get user detail that is currently logged in
 
 No params required
+
+returns:
+    'state_code'
+    'user_info' -- when (state_code == 0)
+
 '''
 def login_detail(request):
     ret = dict()
@@ -71,6 +78,11 @@ POST params
 | fix_times | fix times of user              | No Default           |
 | tmp_times | temp times of user             | No Default           |
 |===================================================================|
+
+returns:
+    'state_code'
+    'user_info' -- when (state_code == 0)
+
 '''
 @require_http_methods(['POST'])
 def update_user(request):
@@ -127,6 +139,10 @@ POST params
 | email     | email of user                  | REQUIRED             |
 | password  | password of user               | REQUIRED             |
 |===================================================================|
+
+returns:
+    'state_code'
+
 '''
 @require_http_methods(['POST'])
 def update_password(request):
@@ -162,6 +178,10 @@ POST params
 |===================================================================|
 | email     | email of user                  | REQUIRED             |
 |===================================================================|
+
+returns:
+    'state_code'
+
 '''
 @require_http_methods(['POST'])
 def delete_user(request):
@@ -200,6 +220,11 @@ POST params
 | fix_times | fix times of user              | 0                    |
 | portrait  | user portrait(not implemented) | not implemented      |
 |===================================================================|
+
+returns:
+    'state_code'
+    'user_info' -- when (state_code == 0 or state_code == 6)
+
 '''
 @require_http_methods(['POST'])
 def user_register(request):
@@ -222,7 +247,11 @@ def user_register(request):
                 User.objects.get(email=user_info['email'])
                 user_info['state_code'] = 10
             except User.DoesNotExist:
-                user = User.objects.create_user(user_info['email'], user_info['password'], name = user_info['name'])
+                user = User.objects.create_user(
+                            user_info['email'], 
+                            user_info['password'], 
+                            name = user_info['name']
+                        )
                 user.portrait = user_info['portrait']
                 user.fix_times = user_info['fix_times']
                 user.cellphone = user_info['cellphone']
@@ -254,6 +283,11 @@ POST params
 | email     | email of user                  | REQUIRED             |
 | password  | password of user               | REQUIRED             |
 |===================================================================|
+
+returns:
+    'state_code'
+    'user_info' -- when (state_code == 0)
+
 '''
 @require_http_methods(['POST'])
 def user_login(request):
@@ -282,6 +316,10 @@ user_logout:
     user logout
 
 No params required
+
+returns:
+    'state_code'
+
 '''
 def user_logout(request):
     ret = dict()
@@ -291,3 +329,98 @@ def user_logout(request):
         logout(request)
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
+apply_for_activity:
+    apply activity permission (member/admin)
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| act_id    | id of activity                 | REQUIRED             |
+| type      | 1 for member / 2 for admin     | 1                    |
+| intro     | introduction of user itself    | 'no introduction'    |
+|===================================================================|
+
+returns:
+    'state_code'
+
+'''
+@require_http_methods(['POST'])
+def apply_for_activity(request):
+    ret = dict()
+    act_id = request.POST.get('act_id')
+    if not request.user.is_authenticated():
+        ret['state_code'] = 1
+    elif not act_id:
+        ret['state_code'] = 51
+    else:
+        act = Activity.objects.filter(id=act_id)
+        app_type = request.POST.get('type', 1)
+        intro = request.POST.get('intro', 'no introduction')
+        if len(act) == 0:
+           ret['state_code'] = 51
+        elif len(act[0].applications.filter(
+                        applicant_id=request.user.id, 
+                        application_type=app_type)) > 0:
+            ret['state_code'] = 53
+        else:
+            app = Application.objects.create(
+                    applicant=request.user,
+                    application_type=app_type,
+                    activity=act[0],
+                    intro=intro
+                )
+            app.save()
+            request.user.apply_acts.add(act[0])
+            request.user.save()
+            ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+quit_activity:
+    Quit activity. User is Deleted from 'applicants', 'admins'
+    and 'members'. Applications are also deleted.
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| act_id    | id of activity                 | REQUIRED             |
+|===================================================================|
+
+returns:
+    'state_code'
+
+'''
+@require_http_methods(['POST'])
+def quit_activity(request):
+    ret = dict()
+    act_id = request.POST.get('act_id')
+    user = request.user
+    if not user.is_authenticated():
+        ret['state_code'] = 1
+    elif not act_id:
+        ret['state_code'] = 51
+    else:
+        act = Activity.objects.filter(id=act_id)
+        if len(act) == 0:
+            ret['state_code'] = 52
+        else:
+            act[0].applicants.remove(user)
+            act[0].admins.remove(user)
+            act[0].members.remove(user)
+            act[0].applications.filter(applicant_id=user.id).delete()
+            ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+
+
+
+
+
+
+

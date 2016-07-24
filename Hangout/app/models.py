@@ -21,13 +21,13 @@ APPLICATION_TYPE = (
     (APPLICATION_TYPE_MEMBER, 'member'),
     (APPLICATION_TYPE_ADMIN, 'admin'),
 )
-class application(models.Model):
+class Application(models.Model):
     """application to become member/admin of a activity"""
     applicant = models.ForeignKey('User', related_name='applications')
     application_type = models.IntegerField(default=1, choices=APPLICATION_TYPE)
     activity = models.ForeignKey('Activity', related_name='applications')
     intro = models.CharField(max_length=200, default='no introduction')
-
+    time = models.DateTimeField(auto_now_add=True)
 
 
 #----------------  Message  -----------------#

@@ -18,3 +18,10 @@ Error code
 ### activity
 51: act_id not provided
 52: act does not exist
+53: application already sent
+54: user is not a member
+
+
+### application
+71: application_id not provided
+72: application does not exist

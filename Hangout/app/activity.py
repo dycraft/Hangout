@@ -8,6 +8,23 @@ from .models import *
 import json
 
 '''
+has_permission:
+	Utility function, check if a user have the permission to modify a act
+
+params
+	user
+	act
+'''
+def has_permission(user, act):
+	if user.is_admin == True:
+		return True
+	elif len(act.admins.filter(id=user.id)) == 0:
+		return False
+	else:
+		return True
+
+
+'''
 create_activity: 
 	Create an activity, user that is currently logged in will become 
 	the organizer and an admin automatically
@@ -33,7 +50,7 @@ def create_activity(request):
 		act_info = dict()
 		act_info['name'] = request.POST.get('name', 'untitled')
 		act_info['intro'] = request.POST.get('intro', 'No intro available')
-		act_info['tags'] = request.POST.get('tag', '').split('&&')
+		act_info['tags'] = request.POST.get('tag', '').split(',')
 		act_info['cost'] = float(request.POST.get('cost', 0))
 		act_info['location'] = request.POST.get('location', 'pending')
 		act_info['organizer'] = request.user.email
@@ -46,9 +63,10 @@ def create_activity(request):
 			)
 		act.admins.add(request.user)
 		for t in act_info['tags']:
-			act.tags.add(get_tag(t))
+			act.tags.add(get_tag(t.strip()))
 		act.save()
 		ret['state_code'] = 0
+
 
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -111,7 +129,7 @@ def update_activity(request):
 		try:
 			act = Activity.objects.get(id=act_id)
 
-			if not (act.organizer_id == request.user.id or request.user.is_admin == True):
+			if has_permission(request.user, act):
 				ret['state_code'] = 3
 			else:
 
@@ -145,4 +163,83 @@ def update_activity(request):
 			ret['state_code'] = 52
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
-		
+'''
+get_applications: 
+	get applications of an activity
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| act_id    | id of an activity              | REQUIRED             |
+|===================================================================|
+
+returns:
+	'state_code'
+	'applications' -- when (state_code == 0)
+'''
+@require_http_methods(['POST'])
+def get_applications(request):
+	ret = dict()
+	act_id = request.POST.get('act_id')
+	if not request.user.is_authenticated():
+		ret['state_code'] = 1
+	elif not act_id:
+		ret['state_code'] = 51
+	else:
+		act = Activity.objects.filter(id=act_id)
+		if len(act) == 0:
+			ret['state_code'] = 52
+		elif has_permission(request.user, act[0]):
+			ret['applications'] = []
+			ret['state_code'] = 0
+			for app in act[0].applications.all():
+				ret['applications'].append(application_serialize(app))
+		else:
+			ret['state_code'] = 3
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+reply_application:
+	reply an application of an activity (granted/refused)
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| app_id    | id of an application           | REQUIRED             |
+| reply     | 1 for granted / 0 for refused  | REQUIRED             |
+|===================================================================|
+
+returns:
+	'state_code'
+'''
+def reply_application(request):
+	ret = dict()
+	app_id = request.POST.get('app_id')
+	reply = int(request.POST.get('reply'))
+	if not request.user.is_authenticated():
+		ret['state_code'] = 1
+	elif not aPP_id:
+		ret['state_code'] = 71
+	else:
+		app = Application.objects.filter(id=app_id)
+		if len(act) == 0:
+			ret['state_code'] = 72
+		elif has_permission(request.user, app[0].activity):
+
+		else:
+			ret['state_code'] = 3
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+
+
+
+
+
+
+
+
+
+
