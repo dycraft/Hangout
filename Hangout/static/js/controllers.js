@@ -33,7 +33,7 @@
       vm.tags = "student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val(), vm.cellphone, vm.intro);
+        Authentication.register(vm.email, vm.password, vm.username, encodeFixedTime(), $('#register__tags').val(), vm.cellphone, vm.intro);
       }
       activate();
       function activate() {
@@ -43,14 +43,14 @@
       }
 
       //FixedTimeTable
-        vm.week = CONST.WEEK;
-        vm.times = CONST.TIME_SEG;
-        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-            var tds = $('#register__fixed').find('td');
-            tds.click(function () {
-                onSelectTime(tds.index($(this)));
-            });
-        });
+      vm.week = CONST.WEEK;
+      vm.times = CONST.TIME_SEG;
+      $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+          var tds = $('#register__fixed').find('td');
+          tds.click(function () {
+              onSelectTime(tds.index($(this)), "register");
+          });
+      });
 
         //js-lib: tagsinput
         $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
@@ -72,19 +72,19 @@
         $location.url('/login');
       }
       function update_profile() {
-        Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
+        Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
       }
 
       //FixedTimeTable
-        vm.week = CONST.WEEK;
-        vm.times = CONST.TIME_SEG;
-        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-            var tds = $('#register__fixed').find('td');
-            tds.click(function () {
-                onSelectTime(tds.index($(this)));
-            });
-            decodeFixedTime(vm.fix_times);
-        });
+      vm.week = CONST.WEEK;
+      vm.times = CONST.TIME_SEG;
+      $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+          var tds = $('#profile__fixed').find('td');
+          tds.click(function () {
+              onSelectTime(tds.index($(this)), "profile");
+          });
+          decodeFixedTime(vm.fix_times, "profile");
+      });
 
         //js-lib: tagsinput
         $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
@@ -174,8 +174,8 @@
         fixedTimeArray.push(0);
     }
 
-    function onSelectTime(value) {
-        var tds = $('#register__fixed').find('td');
+    function onSelectTime(value, type) {
+        var tds = $('#' + type + '__fixed').find('td');
 
         if (value >= 0 && value < len) {
             fixedTimeArray[value] = 1 - fixedTimeArray[value];
@@ -196,7 +196,7 @@
         return parseInt(binStr, 2);
     }
 
-    function decodeFixedTime(fixedTime) {
+    function decodeFixedTime(fixedTime, type) {
         var timeStr = fixedTime.toString(2);
         var s = '';
         for (var k = 0; k < len-timeStr.length; k++) {
@@ -209,8 +209,8 @@
         }
         
         //update view
-        var tds = $('#register__fixed').find('td');
-        for (var j = 1; j < len; j++) {
+        var tds = $('#' + type + '__fixed').find('td');
+        for (var j = 0; j < len; j++) {
             if (fixedTimeArray[j] === 1) {
                 tds[j].style.backgroundColor = '#FFF';
             } else {
