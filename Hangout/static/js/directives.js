@@ -12,6 +12,21 @@
           });
         },
         template: '<div ng-include="contentUrl"></div>'
-	    }	
-  	});
+	    }
+  	})
+    .directive('onFinishRenderFilters', function ($timeout, $parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, elem, attrs) {
+                if (scope.$last === true) {
+                    $timeout(function () {
+                        scope.$emit('ngRepeatFinished');
+                        if (!!attrs.onFinishRender) {
+                            $parse(attr.onFinishRender)(scope);
+                        }
+                    });
+                }
+            }
+        };
+    });
 })();

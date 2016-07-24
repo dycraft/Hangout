@@ -16,10 +16,16 @@ urlpatterns = [
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
 
-    
+    # User and Activity
+    url(r'^user/apply$', user.apply_for_activity),
+    url(r'^user/quit_act$', user.quit_activity),
+
     # Activity
     url(r'^activity/create$', activity.create_activity),
     url(r'^activity/detail$', activity.get_activity_detail),
 
-    # url(r'^activity/update$', activity.update_activity),
+    # Activity admin
+    url(r'^activity/update$', activity.update_activity),
+    url(r'^activity/applications$', activity.get_applications),
+
 ]

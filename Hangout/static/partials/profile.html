@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+<link rel="stylesheet" href="/static/css/timetable.css">
+<link rel="stylesheet" href="/static/lib/jquery.fileupload-ui.css">
+<link rel="stylesheet" href="/static/lib/blueimp-gallery.min.css">
+<noscript><link rel="stylesheet" href="/static/lib/jquery.fileupload-ui-noscript.css"></noscript>
+>>>>>>> 1e36592d76fd3840739049c57a364d8939b28213
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <h1>我的资料</h1>
@@ -20,6 +27,7 @@
         </div>
 
         <div class="form-group">
+<<<<<<< HEAD
           <label for="profile__password">手机号</label>
           <input type="text" class="form-control" id="profile__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
         </div>
@@ -82,6 +90,21 @@
                   </tr>
               </tbody>
           </table>
+=======
+            <label for="register__fixed">Fixed times</label>
+              <table class="table table-selectable" id="register__fixed" ng-model="vm.fix_times">
+                  <thead>
+                      <tr>
+                          <th ng-repeat='day in vm.week'>[[ day ]]</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr class="tr-selectable" ng-repeat='time in vm.times' on-finish-render-filters>
+                          <td ng-repeat='n in vm.week track by $index'>[[ time ]]</td>
+                      </tr>
+                  </tbody>
+              </table>
+>>>>>>> 1e36592d76fd3840739049c57a364d8939b28213
         </div>
 
         <div class="form-group">
@@ -96,4 +119,12 @@
     </div>
     
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+<script src="/static/lib/jquery.fileupload.js"></script>
+<script src="/static/lib/jquery.fileupload-image.js"></script>
+<script src="/static/lib/jquery.fileupload-angular.js"></script>
+<script src="/static/lib/jquery.fileupload-process.js"></script>
+>>>>>>> 1e36592d76fd3840739049c57a364d8939b28213

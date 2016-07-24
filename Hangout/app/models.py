@@ -4,24 +4,59 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 import django.utils.timezone as timezone
 
-# Create your models here.
+#------------------  Tag  -------------------#
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-### users: has defined in User
-### acts: has defined in Activity
+
+
+#--------------  application  ---------------#
+
+APPLICATION_TYPE_MEMBER = 1
+APPLICATION_TYPE_ADMIN = 2
+APPLICATION_TYPE = (
+    (APPLICATION_TYPE_MEMBER, 'member'),
+    (APPLICATION_TYPE_ADMIN, 'admin'),
+)
+class Application(models.Model):
+    """application to become member/admin of a activity"""
+    applicant = models.ForeignKey('User', related_name='applications')
+    application_type = models.IntegerField(default=1, choices=APPLICATION_TYPE)
+    activity = models.ForeignKey('Activity', related_name='applications')
+    intro = models.CharField(max_length=200, default='no introduction')
+    time = models.DateTimeField(auto_now_add=True)
+
+
+#----------------  Message  -----------------#
 
 class Message(models.Model):
     from_user = models.ForeignKey('User', related_name='sent_messages')
     to_user = models.ForeignKey('User', related_name='messages')
     content = models.CharField(max_length=1000)
 
+
+
+#-----------------  Notice  -----------------#
+
 class Notice(models.Model):
     from_user = models.ForeignKey('User', related_name='sent_notice')
     content = models.CharField(max_length=1000)
+
+
+
+#----------------  Activity  ----------------#
+
+ACTIVITY_STATES_OPEN = 0
+ACTIVITY_STATES_STARTED = 1
+ACTIVITY_STATES_ENDED = 2
+ACTIVITY_STATES = (
+    (ACTIVITY_STATES_OPEN, 'open'),
+    (ACTIVITY_STATES_STARTED, 'started'),
+    (ACTIVITY_STATES_ENDED, 'ended'),
+)
 
 class Activity(models.Model):
 ### basic information 
@@ -32,8 +67,7 @@ class Activity(models.Model):
     location = models.CharField(max_length=100, default='pending')
     time = models.DateTimeField(auto_now_add=True)
 
-
-    state = models.IntegerField(default=0)
+    state = models.IntegerField(default=0, choices=ACTIVITY_STATES)
     organizer = models.ForeignKey('User', related_name='org_acts')
 
     create_at = models.DateTimeField(auto_now_add=True)
@@ -42,10 +76,9 @@ class Activity(models.Model):
 
     def __str__(self):
         return self.name
-### admins: has defined in User
-### applicants: has defined in User
-### members: has defined in User
-### notices: has defined in Notice
+
+
+#------------------  User  ------------------#
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
@@ -96,8 +129,11 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
     
-    def __unicode__(self):
+    def __str__(self):
         return self.email
+
+
+#--------------  Relationshio  --------------#
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
@@ -109,11 +145,3 @@ class Relationship(models.Model):
     from_user = models.ForeignKey(User, related_name='from_people')
     to_user = models.ForeignKey(User, related_name='to_people')
     status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
-
-# admin.site.register(Tag)
-# admin.site.register(Message)
-# admin.site.register(Notice)
-# admin.site.register(User)
-# admin.site.register(Activity)
-# admin.site.register(Relationship)
-

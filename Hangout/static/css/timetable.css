@@ -1,0 +1,8 @@
+.tr-selectable td {
+    background-color: #EBEBEB;
+}
+
+.tr-selectable td:hover{
+    background-color: #FFF;
+    cursor: pointer;
+}
