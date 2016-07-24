@@ -29,7 +29,7 @@ angular.module('hangout', [
         $routeProvider.when('/register',{
             templateUrl: urls.part + '/register.html', 
             controller: 'registerCtrl', 
-            controllerAs: 'vm',
+            controllerAs: 'vm', 
             title: 'register', 
             tag_name: 'register'});
         $routeProvider.when('/profile',{
@@ -38,12 +38,10 @@ angular.module('hangout', [
             controllerAs: 'vm',
             title: 'profile', 
             tag_name: 'profile'});
+        $routeProvider.when('/activity',{
+            templateUrl: urls.part + '/activity.html', 
+            controller: 'activityCtrl', 
+            title: 'activity', 
+            tag_name: 'activity'});
 	    $routeProvider.otherwise({redirectTo: '/'});
-    }]).
-    run(['$location', '$rootScope', function($location, $rootScope){
-        //Configure header title of the page
-        $rootScope.$on('$routeChangeSuccess', function(event, current, previous){
-            $rootScope.title = current.$$route.title;
-            $rootScope.tag_name = current.$$route.tag_name;
-        });
     }]);

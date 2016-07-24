@@ -20,5 +20,6 @@ urlpatterns = [
     # Activity
     url(r'^activity/create$', activity.create_activity),
     url(r'^activity/detail$', activity.get_activity_detail),
+
     # url(r'^activity/update$', activity.update_activity),
 ]

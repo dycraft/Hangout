@@ -30,6 +30,12 @@
       function register() {
         Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val());
       }
+      activate();
+      function activate() {
+        if (Authentication.isAuthenticated()) {
+          $location.url('/');
+        }
+      }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       $.getScript('/static/js/register.js');
     }])
@@ -37,7 +43,7 @@
       console.log('profile');
       var vm = this;
       vm.update_profile = update_profile;
-      if (Authentication.getAuthenticatedAccount()) {
+      if (Authentication.isAuthenticated()) {
         vm.email = Authentication.getAuthenticatedAccount().user_info.email;
         vm.password = Authentication.getAuthenticatedAccount().user_info.password;
         vm.username = Authentication.getAuthenticatedAccount().user_info.name;
@@ -48,11 +54,13 @@
         $location.url('/login');
       }
       function update_profile() {
-        console.log($('#profile__tags').val());
         Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val());
       }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       $.getScript('/static/js/register.js');
+    }])
+    .controller('activityCtrl', ['$location', '$scope', 'Authentication', function($location, $scope, Authentication){
+
     }])
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {
@@ -64,33 +72,47 @@
       function register() {
         $location.url('/register');
       }
+      $scope.activity = function() {
+        $location.url('/activity');
+      }
+      $scope.friends = function() {
+        $location.url('/friends');
+      }
       $scope.register = register;
-      if (Authentication.getAuthenticatedAccount()) {
+      if (Authentication.isAuthenticated()) {
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
         $('#nav_user').css({'display': 'block'});
         $('#nav_register').css({'display': 'none'});
-        $scope.logger = 'logout';
+        $('#nav_activity').css({'display': 'block'});
+        $('#nav_friends').css({'display': 'block'});
+        $scope.logger = '登出';
         $scope.login_logout = logout;
       }
       else {
-        $scope.displayName = 'register';
+        $scope.displayName = '注册';
         $('#nav_user').css({'display': 'none'});
+        $('#nav_activity').css({'display': 'none'});
+        $('#nav_friends').css({'display': 'none'});
         $('#nav_register').css({'display': 'block'});
-        $scope.logger = 'login';
+        $scope.logger = '登录';
         $scope.login_logout = login;
       }
       $rootScope.$on('login_done', function(){
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
         $('#nav_user').css({'display': 'block'});
         $('#nav_register').css({'display': 'none'});
-        $scope.logger = 'logout';
+        $('#nav_activity').css({'display': 'block'});
+        $('#nav_friends').css({'display': 'block'});
+        $scope.logger = '登出';
         $scope.login_logout = logout;
       })
       $rootScope.$on('logout_done', function(){
-        $scope.displayName = 'register';
+        $scope.displayName = '注册';
         $('#nav_user').css({'display': 'none'});
+        $('#nav_activity').css({'display': 'none'});
+        $('#nav_friends').css({'display': 'none'});
         $('#nav_register').css({'display': 'block'});
-        $scope.logger = 'login';
+        $scope.logger = '登录';
         $scope.login_logout = login;
       })
     }]);
