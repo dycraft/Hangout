@@ -81,6 +81,7 @@
             tds.click(function () {
                 onSelectTime(tds.index($(this)));
             });
+            decodeFixedTime(vm.fix_times);
         });
 
         //js-lib: tagsinput
@@ -194,9 +195,25 @@
     }
 
     function decodeFixedTime(fixedTime) {
-        var strTimeArray = fixedTime.toString(2).split("");
+        var timeStr = fixedTime.toString(2);
+        var s = '';
+        for (var k = 0; k < len-timeStr.length; k++) {
+            s += '0';
+        }
+        timeStr = s + timeStr;
+        var strTimeArray = timeStr.split("");
         for (var i = 0; i < len; i++) {
-            fixedTimeArray[i] = parseInt(strTimeArray);
+            fixedTimeArray[i] = parseInt(strTimeArray[i]);
+        }
+        
+        //update view
+        var tds = $('#register__fixed').find('td');
+        for (var j = 1; j < len; j++) {
+            if (fixedTimeArray[j] === 1) {
+                tds[j].style.backgroundColor = '#FFF';
+            } else {
+                tds[j].style.backgroundColor = '#EBEBEB';
+            }
         }
     }
 })();
