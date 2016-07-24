@@ -33,11 +33,7 @@
       vm.tags = "student";
       vm.register = register;
       function register() {
-<<<<<<< HEAD
         Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val(), vm.cellphone, vm.intro);
-=======
-        Authentication.register(vm.email, vm.password, vm.username, encodeFixedTime(), $('#register__tags').val());
->>>>>>> 1e36592d76fd3840739049c57a364d8939b28213
       }
       activate();
       function activate() {
@@ -76,11 +72,7 @@
         $location.url('/login');
       }
       function update_profile() {
-<<<<<<< HEAD
         Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
-=======
-        Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val());
->>>>>>> 1e36592d76fd3840739049c57a364d8939b28213
       }
 
       //FixedTimeTable

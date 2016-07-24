@@ -110,5 +110,14 @@
         </div>
       </form>
     </div>
+    
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+<script src="/static/lib/jquery.fileupload.js"></script>
+<script src="/static/lib/jquery.fileupload-image.js"></script>
+<script src="/static/lib/jquery.fileupload-angular.js"></script>
+<script src="/static/lib/jquery.fileupload-process.js"></script>
+>>>>>>> 1e36592d76fd3840739049c57a364d8939b28213
