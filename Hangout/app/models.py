@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
+import django.utils.timezone as timezone
 
 # Create your models here.
 
@@ -23,16 +24,20 @@ class Notice(models.Model):
     content = models.CharField(max_length=1000)
 
 class Activity(models.Model):
+### basic information 
     name = models.CharField(max_length=100)
     intro = models.CharField(max_length=1000)
     tags = models.ManyToManyField(Tag, related_name='acts')
     cost = models.FloatField(default=0.0)
+    location = models.CharField(max_length=100, default='pending')
+    time = models.DateTimeField(auto_now_add=True)
+
+
     state = models.IntegerField(default=0)
     organizer = models.ForeignKey('User', related_name='org_acts')
-    time = models.DateTimeField(auto_now_add=True, default=datetime.now())
 
-    create_at = models.DateTimeField(auto_now_add=True, default=datetime.now())
-    modified_at = models.DateTimeField(auto_now=True, default=datetime.now())
+    create_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):

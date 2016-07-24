@@ -45,6 +45,7 @@ def activity_serialize(act):
 		'intro',
 		'cost',
 		'state',
+		'location',
 	]
 ### normal fields
 	for f in normal_fields:
