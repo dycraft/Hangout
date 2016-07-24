@@ -29,6 +29,11 @@ class Activity(models.Model):
     cost = models.FloatField(default=0.0)
     state = models.IntegerField(default=0)
     organizer = models.ForeignKey('User', related_name='org_acts')
+    time = models.DateTimeField(auto_now_add=True, default=datetime.now())
+
+    create_at = models.DateTimeField(auto_now_add=True, default=datetime.now())
+    modified_at = models.DateTimeField(auto_now=True, default=datetime.now())
+
 
     def __str__(self):
         return self.name
@@ -58,11 +63,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+### basic info
     name = models.CharField(max_length=100)
     cellphone = models.CharField(max_length=20)
     score = models.FloatField(default=0.0)
     portrait = models.ImageField()
     email = models.EmailField(unique=True)
+    intro = models.CharField(default='', max_length=200)
+    state = models.CharField(default='', max_length=50)
 ### org_acts: has defined in Activity
     apply_acts = models.ManyToManyField(Activity, related_name='applicants')
     join_acts = models.ManyToManyField(Activity, related_name='members')

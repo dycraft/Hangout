@@ -56,4 +56,9 @@ def activity_serialize(act):
 
 	ret['organizer'] = act.organizer.email
 
+## times
+	ret['time'] = act.time.strftime('%Y-%m-%d %a %H:00')
+	ret['create_at'] = act.create_at.strftime('%Y-%m-%d, %H:%M:%S')
+	ret['modified_at'] = act.modified_at.strftime('%Y-%m-%d, %H:%M:%S')
+
 	return ret

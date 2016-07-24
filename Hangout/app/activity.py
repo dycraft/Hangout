@@ -53,6 +53,6 @@ def get_activity_detail(request):
 # 	ret = dict()
 # 	act_id = request.POST.get('act_id')
 # 	if not act_id:
-# 		ret['state_code'] = 'need act_id'
+# 		ret['state_code'] = 51
 # 	else:
-# 		
+		
