@@ -58,7 +58,13 @@
       })).then(updateSuccessFn, updateErrorFn);
 
       function updateSuccessFn(data, status, headers, config) {
-        Authentication.login(email, password);
+        console.log(data.data);
+        $http.post('/api/user/detail', $.param({
+          email: email,
+        })).then(function(data, status, hearders, config) {
+          setAuthenticatedAccount(data.data);
+          $rootScope.$broadcast('login_done')
+        })
       }
 
       function updateErrorFn(data, status, headers, config) {
@@ -73,6 +79,7 @@
       })).then(loginSuccessFn, loginErrorFn);
         
       function loginSuccessFn(data, status, headers, config) {
+        console.log(data.data);
         Authentication.setAuthenticatedAccount(data.data);
         $rootScope.$broadcast('login_done');
         $location.url('/');
@@ -110,9 +117,9 @@
 
     function setAuthenticatedAccount(account) {
       console.log(account);
-        if (account.error) {
-          $cookies.authenticatedAccount = JSON.stringify(account);
-        }
+      if (account.state_code == 0) {
+        $cookies.authenticatedAccount = JSON.stringify(account);
+      }
     }
 
     function unauthenticate() {
