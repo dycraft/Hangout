@@ -6,6 +6,7 @@ angular.module('hangout', [
 //    'angularFileUpload',
     'hangout.services',
     'hangout.controllers',
+    'hangout.directives',
     ]).
     constant('urls', {'part': '/static/partials', 'api': '/api'}).
     config(['$interpolateProvider', function($interpolateProvider){

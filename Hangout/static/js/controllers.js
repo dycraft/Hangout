@@ -60,7 +60,27 @@
       $.getScript('/static/js/register.js');
     }])
     .controller('activityCtrl', ['$location', '$scope', 'Authentication', function($location, $scope, Authentication){
-
+      $(".act-nav").click(function(){
+        $(".act-nav").not(this).removeClass("active");
+        $(this).addClass("active");
+      })
+      $scope.myActs = function() {
+        $scope.page_title = "组织的活动";
+        $scope.act_type = "my_act";
+      }
+      $scope.joinActs = function() {
+        $scope.page_title = "参与的活动";
+        $scope.act_type = "part_act";
+      }
+      $scope.orgActs = function() {
+        $scope.page_title = "组织活动";
+        $scope.act_type = "apply_act";
+      }
+      $scope.otherActs = function() {
+        $scope.page_title = "随便逛逛";
+        $scope.act_type = "recommend_act";
+      }
+      $scope.myActs();
     }])
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {

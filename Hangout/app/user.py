@@ -56,6 +56,7 @@ def update_user(request):
             editable_fields = [
                 'name',
                 'cellphone',
+                'intro',
                 'fix_times',
                 'tmp_times',
             ]
@@ -139,6 +140,8 @@ def user_register(request):
         user_info['portrait'] = request.POST.get('portrait')
         user_info['email'] = request.POST.get('email', '')
         user_info['fix_times'] = request.POST.get('fix_times', 0)
+        user_info['cellphone'] = request.POST.get('cellphone', '')
+        user_info['intro'] = request.POST.get('intro', '')
         user_info['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
         if user_info['email'] != '' and user_info['password'] != '':
             try:
@@ -148,6 +151,8 @@ def user_register(request):
                 user = User.objects.create_user(user_info['email'], user_info['password'], name = user_info['name'])
                 user.portrait = user_info['portrait']
                 user.fix_times = user_info['fix_times']
+                user.cellphone = user_info['cellphone']
+                user.intro = user_info['intro']
                 for s in user_info['tags']:
                     if not s == '':
                         try:
