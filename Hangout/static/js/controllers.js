@@ -1,6 +1,11 @@
 (function () {
   'use strict';
 
+  var CONST = {
+        WEEK: ['SUN','MON','TUE','WED','THU','FRI','SAT'],
+        TIME_SEG: ['0:00-7:00', '7:00-12:00', '12:00-18:00', '18:00-24:00']
+    };
+
   angular.module('hangout.controllers', [])
     .controller('homepageCtrl', ['$scope', '$location', function($scope, $location){
       console.log('homepage');
@@ -28,7 +33,7 @@
       vm.tags = "student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val());
+        Authentication.register(vm.email, vm.password, vm.username, encodeFixedTime(), $('#register__tags').val());
       }
       activate();
       function activate() {
@@ -36,8 +41,19 @@
           $location.url('/');
         }
       }
-      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
-      $.getScript('/static/js/register.js');
+
+      //FixedTimeTable
+        vm.week = CONST.WEEK;
+        vm.times = CONST.TIME_SEG;
+        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+            var tds = $('#register__fixed').find('td');
+            tds.click(function () {
+                onSelectTime(tds.index($(this)));
+            });
+        });
+
+        //js-lib: tagsinput
+        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
     .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
@@ -54,10 +70,21 @@
         $location.url('/login');
       }
       function update_profile() {
-        Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val());
+        Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val());
       }
-      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
-      $.getScript('/static/js/register.js');
+
+      //FixedTimeTable
+        vm.week = CONST.WEEK;
+        vm.times = CONST.TIME_SEG;
+        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+            var tds = $('#register__fixed').find('td');
+            tds.click(function () {
+                onSelectTime(tds.index($(this)));
+            });
+        });
+
+        //js-lib: tagsinput
+        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
     .controller('activityCtrl', ['$location', '$scope', 'Authentication', function($location, $scope, Authentication){
       $(".act-nav").click(function(){
@@ -136,4 +163,40 @@
         $scope.login_logout = login;
       })
     }]);
+
+    //FixedTimeTable
+    var len = 28;
+    var fixedTimeArray = [];//global
+    for (var i = 0; i < len; i++) {
+        fixedTimeArray.push(0);
+    }
+
+    function onSelectTime(value) {
+        var tds = $('#register__fixed').find('td');
+
+        if (value >= 0 && value < len) {
+            fixedTimeArray[value] = 1 - fixedTimeArray[value];
+        }
+
+        if (fixedTimeArray[value] === 1) {
+            tds[value].style.backgroundColor = '#FFF';
+        } else {
+            tds[value].style.backgroundColor = '#EBEBEB';
+        }
+    }
+
+    function encodeFixedTime() {
+        var binStr = '';
+        for (var i = 0; i < len; i++) {
+            binStr += fixedTimeArray[i];
+        }
+        return parseInt(binStr, 2);
+    }
+
+    function decodeFixedTime(fixedTime) {
+        var strTimeArray = fixedTime.toString(2).split("");
+        for (var i = 0; i < len; i++) {
+            fixedTimeArray[i] = parseInt(strTimeArray);
+        }
+    }
 })();
