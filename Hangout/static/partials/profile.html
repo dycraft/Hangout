@@ -1,30 +1,37 @@
-<link rel="stylesheet" href="/static/lib/jquery.fileupload-ui.css">
-<link rel="stylesheet" href="/static/lib/blueimp-gallery.min.css">
-<noscript><link rel="stylesheet" href="/static/lib/jquery.fileupload-ui-noscript.css"></noscript>
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <h1>Profile</h1>
+    <h1>我的资料</h1>
 
     <div class="well">
       <form role="form" ng-submit="vm.update_profile()">
         <div class="form-group">
-          <label for="register__email">Email</label>
-          <input type="email" class="form-control" id="register__email" ng-model="vm.email" />
+          <label for="profile__email">邮箱</label>
+          <input type="email" class="form-control" id="profile__email" ng-model="vm.email" placeholder="ex. john@notgoogle.com" />
         </div>
 
         <div class="form-group">
-          <label for="register__username">Username</label>
-          <input type="text" class="form-control" id="register__username" ng-model="vm.username" />
+          <label for="profile__username">用户名</label>
+          <input type="text" class="form-control" id="profile__username" ng-model="vm.username" placeholder="ex. john" />
         </div>
 
         <div class="form-group">
-          <label for="register__password">Password</label>
-          <input type="password" class="form-control" id="register__password" ng-model="vm.password" />
+          <label for="profile__password">密码</label>
+          <input type="password" class="form-control" id="profile__password" ng-model="vm.password" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
-          <label for="register__fixed">Fixed times</label>
-          <table class="table table-selectable" id="register__fixed" ng-model="vm.fix_times">
+          <label for="profile__password">手机号</label>
+          <input type="text" class="form-control" id="profile__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
+        </div>
+
+        <div class="form-group">
+          <label for="profile__intro">个人简介</label>
+          <input type="text" class="form-control" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro" />
+        </div>
+
+        <div class="form-group">
+          <label for="profile__fixed">选择可活动时间</label>
+          <table class="table table-selectable" id="profile__fixed" ng-model="vm.fix_times">
               <thead>
                   <tr>
                       <th>周日</th>
@@ -78,18 +85,15 @@
         </div>
 
         <div class="form-group">
-          <label for="register__tags">Tags</label>
+          <label for="profile__tags">个人标签</label>
           <input type="text" class="form-control" id="profile__tags" ng-model="vm.tags" data-role="tagsinput" />
         </div>
 
         <div class="form-group">
-          <button type="submit" class="btn btn-primary">Save change</button>
+          <button type="submit" class="btn btn-primary">保存</button>
         </div>
       </form>
     </div>
+    
   </div>
 </div>
-<script src="/static/lib/jquery.fileupload.js"></script>
-<script src="/static/lib/jquery.fileupload-image.js"></script>  
-<script src="/static/lib/jquery.fileupload-angular.js"></script>
-<script src="/static/lib/jquery.fileupload-process.js"></script>

@@ -7,7 +7,8 @@ def user_serialize(user):
 	normal_fields = [
 		'id',
 		'name', 
-		'cellphone', 
+		'cellphone',
+                'intro',
 		'score', 
 		'email',
 		'fix_times',

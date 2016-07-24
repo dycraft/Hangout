@@ -28,7 +28,7 @@
       vm.tags = "student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val());
+        Authentication.register(vm.email, vm.password, vm.username, getFixTime(), $('#register__tags').val(), vm.cellphone, vm.intro);
       }
       activate();
       function activate() {
@@ -49,12 +49,14 @@
         vm.username = Authentication.getAuthenticatedAccount().user_info.name;
         vm.fix_times = Authentication.getAuthenticatedAccount().user_info.fix_times;
         vm.tags = Authentication.getAuthenticatedAccount().user_info.tags;
+        vm.cellphone = Authentication.getAuthenticatedAccount().user_info.cellphone;
+        vm.intro = Authentication.getAuthenticatedAccount().user_info.intro;
       }
       else {
         $location.url('/login');
       }
       function update_profile() {
-        Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val());
+        Authentication.update_profile(vm.email, vm.password, vm.username, getFixTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
       }
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       $.getScript('/static/js/register.js');

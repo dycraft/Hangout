@@ -28,13 +28,15 @@
     };
     return Authentication;
 
-    function register(email, password, username, fix_times, tags) {
+    function register(email, password, username, fix_times, tags, cellphone, intro) {
       return $http.post('/api/register', $.param({
         name: username,
         password: password,
         email: email,
         fix_times: fix_times,
         tags: tags,
+        cellphone: cellphone,
+        intro: intro,
         portrait: 'afda',
       })).then(registerSuccessFn, registerErrorFn);
 
@@ -47,13 +49,15 @@
       }
     }
 
-    function update_profile(email, password, username, fix_times, tags) {
+    function update_profile(email, password, username, fix_times, tags, cellphone, intro) {
       return $http.post('/api/user/update', $.param({
         name: username,
         password: password,
         email: email,
         fix_times: fix_times,
         tags: tags,
+        cellphone: cellphone,
+        intro: intro,
         portrait: 'afda',
       })).then(updateSuccessFn, updateErrorFn);
 
