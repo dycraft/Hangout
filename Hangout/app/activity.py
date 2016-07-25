@@ -89,20 +89,14 @@ POST params
 | detailed  | get a detailed info            | 'False'              |
 |===================================================================|
 '''
-@require_http_methods(['POST'])
-def get_activity_detail(request):
+def get_activity_detail(request, id):
 	ret = dict()
-	act_id = request.POST.get('act_id')
-	if not act_id:
-		ret['state_code'] = 51
-	else:
-		try:
-			act = Activity.objects.get(id=act_id)
-			detailed = request.POST.get('detailed', 'False') == str(True)
-			ret['act_info'] = activity_serialize(act, detailed)
-			ret['state_code'] = 0
-		except Activity.DoesNotExist:
-			ret['state_code'] = 52
+	try:
+		act = Activity.objects.get(id=id)
+		ret['act_info'] = activity_serialize(act)
+		ret['state_code'] = 0
+	except Activity.DoesNotExist:
+		ret['state_code'] = 52
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''

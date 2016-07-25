@@ -7,7 +7,7 @@ import django.utils.timezone as timezone
 #------------------  Tag  -------------------#
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -108,7 +108,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
 ### basic info
     name = models.CharField(max_length=100)
-    cellphone = models.CharField(max_length=20)
+    cellphone = models.CharField(max_length=20, blank=True)
     score = models.FloatField(default=0.0)
     portrait = models.ImageField()
     email = models.EmailField(unique=True)

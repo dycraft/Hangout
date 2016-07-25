@@ -18,7 +18,7 @@ GET param
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| email     | email address of user          | REQUIRED             |
+| id        | id of user                     | REQUIRED             |
 |===================================================================|    
 
 returns:
@@ -26,14 +26,11 @@ returns:
     'user_info' -- when (state_code == 0)
 
 '''
-def get_user(request, email):
+def get_user(request, id):
     ret = dict()
-    # email = request.POST.get('email')
-    # if not email:
-    #     ret['state_code'] = 4
-    # else:
+
     try:
-        user = User.objects.get(email=email)
+        user = User.objects.get(id=id)
         ret['user_info'] = user_serialize(user)
         ret['state_code'] = 0
     except User.DoesNotExist:
@@ -120,7 +117,7 @@ def update_user(request):
             user.save()
 
             ret['state_code'] = 0
-            ret['user_info'] = user_serialize(user)
+            ret['user_info'] = user_serialize(user, False)
         except User.DoesNotExist:
             ret['state_code'] = 2
 
@@ -373,7 +370,7 @@ def get_join_activity(request):
         ret['apply_acts_member'] = []
         ret['apply_acts_admin'] = []
         for act in request.user.join_acts.all():
-            ret['admin_acts'].append(activity_serialize(act))
+            ret['join_acts'].append(activity_serialize(act))
         for app in request.user.applications.filter(application_type=1):
             ret['apply_acts_member'].append(activity_serialize(app.activity))
         for app in request.user.applications.filter(application_type=2):

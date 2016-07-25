@@ -14,6 +14,8 @@ Error code
 9: invalid email/password
 10: email address already in use
 
+### tag
+21 tag does not exist
 
 ### activity
 51: act_id not provided

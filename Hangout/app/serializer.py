@@ -15,22 +15,23 @@ def user_serialize(user, detailed=True):
 		'tmp_times'
 	]
 
-	# activity_fields = []
-	# if detailed == True:
-	# 	activity_fields = [
-	# 		'join_acts',
-	# 		'admin_acts',
-	# 		'coll_acts',
-	# 	]
+	activity_fields = []
+	if detailed == True:
+		activity_fields = [
+			'join_acts',
+			'admin_acts',
+			# 'coll_acts',
+		]
 
 ### normal fields
 	for f in normal_fields:
 		ret[f] = getattr(user, f)
-### activity fields
-	# for f in activity_fields:
-	# 	ret[f] = []
-	# 	for i in getattr(user, f).all():
-	# 		ret[f].append(activity_serialize(i))
+
+## activity fields
+	for f in activity_fields:
+		ret[f] = []
+		for i in getattr(user, f).all():
+			ret[f].append({'name': i.name, 'id':i.id})
 
 	# ret['apply_acts'] = []
 	# for app in user.applications.filter(application_type=1):
@@ -43,7 +44,7 @@ def user_serialize(user, detailed=True):
 	ret['tags'] = ",".join(ret['tags'])
 	return ret
 
-def activity_serialize(act, detailed=False):
+def activity_serialize(act, detailed=True):
 
 	ret = dict()
 
@@ -78,13 +79,12 @@ def activity_serialize(act, detailed=False):
 		member_fields = [
 			'members',
 			'admins',
-			'collected',
 		]
 
 		for field in member_fields:
 			ret[field] = []
 			for m in getattr(act, field).all():
-				ret[field].append(m.email)
+				ret[field].append({'id': m.id, 'name': m.name})
 
 	return ret
 

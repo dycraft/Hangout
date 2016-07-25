@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import user, activity
+from . import user, activity, tag
 
 app_name = 'app'
 
@@ -11,7 +11,7 @@ urlpatterns = [
     
     # User
     url(r'^user/login_detail$', user.login_detail),
-    url(r'^user/detail/(?P<email>.*?)$', user.get_user),
+    url(r'^user/detail/(?P<id>.*?)$', user.get_user),
     url(r'^user/update$', user.update_user),
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
@@ -28,13 +28,14 @@ urlpatterns = [
 
     # Activity
     url(r'^activity/create$', activity.create_activity),
-    url(r'^activity/detail$', activity.get_activity_detail),
+    url(r'^activity/detail/(?P<id>.*?)$', activity.get_activity_detail),
 
     # Activity admin
     url(r'^activity/update$', activity.update_activity),
     url(r'^activity/applications$', activity.get_applications),
 
-
+    # Tag
+    url(r'^tag/get/(?P<name>.*?)$', tag.get_tag_detail),
 ### for testing 
     url(r'^test$', user.testauthentication),
 
