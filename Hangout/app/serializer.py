@@ -104,6 +104,7 @@ def application_serialize(app):
 
 def message_serialize(msg):
 	ret = dict()
+	ret['id'] = msg.id
 	ret['from'] = msg.from_user.email
 	ret['to'] = msg.to_user.email
 	ret['content'] = msg.content

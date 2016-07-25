@@ -17,12 +17,17 @@ Error code
 ### tag
 21 tag does not exist
 
+### message
+31 message does not exist
+32 unrecognized message state
+
 ### activity
 51: act_id not provided
 52: act does not exist
 53: application already sent
 54: user is not a member
-
+55: user is already a member
+56: user is already an admin
 
 ### application
 71: application_id not provided

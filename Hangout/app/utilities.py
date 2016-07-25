@@ -68,3 +68,7 @@ def send_message(from_user, to_user, content):
                 content=content
             )
         return True
+
+def send_message_activity(from_user, act, content):
+    pass
+

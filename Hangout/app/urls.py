@@ -19,6 +19,8 @@ urlpatterns = [
     # User messages
     url(r'^user/message/get$', user.get_message),
     url(r'^user/message/send$', user.send_message_post),
+    url(r'^user/message/set_state/(?P<id>.*?)/(?P<state>.*?)$', user.set_message_state),
+
 
     # User and Activity
     url(r'^user/get_admin_act', user.get_admin_activity),
@@ -33,9 +35,12 @@ urlpatterns = [
     # Activity admin
     url(r'^activity/update$', activity.update_activity),
     url(r'^activity/applications$', activity.get_applications),
+    url(r'^activity/reply_application$', activity.reply_application),
 
     # Tag
     url(r'^tag/get/(?P<name>.*?)$', tag.get_tag_detail),
+
+
 ### for testing 
     url(r'^test$', user.testauthentication),
 

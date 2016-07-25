@@ -413,6 +413,12 @@ def apply_for_activity(request):
                         applicant_id=request.user.id, 
                         application_type=app_type)) > 0:
             ret['state_code'] = 53
+        elif app_type == '1' and len(act[0].members.filter(id=request.user.id)) > 0:
+            ret['state_code'] = 55
+        elif app_type == '2' and len(act[0].admins.filter(id=request.user.id)) > 0:
+            ret['state_code'] = 56
+        elif app_type == '2' and len(act[0].members.filter(id=request.user.id)) == 0:
+            ret['state_code'] = 54
         else:
             app = Application.objects.create(
                     applicant=request.user,
@@ -421,7 +427,7 @@ def apply_for_activity(request):
                     intro=intro
                 )
             app.save()
-            # request.user.apply_acts.add(act[0])
+
             request.user.save()
             ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
@@ -515,6 +521,43 @@ def get_message(request):
         elif setting == 3:
             for m in user.messages.filter(read=False):
                 ret['messages'].append(message_serialize(m))
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+set_message_state:
+    set message read state
+
+GET param
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of message                  | REQUIRED             |
+| state     | state of msg user want to set  | REQUIRED             |
+|===================================================================|
+
+returns:
+    'state_code'
+'''
+def set_message_state(request, id, state):
+    ret = dict()
+    msg = Message.objects.filter(id=id)
+    if len(msg) == 0: 
+        ret['state_code'] = 31
+    else:
+        msg = msg[0]
+        if not (request.user.is_admin == True or msg.to_user.id == request.user.id):
+            ret['state_code'] = 3
+        else:
+            if state == '1':
+                msg.read = True            
+                ret['state_code'] = 0
+                msg.save()
+            elif state == '0':
+                msg.read = False
+                ret['state_code'] = 0
+                msg.save()
+            else:
+                ret['state_code'] = 32
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 

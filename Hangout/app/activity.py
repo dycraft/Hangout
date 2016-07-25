@@ -5,6 +5,7 @@ from .tag import *
 from .serializer import *
 from .models import *
 from .utilities import *
+from .message_templates import *
 
 import json
 
@@ -222,13 +223,36 @@ def reply_application(request):
 		ret['state_code'] = 71
 	else:
 		app = Application.objects.filter(id=app_id)
-		if len(act) == 0:
+		if len(app) == 0:
 			ret['state_code'] = 72
 		elif has_permission(request.user, app[0].activity):
+			app = app[0]
 			if reply == 1:
 				pass
+				# if :
+				# 	pass
+
+
+				# send_message(request.user, 
+				# 	app.applicant, 
+				# 	application_refused(app.applicant.name, 
+				# 						app.application_type, 
+				# 						app.activity.name,
+				# 						request.user.name))
 			else:
-				pass
+				send_message(request.user, 
+					app.applicant, 
+					application_refused(app.applicant.name, 
+										app.application_type, 
+										app.activity.name,
+										request.user.name))
+
+				app.delete()
+				ret['state_code'] = 0
+				ret['reply'] = 	application_refused(app.applicant.name, 
+										app.application_type, 
+										app.activity.name,
+										request.user.name)
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')
