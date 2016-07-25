@@ -220,7 +220,7 @@ def reply_application(request):
 	reply = int(request.POST.get('reply'))
 	if not request.user.is_authenticated():
 		ret['state_code'] = 1
-	elif not aPP_id:
+	elif not app_id:
 		ret['state_code'] = 71
 	else:
 		app = Application.objects.filter(id=app_id)

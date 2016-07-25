@@ -18,11 +18,10 @@ def user_serialize(user, detailed=True):
 	activity_fields = []
 	if detailed == True:
 		activity_fields = [
-          	'org_acts',
-			'apply_acts',
 			'join_acts',
 			'admin_acts',
 			'coll_acts',
+			'org_acts',
 		]
 
 ### normal fields
@@ -55,7 +54,7 @@ def activity_serialize(act, detailed=False):
 	for f in normal_fields:
 		ret[f] = getattr(act, f)
 ### state
-	ret['state'] = act.get_state_display()
+	ret['state'] = act.state
 ### tags
 	ret['tags'] = []
 	for t in act.tags.all():
@@ -95,4 +94,13 @@ def application_serialize(app):
 	}
 	ret['intro'] = app.intro
 	ret['time'] = app.time.strftime('%Y-%m-%d %H:%M')
+	return ret
+
+def message_serialize(msg):
+	ret = dict()
+	ret['from'] = msg.from_user.email
+	ret['to'] = msg.to_user.email
+	ret['content'] = msg.content
+	ret['time'] = msg.time.strftime('%Y-%m-%d %H:%M:%S')
+	ret['read'] = msg.read
 	return ret

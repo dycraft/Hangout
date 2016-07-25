@@ -20,24 +20,30 @@ POST params
 | email     | email address of user          | REQUIRED             |
 |===================================================================|
 
+GET param
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| email     | email address of user          | REQUIRED             |
+|===================================================================|    
+
 returns:
     'state_code'
     'user_info' -- when (state_code == 0)
 
 '''
-@require_http_methods(['POST'])
-def get_user(request):
+def get_user(request, email):
     ret = dict()
-    email = request.POST.get('email')
-    if not email:
-        ret['state_code'] = 4
-    else:
-        try:
-            user = User.objects.get(email=email)
-            ret['user_info'] = user_serialize(user)
-            ret['state_code'] = 0
-        except User.DoesNotExist:
-            ret['state_code'] = 2
+    # email = request.POST.get('email')
+    # if not email:
+    #     ret['state_code'] = 4
+    # else:
+    try:
+        user = User.objects.get(email=email)
+        ret['user_info'] = user_serialize(user)
+        ret['state_code'] = 0
+    except User.DoesNotExist:
+        ret['state_code'] = 2
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
@@ -374,7 +380,7 @@ def apply_for_activity(request):
                     intro=intro
                 )
             app.save()
-            request.user.apply_acts.add(act[0])
+            # request.user.apply_acts.add(act[0])
             request.user.save()
             ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
@@ -415,4 +421,175 @@ def quit_activity(request):
             act[0].applications.filter(applicant_id=user.id).delete()
             ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
-    
+
+'''
+get_message:
+    get message list of a user
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| email     | email of user                  | REQUIRED             |
+| setting   | 0: all messages                | 0                    |
+|           | 1: all messages sent by user   |                      |
+|           | 2: all messages sent to user   |                      |
+|           | 3: all unread messages         |                      |
+|===================================================================|
+
+returns:
+    'state_code'
+    'messages' -- when (state_code = 0)
+'''
+@require_http_methods(['POST'])
+def get_message(request):
+    ret = dict()
+    email = request.POST.get('email')
+    setting = int(request.POST.get('setting', 0))
+    if not request.user.is_authenticated():
+        ret['state_code'] = 1
+    elif not email:
+        ret['state_code'] = 4
+    elif not (request.user.email == email or request.user.is_admin == True):
+        ret['state_code'] = 3
+    else:
+        user = User.objects.filter(email=email)
+        if len(user):
+            ret['state_code'] = 2
+        else:
+            ret['messages'] = []
+            ret['state_code'] = 0
+            user = user[0]
+            if setting == 0:
+                for m in user.sent_messages.all():
+                    ret['messages'].append(message_serialize(m))
+                for m in user.messages.all():
+                    ret['messages'].append(message_serialize(m))
+            elif setting == 1:
+                for x in user.sent_messages.all():
+                    ret['messages'].append(message_serialize(m))
+            elif setting == 2:
+                for m in user.messages.all():
+                    ret['messages'].append(message_serialize(m))
+            elif setting == 3:
+                for m in user.messages.filter(read=False):
+                    ret['messages'].append(message_serialize(m))
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
+send_message_post:
+    send message
+
+POST param
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| email     | email of user(send to)         | REQUIRED             |
+| content   | content of message             | REQUIRED             |
+|===================================================================|
+
+'''
+def send_message(from_user, to_user, content):
+    if from_user.id == to_user.id:
+        return False
+    else:
+        Message.objects.create(
+                from_user=from_user,
+                to_user=to_user,
+                content=content
+            )
+        return True
+
+def send_message_post(request):
+    ret = dict()
+    r = authentication(request, 
+                     required_param=['email','content'],
+                     require_authenticate=True,
+                     require_model=True,
+                     model=User,
+                     keytype='email')
+    if r['state_code'] == 0:
+        to_user = r['record']
+        content = r['param']['content']
+        send_message(request.user, to_user, content)
+        ret['state_code'] = 0
+    else:
+        ret['state_code'] = r['state_code']
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+#-------------------------------------------------------------------
+
+def testauthentication(request):
+    ret = dict()
+    r = authentication(request, 
+                     required_param=['id','email'],
+                     require_authenticate=True,
+                     require_model=True,
+                     require_permission=True,
+                     model=Activity,
+                     keytype='id')
+    if r['state_code']==0:
+        ret['info'] = user_serialize(r['record'])
+    else:
+        ret['state_code'] = r['state_code']
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+def authentication(request, **kwargs):
+
+    required_param = kwargs.get('required_param', [])
+    require_authenticate = kwargs.get('require_authenticate', False)
+    require_model = kwargs.get('require_model', False)
+    require_permission = kwargs.get('require_permission', False)
+    model = kwargs.get('model')
+    keytype = kwargs.get('keytype', 'id')
+    # key = kwargs.get('key')
+
+    ret = dict()
+    params = dict()
+### check each required param
+    for p in required_param:
+        params[p] = request.POST.get(p)
+        if not params[p]:
+            ret['state_code'] = 101
+            return ret
+
+    key = params[keytype]
+
+### check if user has logged in 
+    if require_authenticate:
+        if not request.user.is_authenticated():
+            ret['state_code'] = 1
+            return ret
+
+### check permission
+    if require_permission == True:
+        if not key:
+            ret['state_code'] = 104
+            return ret
+        elif not (request.user.is_admin == True or getattr(request.user, keytype) == key):
+            ret['state_code'] = 3
+            return ret
+
+### check model
+    if require_model == True and model and key:
+        if keytype == 'id':
+            record = model.objects.filter(id=key)
+        elif keytype == 'email':
+            record = model.objects.filter(email=key)
+        else:
+            ret['state_code'] = 102
+            return ret
+
+        if len(record) == 0:
+            ret['state_code'] = 103
+            return ret
+        else:
+            ret['record'] = record[0]
+            ret['state_code'] = 0
+
+
+    ret['params'] = params
+    return ret

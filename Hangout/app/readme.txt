@@ -25,3 +25,9 @@ Error code
 ### application
 71: application_id not provided
 72: application does not exist
+
+###
+101: required key not provided
+102: unsupported model keytype
+103: record does not exist
+104: no key to check permission with

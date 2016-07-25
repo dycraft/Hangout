@@ -36,15 +36,17 @@ class Message(models.Model):
     from_user = models.ForeignKey('User', related_name='sent_messages')
     to_user = models.ForeignKey('User', related_name='messages')
     content = models.CharField(max_length=1000)
-
+    read = models.BooleanField(default=False)
+    time = models.DateTimeField(auto_now_add=True)
 
 
 #-----------------  Notice  -----------------#
 
 class Notice(models.Model):
+    activity = models.ForeignKey('Activity', related_name='notices', blank=True)
     from_user = models.ForeignKey('User', related_name='sent_notice')
     content = models.CharField(max_length=1000)
-
+    time = models.DateTimeField(auto_now_add=True)
 
 
 #----------------  Activity  ----------------#
@@ -110,7 +112,7 @@ class User(AbstractBaseUser):
     intro = models.CharField(default='', max_length=200)
     state = models.CharField(default='', max_length=50)
 ### org_acts: has defined in Activity
-    apply_acts = models.ManyToManyField(Activity, related_name='applicants')
+    # apply_acts = models.ManyToManyField(Activity, related_name='applicants')
     join_acts = models.ManyToManyField(Activity, related_name='members')
     admin_acts = models.ManyToManyField(Activity, related_name='admins')
     coll_acts = models.ManyToManyField(Activity, related_name='collected')

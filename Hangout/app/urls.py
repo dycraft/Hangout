@@ -11,10 +11,11 @@ urlpatterns = [
     
     # User
     url(r'^user/login_detail$', user.login_detail),
-    url(r'^user/detail$', user.get_user),
+    url(r'^user/detail/(?P<email>.*?)$', user.get_user),
     url(r'^user/update$', user.update_user),
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
+    url(r'^user/send_message$', user.send_message_post),
 
     # User and Activity
     url(r'^user/apply$', user.apply_for_activity),
@@ -27,5 +28,9 @@ urlpatterns = [
     # Activity admin
     url(r'^activity/update$', activity.update_activity),
     url(r'^activity/applications$', activity.get_applications),
+
+
+### for testing 
+    url(r'^test$', user.testauthentication)
 
 ]
