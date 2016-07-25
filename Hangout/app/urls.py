@@ -34,6 +34,6 @@ urlpatterns = [
 
 
 ### for testing 
-    url(r'^test$', user.testauthentication)
+    url(r'^test$', user.testauthentication),
 
 ]

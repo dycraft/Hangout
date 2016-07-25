@@ -1,12 +1,19 @@
-<div>
+<div ng-if="acts.length != 0">
 	<div class="col-md-12" ng-repeat="act in acts">
 	  <div class="thumbnail">
 	    <div class="caption">
-	      <h3><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer ]]"><small>[[ act.organizer ]]</small></a></h3>
+	      <h3><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]] </a><span href="#" style="font-size:10px;cursor:pointer;"><a> [修改活动信息] </a></span><a ng-href="/user_info/[[ act.organizer ]]"><small>[[ act.organizer ]]</small></a></h3>
 	      <div><p style="word-break:break-all;">活动介绍：[[ act.intro ]]akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj</p></div>
-	      <p>活动状态：[[ T(act.state) ]]<a href="#" class="btn btn-primary" style="float:right" role="button">Button</a></p>
-	      <p>活动标签：[[ act.tags ]]</p>
+	      <p>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a ng-if="act.state == 0 || act.state == 1" href="[[ U(act.state) ]]" class="btn btn-[[ L2(act.state) ]]" style="float:right" role="button">[[ B(act.state) ]]</a></p>
+	      <p ng-if="act.tags.length > 1">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag"><span class="label label-primary">[[ tag ]] </span></a></p>
 	    </div>
 	  </div>
+	</div>
+</div>
+<div ng-if="acts.length == 0">
+	<div class="jumbotron">
+	  <h1>还没有组织任何活动？</h1>
+	  <p>不如...</p>
+	  <p><a class="btn btn-primary btn-lg" href="#" ng-click="acts.walk_around()" role="button">去逛逛</a></p>
 	</div>
 </div>

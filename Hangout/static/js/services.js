@@ -52,9 +52,7 @@
 
     function get_profile() {
       if (isAuthenticated()) {
-        $http.post('/api/user/detail', $.param({
-          email: getAuthenticatedAccount().user_info.email,
-        })).then(
+        $http.get('/api/user/detail/' + getAuthenticatedAccount().user_info.email).then(
         function(data, status, headers, config) {
           setAuthenticatedAccount(data.data);
         });
@@ -79,9 +77,7 @@
 
       function updateSuccessFn(data, status, headers, config) {
         console.log(data.data);
-        $http.post('/api/user/detail', $.param({
-          email: email,
-        })).then(function(data, status, hearders, config) {
+        $http.get('/api/user/detail/' + getAuthenticatedAccount().user_info.email).then(function(data, status, hearders, config) {
           setAuthenticatedAccount(data.data);
           $rootScope.$broadcast('login_done')
         })
@@ -137,7 +133,7 @@
 
     function setAuthenticatedAccount(account) {
       console.log(account);
-      if (account.state_code == 0) {
+      if (account.state_code == 0 || account.state_code == 6) {
         $cookies.authenticatedAccount = JSON.stringify(account);
       }
     }

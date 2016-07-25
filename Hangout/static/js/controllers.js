@@ -94,11 +94,41 @@
         $scope.act_type = "my_act";
         $('.act-nav').not('#myActs').removeClass("active");
         $('#myActs').addClass('active');
-        $scope.acts = Authentication.get_profile().org_acts;
+        $scope.acts = Authentication.get_profile().admin_acts;
+        $scope.B = function(state) {
+          return {
+            0: "停止报名",
+            1: "开放报名",
+            2: "",
+          }[state];
+        }
+        $scope.L2 = function(state) {
+          return {
+            0: "danger",
+            1: "success",
+            2: "",
+          }[state];
+        }
+        $scope.U = function(state) {
+          return {
+            0: "danger",
+            1: "success",
+            2: "",
+          }[state];
+        }
         $scope.T = function(state) {
-          if (state == "open") {
-            return "开放中";
-          }
+          return {
+            0: "接受报名",
+            1: "结束报名",
+            2: "活动结束",
+          }[state];
+        }
+        $scope.L1 = function(state) {
+          return {
+            0: "success",
+            1: "danger",
+            2: "default",
+          }[state];
         }
       }
       $scope.joinActs = function() {
@@ -106,11 +136,28 @@
         $scope.act_type = "part_act";
         $('.act-nav').not('#joinActs').removeClass("active");
         $('#joinActs').addClass('active');
-        $scope.acts = Authentication.get_profile().join_acts;
+        $scope.acts = Authentication.get_profile().coll_acts;
+        $scope.acts.walk_around = $scope.otherActs;
+        $scope.B = function() {
+          return {
+            0: "停止报名",
+            1: "开放报名",
+            2: "",
+          }[state];
+        }
         $scope.T = function(state) {
-          if (state == "open") {
-            return "开放中";
-          }
+          return {
+            0: "接受报名",
+            1: "结束报名",
+            2: "活动结束",
+          }[state];
+        }
+        $scope.L = function(state) {
+          return {
+            0: "success",
+            1: "danger",
+            2: "default",
+          }[state];
         }
       }
       $scope.orgActs = function() {
@@ -139,6 +186,8 @@
       $scope.otherActs = function() {
         $scope.page_title = "随便逛逛";
         $scope.act_type = "recommend_act";
+        $('.act-nav').not('#otherActs').removeClass("active");
+        $('#otherActs').addClass('active');
       }
       $scope.myActs();
     }])
