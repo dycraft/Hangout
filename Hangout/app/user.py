@@ -415,12 +415,4 @@ def quit_activity(request):
             act[0].applications.filter(applicant_id=user.id).delete()
             ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
-
-
-
-
-
-
-
-
-
+    

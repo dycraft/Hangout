@@ -41,7 +41,6 @@
           $location.url('/');
         }
       }
-
       //FixedTimeTable
       vm.week = CONST.WEEK;
       vm.times = CONST.TIME_SEG;
@@ -51,30 +50,29 @@
               onSelectTime(tds.index($(this)), "register");
           });
       });
-
-        //js-lib: tagsinput
-        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+      //js-lib: tagsinput
+      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
     .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
-      var vm = this;
-      vm.update_profile = update_profile;
       if (Authentication.isAuthenticated()) {
+        var vm = this;
+        vm.update_profile = function() {
+          Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
+        };
         vm.email = Authentication.getAuthenticatedAccount().user_info.email;
         vm.password = Authentication.getAuthenticatedAccount().user_info.password;
         vm.username = Authentication.getAuthenticatedAccount().user_info.name;
         vm.fix_times = Authentication.getAuthenticatedAccount().user_info.fix_times;
         vm.tags = Authentication.getAuthenticatedAccount().user_info.tags;
         vm.cellphone = Authentication.getAuthenticatedAccount().user_info.cellphone;
-        vm.intro = Authentication.getAuthenticatedAccount().user_info.intro;
+        vm.intro = Authentication.getAuthenticatedAccount().user_info.intro;        
+        //js-lib: tagsinput
+        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       }
       else {
         $location.url('/login');
       }
-      function update_profile() {
-        Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
-      }
-
       //FixedTimeTable
       vm.week = CONST.WEEK;
       vm.times = CONST.TIME_SEG;
@@ -85,11 +83,8 @@
           });
           decodeFixedTime(vm.fix_times, "profile");
       });
-
-        //js-lib: tagsinput
-        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
-    .controller('activityCtrl', ['$location', '$scope', 'Authentication', function($location, $scope, Authentication){
+    .controller('activityCtrl', ['$http', '$location', '$scope', 'Authentication', function($http, $location, $scope, Authentication){
       $(".act-nav").click(function(){
         $(".act-nav").not(this).removeClass("active");
         $(this).addClass("active");
@@ -97,14 +92,49 @@
       $scope.myActs = function() {
         $scope.page_title = "组织的活动";
         $scope.act_type = "my_act";
+        $('.act-nav').not('#myActs').removeClass("active");
+        $('#myActs').addClass('active');
+        $scope.acts = Authentication.get_profile().org_acts;
+        $scope.T = function(state) {
+          if (state == "open") {
+            return "开放中";
+          }
+        }
       }
       $scope.joinActs = function() {
         $scope.page_title = "参与的活动";
         $scope.act_type = "part_act";
+        $('.act-nav').not('#joinActs').removeClass("active");
+        $('#joinActs').addClass('active');
+        $scope.acts = Authentication.get_profile().join_acts;
+        $scope.T = function(state) {
+          if (state == "open") {
+            return "开放中";
+          }
+        }
       }
       $scope.orgActs = function() {
         $scope.page_title = "组织活动";
         $scope.act_type = "apply_act";
+        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+        $scope.act = {
+          name: "",
+          intro: "",
+          location: "",
+          cost: "",
+        }
+        $scope.apply = function() { 
+          console.log($scope.act);        
+          $http.post('/api/activity/create', $.param({
+            'name': $scope.act.name,
+            'intro': $scope.act.intro,
+            'location': $scope.act.location,
+            'tags': $('#apply_tags').val(),
+            'cost': $scope.act.cost,
+          })).then(function(){
+            $scope.myActs();
+          });
+        }
       }
       $scope.otherActs = function() {
         $scope.page_title = "随便逛逛";

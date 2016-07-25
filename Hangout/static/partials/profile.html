@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.css">
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <h1>我的资料</h1>
@@ -26,11 +27,11 @@
 
         <div class="form-group">
           <label for="profile__intro">个人简介</label>
-          <input type="text" class="form-control" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro" />
+          <textarea style="width:100%" class="form-control" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro"></textarea>
         </div>
 
         <div class="form-group">
-            <label for="profile__fixed">Fixed times</label>
+            <label for="profile__fixed">选择可活动时间</label>
             <table class="table table-selectable" id="profile__fixed" ng-model="vm.fix_times">
                 <thead>
                     <tr>

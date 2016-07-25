@@ -25,6 +25,7 @@
       setAuthenticatedAccount: setAuthenticatedAccount,
       unauthenticate: unauthenticate,
       update_profile: update_profile,
+      get_profile: get_profile,
     };
     return Authentication;
 
@@ -46,6 +47,21 @@
 
       function registerErrorFn(data, status, headers, config) {
         console.error('Epic failure!');
+      }
+    }
+
+    function get_profile() {
+      if (isAuthenticated()) {
+        $http.post('/api/user/detail', $.param({
+          email: getAuthenticatedAccount().user_info.email,
+        })).then(
+        function(data, status, headers, config) {
+          setAuthenticatedAccount(data.data);
+        });
+        return getAuthenticatedAccount().user_info;
+      }
+      else { 
+        $location.url('/login');
       }
     }
 

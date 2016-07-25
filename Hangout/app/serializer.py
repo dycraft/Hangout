@@ -18,6 +18,7 @@ def user_serialize(user, detailed=True):
 	activity_fields = []
 	if detailed == True:
 		activity_fields = [
+          	'org_acts',
 			'apply_acts',
 			'join_acts',
 			'admin_acts',
@@ -60,7 +61,7 @@ def activity_serialize(act, detailed=False):
 	for t in act.tags.all():
 		ret['tags'].append(t.name)
 
-	ret['organizer'] = act.organizer.email
+	ret['organizer'] = act.organizer.name
 
 ## times
 	ret['time'] = act.time.strftime('%Y-%m-%d %a %H:00')
