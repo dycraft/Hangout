@@ -15,7 +15,10 @@ urlpatterns = [
     url(r'^user/update$', user.update_user),
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
-    url(r'^user/send_message$', user.send_message_post),
+
+    # User messages
+    url(r'^user/message/get$', user.get_message)
+    url(r'^user/message/send$', user.send_message_post),
 
     # User and Activity
     url(r'^user/apply$', user.apply_for_activity),
