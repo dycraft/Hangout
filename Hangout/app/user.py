@@ -330,6 +330,56 @@ def user_logout(request):
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
+'''
+get_admin_activity:
+    get activities that user has admin permission
+
+GET
+
+returns:
+    'state_code'
+    'admin_acts' -- when (state_code == 0)
+'''
+def get_admin_activity(request):
+    ret = dict()
+    r = authentication(request,require_authenticate=True)
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        ret['admin_acts'] = []
+        for act in request.user.admin_acts.all():
+            ret['admin_acts'].append(activity_serialize(act))
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+get_admin_activity:
+    get activities that user joins in.
+
+GET
+
+returns:
+    'state_code'
+    'join_acts' -- when (state_code == 0)
+    'apply_acts_member'
+    'apply_acts_admin'
+'''
+def get_join_activity(request):
+    ret = dict()
+    r = authentication(request,require_authenticate=True)
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        ret['join_acts'] = []
+        ret['apply_acts_member'] = []
+        ret['apply_acts_admin'] = []
+        for act in request.user.join_acts.all():
+            ret['admin_acts'].append(activity_serialize(act))
+        for app in request.user.applications.filter(application_type=1):
+            ret['apply_acts_member'].append(activity_serialize(app.activity))
+        for app in request.user.applications.filter(application_type=2):
+            ret['apply_acts_admin'].append(activity_serialize(app.activity))
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
 apply_for_activity:

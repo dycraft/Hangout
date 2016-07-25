@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^user/message/send$', user.send_message_post),
 
     # User and Activity
+    url(r'^user/get_admin_act', user.get_admin_activity),
+    url(r'^user/get_join_act', user.get_join_activity),
     url(r'^user/apply$', user.apply_for_activity),
     url(r'^user/quit_act$', user.quit_activity),
 

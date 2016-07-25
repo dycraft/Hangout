@@ -15,26 +15,26 @@ def user_serialize(user, detailed=True):
 		'tmp_times'
 	]
 
-	activity_fields = []
-	if detailed == True:
-		activity_fields = [
-			'join_acts',
-			'admin_acts',
-			'coll_acts',
-		]
+	# activity_fields = []
+	# if detailed == True:
+	# 	activity_fields = [
+	# 		'join_acts',
+	# 		'admin_acts',
+	# 		'coll_acts',
+	# 	]
 
 ### normal fields
 	for f in normal_fields:
 		ret[f] = getattr(user, f)
 ### activity fields
-	for f in activity_fields:
-		ret[f] = []
-		for i in getattr(user, f).all():
-			ret[f].append(activity_serialize(i))
+	# for f in activity_fields:
+	# 	ret[f] = []
+	# 	for i in getattr(user, f).all():
+	# 		ret[f].append(activity_serialize(i))
 
-	ret['apply_acts'] = []
-	for app in user.applications.filter(application_type=1):
-		ret['apply_acts'].append(activity_serialize(app.activity))
+	# ret['apply_acts'] = []
+	# for app in user.applications.filter(application_type=1):
+	# 	ret['apply_acts'].append(activity_serialize(app.activity))
 
 ### tags
 	ret['tags'] = []

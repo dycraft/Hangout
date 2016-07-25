@@ -19,7 +19,8 @@ def authentication(request, **kwargs):
             ret['state_code'] = 101
             return ret
 
-    key = params[keytype]
+    if keytype in params:
+	    key = params[keytype]
 
 ### check if user has logged in 
     if require_authenticate:
@@ -53,7 +54,7 @@ def authentication(request, **kwargs):
             ret['record'] = record[0]
             ret['state_code'] = 0
 
-
+    ret['state_code'] = 0
     ret['params'] = params
     return ret
 

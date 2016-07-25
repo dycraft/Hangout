@@ -64,7 +64,6 @@ def create_activity(request):
 				organizer_id=request.user.id,
 				location=act_info['location'],
 				state = act_info['limit'] << 2,
-				amount=act_info['limit']
 			)
 		act.admins.add(request.user)
 		for t in act_info['tags']:
