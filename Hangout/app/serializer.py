@@ -21,7 +21,6 @@ def user_serialize(user, detailed=True):
 			'join_acts',
 			'admin_acts',
 			'coll_acts',
-			'org_acts',
 		]
 
 ### normal fields
@@ -32,6 +31,11 @@ def user_serialize(user, detailed=True):
 		ret[f] = []
 		for i in getattr(user, f).all():
 			ret[f].append(activity_serialize(i))
+
+	ret['apply_acts'] = []
+	for app in user.applications.filter(application_type=1):
+		ret['apply_acts'].append(activity_serialize(app.activity))
+
 ### tags
 	ret['tags'] = []
 	for t in user.tags.all():
@@ -54,7 +58,10 @@ def activity_serialize(act, detailed=False):
 	for f in normal_fields:
 		ret[f] = getattr(act, f)
 ### state
-	ret['state'] = act.state
+	ret['state'] = act.state % 4
+	ret['member_limit'] = act.state >> 2
+	ret['member_count'] = len(act.members.all())
+
 ### tags
 	ret['tags'] = []
 	for t in act.tags.all():
@@ -69,7 +76,6 @@ def activity_serialize(act, detailed=False):
 
 	if detailed == True:
 		member_fields = [
-			'applicants',
 			'members',
 			'admins',
 			'collected',

@@ -4,6 +4,7 @@ from django.views.decorators.http import require_http_methods
 from .tag import *
 from .serializer import *
 from .models import *
+from .utilities import *
 
 import json
 
@@ -39,6 +40,7 @@ POST params
 | cost      | estimated cost of act          | 0                    |
 | location  | location of act                | 'pending'            |
 | time      | time(not implemented yet)      | datetime.now()       |
+| limit     | limit of number of members     | 10000                |
 |===================================================================|
 '''
 @require_http_methods(['POST'])
@@ -53,13 +55,16 @@ def create_activity(request):
 		act_info['tags'] = request.POST.get('tag', '').split(',')
 		act_info['cost'] = float(request.POST.get('cost', 0))
 		act_info['location'] = request.POST.get('location', 'pending')
+		act_info['limit'] = request.POST.get('limit', 10000)
 		act_info['organizer'] = request.user.email
 		act = Activity.objects.create(
 				name=act_info['name'],
 				intro=act_info['intro'],
 				cost=act_info['cost'],
 				organizer_id=request.user.id,
-				location=act_info['location']
+				location=act_info['location'],
+				state = act_info['limit'] << 2,
+				amount=act_info['limit']
 			)
 		act.admins.add(request.user)
 		for t in act_info['tags']:
@@ -109,6 +114,7 @@ POST params
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
+| id        | id of act                      | REQUIRED             |
 | name      | name of act                    | 'untitled'           |
 | intro     | introduction of act            | 'No intro available' |
 | tags      | tags of act (delimited by ',') | ''                   |
@@ -120,47 +126,46 @@ POST params
 @require_http_methods(['POST'])
 def update_activity(request):
 	ret = dict()
-	act_id = request.POST.get('act_id')
-	if not act_id:
-		ret['state_code'] = 51
-	elif not request.user.is_authenticated():
-		ret['state_code'] = 1
+
+	r = authentication(request, 
+						required_param=['id'],
+						require_authenticate=True,
+						require_model=True,
+						model=Activity,
+						keytype='id')
+
+	if not r['state_code'] == 0:
+		ret['state_code'] = r['state_code']
 	else:
-		try:
-			act = Activity.objects.get(id=act_id)
+		act = r['record']
+		if not has_permission(request.user, act):
+			ret['state_code'] = 3
+		else:
 
-			if has_permission(request.user, act):
-				ret['state_code'] = 3
-			else:
+			items = request.POST.items()
+			keys = [k for k, v in items]
 
-				editable_fields = [
-					'name',
-					'intro',
-					'cost',
-					'location',
-				]
-				items = request.POST.items()
-				keys = [k for k, v in items]
-				for k,v in items:
-					if k in editable_fields:
-						setattr(act, k, v)
-				
-				if 'tags' in keys:
-					tags = [t.strip() for t in request.POST.get('tags').split(',')]
-					for tag in act.tags.all():
-						act.tags.remove(tag)
-					for tag in tags:
-						act.tags.add(get_tag(tag))
+			info = dict()
+			act.name = request.POST.get('name', act.name)
+			act.intro = request.POST.get('intro', act.intro)
+			act.cost = float(request.POST.get('cost', act.cost))
+			act.location = request.POST.get('location', act.location)
+			act.state = int(request.POST.get('amount', act.state >> 2)) << 2 + act.state % 4
+			
+			if 'tags' in keys:
+				tags = [t.strip() for t in request.POST.get('tags').split(',')]
+				for tag in act.tags.all():
+					act.tags.remove(tag)
+				for tag in tags:
+					act.tags.add(get_tag(tag))
 
-				### update time --- to be implemented
+			### update time --- to be implemented
 
 
-				act.save()
-				ret['state_code'] = 0
-				ret['act_info'] = activity_serialize(act)
+			act.save()
+			ret['state_code'] = 0
+			ret['act_info'] = activity_serialize(act)
 
-		except Activity.DoesNotExist:
-			ret['state_code'] = 52
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
@@ -227,7 +232,10 @@ def reply_application(request):
 		if len(act) == 0:
 			ret['state_code'] = 72
 		elif has_permission(request.user, app[0].activity):
-			pass
+			if reply == 1:
+				pass
+			else:
+				pass
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')

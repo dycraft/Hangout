@@ -31,3 +31,12 @@ Error code
 102: unsupported model keytype
 103: record does not exist
 104: no key to check permission with
+
+
+authentication params
+	required_param
+	require_authenticate
+	require_model
+	require_permission
+	model
+	keytype

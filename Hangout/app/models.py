@@ -52,11 +52,14 @@ class Notice(models.Model):
 #----------------  Activity  ----------------#
 
 ACTIVITY_STATES_OPEN = 0
-ACTIVITY_STATES_STARTED = 1
+ACTIVITY_STATES_CLOSED = 1
 ACTIVITY_STATES_ENDED = 2
+ACTIVITY_STATES_STARTED = 3
+
 ACTIVITY_STATES = (
     (ACTIVITY_STATES_OPEN, 'open'),
-    (ACTIVITY_STATES_STARTED, 'started'),
+    (ACTIVITY_STATES_CLOSED, 'closed'),
+    # (ACTIVITY_STATES_STARTED, 'started'),
     (ACTIVITY_STATES_ENDED, 'ended'),
 )
 
@@ -69,7 +72,7 @@ class Activity(models.Model):
     location = models.CharField(max_length=100, default='pending')
     time = models.DateTimeField(auto_now_add=True)
 
-    state = models.IntegerField(default=0, choices=ACTIVITY_STATES)
+    state = models.IntegerField(default=0)
     organizer = models.ForeignKey('User', related_name='org_acts')
 
     create_at = models.DateTimeField(auto_now_add=True)
