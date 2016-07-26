@@ -4,7 +4,7 @@
 	    <div class="caption">
 	      <h3><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a><span class="label label-default">申请中</span><a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h3>
 	      <div><p style="word-break:break-all;"><strong>活动介绍</strong>：[[ act.intro ]]1akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj</p></div>
-	      <p><strong>活动状态</strong>：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a ng-if="act.state == 0 || act.state == 1" href="[[ U(act.state) ]]" class="btn btn-danger" style="float:right" role="button">取消申请</a></p>
+	      <p><strong>活动状态</strong>：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span></p>
 	      <p ng-if="act.tags.length > 1">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag"><span class="label label-primary">[[ tag ]] </span></a></p>
 	    </div>
 	  </div>
@@ -14,7 +14,7 @@
 	    <div class="caption">
 	      <h3><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a><a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h3>
 	      <div><p style="word-break:break-all;">活动介绍：[[ act.intro ]]3akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj</p></div>
-	      <p>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a ng-if="act.state == 0 || act.state == 1" href="[[ U(act.state) ]]" class="btn btn-[[ L2(act.state) ]]" style="float:right" role="button">[[ B(act.state) ]]</a></p>
+	      <p>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a href="#" ng-click="Q(act)" ng-if="act.state == 0 || act.state == 1" class="btn btn-danger" style="float:right" role="button">退出活动</a></p>
 	      <p ng-if="act.tags.length > 1">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag"><span class="label label-primary">[[ tag ]] </span></a></p>
 	    </div>
 	  </div>

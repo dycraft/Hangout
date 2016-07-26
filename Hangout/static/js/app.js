@@ -39,6 +39,11 @@ angular.module('hangout', [
             controllerAs: 'vm',
             title: 'profile', 
             tag_name: 'profile'});
+        $routeProvider.when('/follow_info', {
+            templateUrl: urls.part + '/follow_info.html',
+            controller: 'followInfoCtrl',
+            title: 'followInfo',
+            tag_name: 'followInfo'});
         $routeProvider.when('/activity',{
             templateUrl: urls.part + '/activity.html', 
             controller: 'activityCtrl', 
@@ -54,5 +59,10 @@ angular.module('hangout', [
             controller: 'userInfoCtrl', 
             title: 'userInfo', 
             tag_name: 'userInfo'});
+        $routeProvider.when('/tag_info/:tag_name',{
+            templateUrl: urls.part + '/tag_info.html', 
+            controller: 'tagInfoCtrl', 
+            title: 'tagInfo', 
+            tag_name: 'tagInfo'});
 	    $routeProvider.otherwise({redirectTo: '/'});
     }]);

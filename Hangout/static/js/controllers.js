@@ -186,7 +186,7 @@
       }
       $scope.overview();
     }])
-    .controller('activityCtrl', ['$http', '$location', '$scope', 'Authentication', function($http, $location, $scope, Authentication){
+    .controller('activityCtrl', ['$route', '$http', '$location', '$scope', 'Authentication', function($route, $http, $location, $scope, Authentication){
       $(".act-nav").click(function(){
         $(".act-nav").not(this).removeClass("active");
         $(this).addClass("active");
@@ -199,7 +199,7 @@
         $http.get('/api/user/get_admin_act').success(
           function(data){
             $scope.acts = data.admin_acts;
-            $scope.acts.name = Authentication.getAuthenticatedAccount().user_info.name;
+            $scope.acts.login_id = Authentication.getAuthenticatedAccount().user_info.id;
             console.log($scope.acts);
         });
         $scope.B = function(state) {
@@ -216,18 +216,37 @@
             2: "",
           }[state];
         }
-        $scope.U = function(state) {
-          return {
-            0: "danger",
-            1: "success",
-            2: "",
-          }[state];
+        $scope.U = function(act) {
+          if (act.state == 0) {
+            $http.post('/api/activity/change_state', $.param({
+              'id': act.id,
+              'state': 1,
+            })).success(function(){
+              act.state = 1;
+            });
+          }
+          else {
+            $http.post('/api/activity/change_state', $.param({
+              'id': act.id,
+              'state': 0,
+            })).success(function(){
+              act.state = 0;
+            });
+          }
+        }
+        $scope.D = function(act) {
+          $http.post('/api/activity/change_state', $.param({
+            'id': act.id,
+            'state': 2,
+          })).success(function(){
+            act.state = 2;
+          });
         }
         $scope.T = function(state) {
           return {
             0: "接受报名",
             1: "结束报名",
-            2: "活动结束",
+            2: "已结束",
           }[state];
         }
         $scope.L1 = function(state) {
@@ -249,8 +268,6 @@
             $scope.join_acts = data.join_acts;
             $scope.apply_acts_member = data.apply_acts_member;
             $scope.apply_acts_admin = data.apply_acts_admin;
-            console.log($scope.join_acts);
-            console.log($scope.apply_acts_member);
         });
         $scope.B = function(state) {
           return {
@@ -272,6 +289,13 @@
             1: "danger",
             2: "default",
           }[state];
+        }
+        $scope.Q = function(act) {
+          $http.post('/api/user/quit_act', $.param({
+            'act_id': act.id,
+          })).success(function(data) {
+            $route.reload();
+          })
         }
       }
       $scope.orgActs = function() {
@@ -305,6 +329,88 @@
       }
       $scope.myActs();
     }])
+    .controller('tagInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
+      if (Authentication.isAuthenticated()) {
+        $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
+      }
+      $http.get('/api/tag/get/' + $routeParams.tag_name).success(function(data) {
+        $scope.users = data.users;
+        $scope.acts = data.acts;
+        console.log(data);
+        $http.get('/api/user/following').success(function(data) { 
+          console.log(data);
+          $scope.follow_list = data.following;  
+          $scope.F = function(user_id) {
+            for (var i = 0; i < $scope.follow_list.length; i++) {
+              if (user_id == $scope.follow_list[i].id) {
+                return "取关";
+              }
+            }
+            return "关注";
+          }
+          $scope.change_follow = function(user_id) {
+            if ($scope.F(user_id) == "关注") {
+              $http.post('/api/user/follow', $.param({'id': user_id})).success(function(data) {
+                $scope.follow_list.push(user_id);
+              })
+            }
+            else {
+              $http.post('/api/user/unfollow', $.param({'id': user_id})).success(function(data) {
+                $scope.follow_list.push(user_id);
+              })
+            }
+          }
+          $('.follow-btn').click(function(){
+            if ($(this).html() == "取关") {
+              $(this).html("关注");
+            }
+            else {
+              $(this).html("取关");
+            }
+          })
+        })
+      });
+    }])
+    .controller('followInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
+      if (Authentication.isAuthenticated()) {
+        $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
+      }
+      $http.get('/api/user/following').success(function(data) {
+        $scope.following = data.following;
+        console.log(data);
+        $scope.F1 = function(user_id) {
+          for (var i = 0; i < $scope.following.length; i++) {
+            if (user_id == $scope.following[i].id) {
+              return "取关";
+            }
+          }
+          return "关注";
+        }
+        $scope.change_following = function(user_id, user_name) {
+          if ($scope.F1(user_id) == "关注") {
+            $http.post('/api/user/follow', $.param({'id': user_id})).success(function(data) {
+              $scope.following.push({'id': user_id, 'name': user_name});
+            })
+          }
+          else {
+            $http.post('/api/user/unfollow', $.param({'id': user_id})).success(function(data) {
+              var tmp = [];
+              for (var i = 0; i < $scope.following.length; i++) {
+                if ($scope.following[i].id != user_id) {
+                  tmp.push({'id': $scope.following[i].id, 'name': $scope.following[i].name})
+                }
+              }
+              console.log(tmp);
+              $scope.following = tmp;
+            })
+          }
+        }
+        $http.get('/api/user/follower').success(function(data) { 
+          console.log(data);
+          $scope.follower = data.follower;
+        })
+      });
+    }])
     .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
       function login() {
         $location.url('/login');
@@ -319,7 +425,7 @@
         $location.url('/activity');
       }
       $scope.friends = function() {
-        $location.url('/friends');
+        $location.url('/follow_info');
       }
       $scope.register = register;
       if (Authentication.isAuthenticated()) {
