@@ -12,7 +12,7 @@ from .tag import get_tag
 
 '''
 ger_user:
-    get user info by email
+    get user info by id
 
 GET param
 ---------------------------------------------------------------------

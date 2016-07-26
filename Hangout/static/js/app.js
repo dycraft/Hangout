@@ -44,5 +44,15 @@ angular.module('hangout', [
             controller: 'activityCtrl', 
             title: 'activity', 
             tag_name: 'activity'});
+        $routeProvider.when('/act_info/:act_id',{
+            templateUrl: urls.part + '/act_info.html', 
+            controller: 'actInfoCtrl', 
+            title: 'actInfo', 
+            tag_name: 'actInfo'});
+        $routeProvider.when('/user_info/:user_id',{
+            templateUrl: urls.part + '/user_info.html', 
+            controller: 'userInfoCtrl', 
+            title: 'userInfo', 
+            tag_name: 'userInfo'});
 	    $routeProvider.otherwise({redirectTo: '/'});
     }]);

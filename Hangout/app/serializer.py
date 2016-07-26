@@ -12,7 +12,8 @@ def user_serialize(user, detailed=True):
 		'score', 
 		'email',
 		'fix_times',
-		'tmp_times'
+		'tmp_times',
+		'state',
 	]
 
 	activity_fields = []
@@ -31,7 +32,10 @@ def user_serialize(user, detailed=True):
 	for f in activity_fields:
 		ret[f] = []
 		for i in getattr(user, f).all():
-			ret[f].append({'name': i.name, 'id':i.id})
+			ret[f].append({'name': i.name, 'id': i.id, 'state': i.state % 4, 'count': len(i.members.all()) + len(i.admins.all()), 'organizer': {
+				'name': i.organizer.name,
+				'id': i.organizer.id,
+				}})
 
 	# ret['apply_acts'] = []
 	# for app in user.applications.filter(application_type=1):
@@ -68,7 +72,7 @@ def activity_serialize(act, detailed=True):
 	for t in act.tags.all():
 		ret['tags'].append(t.name)
 
-	ret['organizer'] = act.organizer.name
+	ret['organizer'] = {'id': act.organizer.id, 'name': act.organizer.name}
 
 ## times
 	ret['time'] = act.time.strftime('%Y-%m-%d %a %H:00')

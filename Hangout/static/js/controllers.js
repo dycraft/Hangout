@@ -84,6 +84,108 @@
           decodeFixedTime(vm.fix_times, "profile");
       });
     }])
+    .controller('actInfoCtrl', ['$scope', '$location', '$routeParams', '$http', 'Authentication', function($scope, $location, $routeParams, $http, Authentication){
+      console.log('actInfo');
+      $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
+        $scope.act = data.act_info;
+        $http.get('/api/user/following').success(function(data) { 
+          console.log(data);
+          $scope.follow_list = data.following;  
+          $scope.F = function(user_id) {
+            for (var i = 0; i < $scope.follow_list.length; i++) {
+              if (user_id == $scope.follow_list[i].id) {
+                return "取关";
+              }
+            }
+            return "关注";
+          }
+          $scope.change_follow = function(user_id) {
+            if ($scope.F(user_id) == "关注") {
+              $http.post('/api/user/follow', $.param({'id': user_id})).success(function(data) {
+                $scope.follow_list.push(user_id);
+              })
+            }
+            else {
+              $http.post('/api/user/unfollow', $.param({'id': user_id})).success(function(data) {
+                $scope.follow_list.push(user_id);
+              })
+            }
+          }
+          $('.follow-btn').click(function(){
+            if ($(this).html() == "取关") {
+              $(this).html("关注");
+            }
+            else {
+              $(this).html("取关");
+            }
+          })
+        });
+        $scope.org_act = function() {
+          if (Authentication.isAuthenticated()) {
+            return Authentication.getAuthenticatedAccount().user_info.id == $scope.act.organizer.id;
+          }
+          else {
+            return false;
+          }
+        }
+        if (Authentication.isAuthenticated()) {
+          $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
+        }
+        $scope.T = function(state) {
+          return {
+            0: "接受报名",
+            1: "结束报名",
+            2: "活动结束",
+          }[state];
+        }
+        $scope.L1 = function(state) {
+          return {
+            0: "success",
+            1: "danger",
+            2: "default",
+          }[state];
+        }
+      });
+    }])
+    .controller('userInfoCtrl', ['$http', '$routeParams', '$scope', 'Authentication', function($http, $routeParams, $scope, Authentication) {
+      $http.get('/api/user/detail/' + $routeParams.user_id).success(function(data) {
+        $scope.user = data.user_info;
+        console.log($scope.user);
+      })
+      $scope.T = function(state) {
+        return {
+          0: "接受报名",
+          1: "结束报名",
+          2: "活动结束",
+        }[state];
+      }
+      $scope.L1 = function(state) {
+        return {
+          0: "success",
+          1: "danger",
+          2: "default",
+        }[state];
+      }
+      $scope.overview = function() {
+        $('.profile-tab').removeClass('active');
+        $('#overview_tab').addClass('active');
+        $('.sub_tab').css({'display': 'none'});
+        $('#overview_sub_tab').css({'display': 'block'});
+      }
+      $scope.org_acts_view = function() {
+        $('.profile-tab').removeClass('active');
+        $('#org_acts_tab').addClass('active');
+        $('.sub_tab').css({'display': 'none'});
+        $('#org_acts_sub_tab').css({'display': 'block'});
+      }
+      $scope.join_acts_view = function() {
+        $('.profile-tab').removeClass('active');
+        $('#join_acts_tab').addClass('active');
+        $('.sub_tab').css({'display': 'none'});
+        $('#join_acts_sub_tab').css({'display': 'block'});
+      }
+      $scope.overview();
+    }])
     .controller('activityCtrl', ['$http', '$location', '$scope', 'Authentication', function($http, $location, $scope, Authentication){
       $(".act-nav").click(function(){
         $(".act-nav").not(this).removeClass("active");
@@ -94,7 +196,12 @@
         $scope.act_type = "my_act";
         $('.act-nav').not('#myActs').removeClass("active");
         $('#myActs').addClass('active');
-        $scope.acts = Authentication.get_profile().admin_acts;
+        $http.get('/api/user/get_admin_act').success(
+          function(data){
+            $scope.acts = data.admin_acts;
+            $scope.acts.name = Authentication.getAuthenticatedAccount().user_info.name;
+            console.log($scope.acts);
+        });
         $scope.B = function(state) {
           return {
             0: "停止报名",
@@ -136,12 +243,19 @@
         $scope.act_type = "part_act";
         $('.act-nav').not('#joinActs').removeClass("active");
         $('#joinActs').addClass('active');
-        $scope.acts = Authentication.get_profile().coll_acts;
-        $scope.acts.walk_around = $scope.otherActs;
-        $scope.B = function() {
+        $http.get('/api/user/get_join_act').success(
+          function(data){
+            console.log(data);
+            $scope.join_acts = data.join_acts;
+            $scope.apply_acts_member = data.apply_acts_member;
+            $scope.apply_acts_admin = data.apply_acts_admin;
+            console.log($scope.join_acts);
+            console.log($scope.apply_acts_member);
+        });
+        $scope.B = function(state) {
           return {
-            0: "停止报名",
-            1: "开放报名",
+            0: "退出活动",
+            1: "退出活动",
             2: "",
           }[state];
         }
@@ -210,6 +324,7 @@
       $scope.register = register;
       if (Authentication.isAuthenticated()) {
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
+        $scope.login_id = Authentication.getAuthenticatedAccount().user_info.id;
         $('#nav_user').css({'display': 'block'});
         $('#nav_register').css({'display': 'none'});
         $('#nav_activity').css({'display': 'block'});
@@ -228,6 +343,7 @@
       }
       $rootScope.$on('login_done', function(){
         $scope.displayName = Authentication.getAuthenticatedAccount().user_info.name;
+        $scope.login_id = Authentication.getAuthenticatedAccount().user_info.id;
         $('#nav_user').css({'display': 'block'});
         $('#nav_register').css({'display': 'none'});
         $('#nav_activity').css({'display': 'block'});
