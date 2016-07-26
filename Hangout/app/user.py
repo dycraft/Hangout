@@ -403,6 +403,8 @@ def apply_for_activity(request):
         ret['state_code'] = 1
     elif not act_id:
         ret['state_code'] = 51
+    elif not act_id in ['1', '2']:
+        ret['state_code'] = 11
     else:
         act = Activity.objects.filter(id=act_id)
         app_type = request.POST.get('type', 1)

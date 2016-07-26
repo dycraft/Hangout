@@ -21,7 +21,6 @@ urlpatterns = [
     url(r'^user/message/send$', user.send_message_post),
     url(r'^user/message/set_state/(?P<id>.*?)/(?P<state>.*?)$', user.set_message_state),
 
-
     # User and Activity
     url(r'^user/get_admin_act', user.get_admin_activity),
     url(r'^user/get_join_act', user.get_join_activity),
@@ -31,6 +30,7 @@ urlpatterns = [
     # Activity
     url(r'^activity/create$', activity.create_activity),
     url(r'^activity/detail/(?P<id>.*?)$', activity.get_activity_detail),
+    url(r'^activity/change_state', activity.change_act_state),
 
     # Activity admin
     url(r'^activity/update$', activity.update_activity),

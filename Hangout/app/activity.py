@@ -39,7 +39,7 @@ POST params
 | intro     | introduction of act            | 'No intro available' |
 | tags      | tags of act (delimited by ',') | ''                   |
 | cost      | estimated cost of act          | 0                    |
-| location  | location of act                | 'pending'            |
+| location  | location of act                | ''            |
 | time      | time(not implemented yet)      | datetime.now()       |
 | limit     | limit of number of members     | 10000                |
 |===================================================================|
@@ -55,7 +55,7 @@ def create_activity(request):
 		act_info['intro'] = request.POST.get('intro', 'No intro available')
 		act_info['tags'] = request.POST.get('tag', '').split(',')
 		act_info['cost'] = float(request.POST.get('cost', 0))
-		act_info['location'] = request.POST.get('location', 'pending')
+		act_info['location'] = request.POST.get('location', '')
 		act_info['limit'] = request.POST.get('limit', 10000)
 		act_info['organizer'] = request.user.email
 		act = Activity.objects.create(
@@ -68,7 +68,8 @@ def create_activity(request):
 			)
 		act.admins.add(request.user)
 		for t in act_info['tags']:
-			act.tags.add(get_tag(t.strip()))
+			if not t.strip() == '':
+				act.tags.add(get_tag(t.strip()))
 		act.save()
 		ret['state_code'] = 0
 
@@ -151,7 +152,8 @@ def update_activity(request):
 				for tag in act.tags.all():
 					act.tags.remove(tag)
 				for tag in tags:
-					act.tags.add(get_tag(tag))
+					if not tag == '':
+						act.tags.add(get_tag(tag))
 
 			### update time --- to be implemented
 
@@ -160,6 +162,45 @@ def update_activity(request):
 			ret['state_code'] = 0
 			ret['act_info'] = activity_serialize(act)
 
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+change_act_state:
+	change act state
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of an activity              | REQUIRED             |
+| state     | state of an activity           | REQUIRED             |
+|===================================================================|
+
+
+'''
+def change_act_state(request):
+	ret = dict()
+
+	r = authentication(request, 
+						required_param=['id', 'state'],
+						require_authenticate=True,
+						require_model=True,
+						model=Activity,
+						keytype='id')
+
+	if not r['state_code'] == 0:
+		ret['state_code'] = r['state_code']
+	else:
+		act = r['record']
+		state = r['params']['state']
+		if not has_permission(request.user, act):
+			ret['state_code'] = 3
+		elif not str(state) in ['0', '1', '2']:
+			ret['state_code'] = 11
+		else:
+			act.state = state
+			act.save()
+			ret['state_code'] = 0
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
@@ -228,31 +269,41 @@ def reply_application(request):
 		elif has_permission(request.user, app[0].activity):
 			app = app[0]
 			if reply == 1:
-				pass
-				# if :
-				# 	pass
+				if app.application_type == 1:
+					if len(app.activity.members.filter(id=app.applicant.id)) > 0:
+						ret['state_code'] = 55
+					else:
+						app.activity.members.add(app.applicant)
+						ret['state_code'] = 0
+				elif app.application_type == 2:
+					if len(app.activity.members.filter(id=app.applicant.id)) == 0:
+						ret['state_code'] = 54
+					elif len(app.activity.admins.filter(id=app.applicant.id)) > 0:
+						ret['state_code'] = 56
+					else:
+						app.activity.admins.add(app.applicant)
+						ret['state_code'] = 0
 
+				if ret['state_code'] == 0:
+					send_message(request.user, 
+						app.applicant, 
+						application_granted(app.applicant.name, 
+											app.application_type, 
+											app.activity.name,
+											request.user.name))
+				app.delete()
 
-				# send_message(request.user, 
-				# 	app.applicant, 
-				# 	application_refused(app.applicant.name, 
-				# 						app.application_type, 
-				# 						app.activity.name,
-				# 						request.user.name))
-			else:
+			if reply == 0:
 				send_message(request.user, 
 					app.applicant, 
-					application_refused(app.applicant.name, 
+					application_rejected(app.applicant.name, 
 										app.application_type, 
 										app.activity.name,
 										request.user.name))
 
 				app.delete()
 				ret['state_code'] = 0
-				ret['reply'] = 	application_refused(app.applicant.name, 
-										app.application_type, 
-										app.activity.name,
-										request.user.name)
+				ret['reply'] = 'refused'
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')

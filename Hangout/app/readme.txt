@@ -13,6 +13,7 @@ Error code
 8: wrong email/password
 9: invalid email/password
 10: email address already in use
+11: unrecognized param value
 
 ### tag
 21 tag does not exist

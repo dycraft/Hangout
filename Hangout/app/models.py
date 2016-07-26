@@ -69,7 +69,7 @@ class Activity(models.Model):
     intro = models.CharField(max_length=1000)
     tags = models.ManyToManyField(Tag, related_name='acts')
     cost = models.FloatField(default=0.0)
-    location = models.CharField(max_length=100, default='pending')
+    location = models.CharField(max_length=100, default='')
     time = models.DateTimeField(auto_now_add=True)
 
     state = models.IntegerField(default=0)
