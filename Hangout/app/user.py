@@ -595,6 +595,152 @@ def send_message_post(request):
 
 
 
+'''
+follow:
+    follow another user
+
+POST param
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of user(to be followed)     | REQUIRED             |
+|===================================================================|
+
+returns:
+    'state_code'
+'''
+@require_http_methods(['POST'])
+def follow(request):
+    ret = dict()
+    r = authentication(request, 
+                 required_param=['id'],
+                 require_authenticate=True,
+                 require_model=True,
+                 model=User,
+                 keytype='id')
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    elif r['record'].id == request.user.id:
+        ret['state_code'] = 12
+    else:
+        r, c = Relationship.objects.get_or_create(
+            from_user=request.user,
+            to_user=r['record'])
+        if not c == True:
+            ret['state_code'] = 13
+        else:
+            ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+
+'''
+unfollow:
+    unfollow another user
+
+POST param
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of user(followed)           | REQUIRED             |
+|===================================================================|
+
+returns:
+    'state_code'
+'''
+@require_http_methods(['POST'])
+def unfollow(request):
+    ret = dict()
+    r = authentication(request, 
+                 required_param=['id'],
+                 require_authenticate=True,
+                 require_model=True,
+                 model=User,
+                 keytype='id')
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    elif r['record'].id == request.user.id:
+        ret['state_code'] = 12
+    else:
+        r = Relationship.objects.filter(
+            from_user=request.user,
+            to_user=r['record'])
+        if len(r) == 0:
+            ret['state_code'] = 14
+        else:
+            r.delete()
+            ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
+check_following:
+    check all following users with their state
+
+no params required
+
+returns:
+    'state_code'
+    'following' -- [{'id': id, 'name':name, 'state': state}]
+'''
+def check_following(request):
+    ret = dict()
+    r = authentication(request, 
+                 required_param=[],
+                 require_authenticate=True)
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        ret['following'] = []
+        for r in request.user.follow.filter(to_people__from_user=request.user):
+            ret['following'].append({'id': r.id, 'name': r.name})
+        ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+    
+
+
+'''
+check_follower:
+    check all follower users
+
+no params required
+
+returns:
+    'state_code'
+    'follower' -- [{'id': id, 'name':name}]
+'''
+def check_follower(request):
+    ret = dict()
+    r = authentication(request, 
+                 required_param=[],
+                 require_authenticate=True)
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        ret['follower'] = []
+        for r in request.user.followed.all():
+            ret['follower'].append({'id': r.id, 'name': r.name})
+        ret['state_code'] = 0
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #-------------------------------------------------------------------
 

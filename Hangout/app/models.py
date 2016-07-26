@@ -149,4 +149,4 @@ RELATIONSHIP_STATUSES = (
 class Relationship(models.Model):
     from_user = models.ForeignKey(User, related_name='from_people')
     to_user = models.ForeignKey(User, related_name='to_people')
-    status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+    # status = models.IntegerField(choices=RELATIONSHIP_STATUSES)

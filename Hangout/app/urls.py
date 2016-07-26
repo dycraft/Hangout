@@ -16,6 +16,11 @@ urlpatterns = [
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
 
+    url(r'^user/follow$', user.follow),
+    url(r'^user/unfollow$', user.unfollow),
+    url(r'^user/following$', user.check_following),
+    url(r'^user/follower$', user.check_follower),
+
     # User messages
     url(r'^user/message/get$', user.get_message),
     url(r'^user/message/send$', user.send_message_post),

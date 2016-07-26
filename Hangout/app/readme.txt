@@ -14,6 +14,9 @@ Error code
 9: invalid email/password
 10: email address already in use
 11: unrecognized param value
+12: try to self-follow 
+13: already followed
+14: haven't followed
 
 ### tag
 21 tag does not exist
