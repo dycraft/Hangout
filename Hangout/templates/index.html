@@ -49,9 +49,7 @@
 
         <div id="message-list" style="width:400px;position:fixed;right:10px;bottom:65px;" ng-controller="msgBoxCtrl">
           <ul class="list-group">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item" ng-repeat="msg in msgs">[[ msg.from ]]: [[ msg.content ]]</li>
             <li class="list-group-item">
               <form class="form-inline" ng-submit="send_message()">
                 <div class="form-group">

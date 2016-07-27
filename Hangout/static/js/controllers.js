@@ -419,9 +419,9 @@
       var round_robin = function() {
         var timer = setInterval(function(){
           $http.post('/api/user/message/get', $.param({
-            'id': $scope.login_id,
+            'id': Authentication.getAuthenticatedAccount().user_info.id,
           })).success(function(data){
-            console.log(data);
+            $scope.msgs = data.messages;
           })
         }, 2000);
       }
@@ -439,16 +439,20 @@
         }
       });
       $rootScope.getSendUser = function(user){
-        $scope.msg_content = user.name + ":";
+        $scope.msg_content = "[" + user.name + "]:";
+        $scope.send_to_user = user;
       }
       $scope.send_message = function() {
-        console.log($scope.msg_content);
-        var msg = $scope.msg_content.slice($scope.msg_content.indexOf(':') + 1);
-        if (msg) {
-          alert(msg);
+        if ($scope.send_to_user) {
+          var msg = $scope.msg_content;
+          $http.post('/user/message/send', $.param({
+            'id': user.id,
+            'content': msg,
+          }))
         }
       }
       $scope.send_content = "";
+      $scope.msgs = [];
       if (Authentication.isAuthenticated()) {
         $('#message-box').css({'display': 'block'});
         $('#message-list').css({'opacity': 0});
