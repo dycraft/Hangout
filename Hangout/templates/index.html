@@ -4,6 +4,7 @@
     	<meta charset='utf-8'>
         <title>Hangout!</title>
         <base href='/' />
+        <link rel="stylesheet" href='/static/css/stylesheet.css' />
         <link rel='stylesheet' href='/static/lib/bootstrap.min.css' />
         <link rel='stylesheet' href='/static/lib/font-awesome-4.6.3/css/font-awesome.min.css' />
         <link rel='stylesheet' href='/static/lib/notification/notification-icon.css' />
@@ -44,10 +45,12 @@
 
             <div id="main-container" ng-view></div>
 
+            <back-to-top></back-to-top>
+
         </div>
 
 
-        <div id="message-list" style="width:400px;position:fixed;right:10px;bottom:65px;" ng-controller="msgBoxCtrl">
+        <div id="message-list" style="width:400px;position:fixed;right:10px;bottom:95px;" ng-controller="msgBoxCtrl">
           <ul class="list-group">
             <li class="list-group-item">Cras justo odio</li>
             <li class="list-group-item">Cras justo odio</li>
@@ -64,7 +67,7 @@
           </ul>
         </div>
 
-        <div style="display:none;position:fixed;right:10px;bottom:10px;" id="message-box" class="well well-sm">
+        <div style="display:none;position:fixed;right:10px;bottom:40px;" id="message-box" class="well well-sm">
           <notification-icon count="messageCount">
             <i class="fa fa-envelope-o fa-2x"></i>
           </notification-icon>
