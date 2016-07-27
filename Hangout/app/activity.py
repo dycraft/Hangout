@@ -28,8 +28,8 @@ def has_permission(user, act):
 
 
 '''
-create_activity: 
-	Create an activity, user that is currently logged in will become 
+create_activity:
+	Create an activity, user that is currently logged in will become
 	the organizer and an admin automatically
 
 POST params
@@ -81,8 +81,8 @@ def create_activity(request):
 
 '''
 get_activity_detail:
-	get detail of an activity, if 'detailed' param is provided and 
-	equals to 'True', it will return a detailed version of info, 
+	get detail of an activity, if 'detailed' param is provided and
+	equals to 'True', it will return a detailed version of info,
 	including 'applicants', 'members', 'admins' and 'collected'
 
 POST params
@@ -104,7 +104,7 @@ def get_activity_detail(request, id):
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
-update_activity: 
+update_activity:
 	Update activity info. Similar to create_activity
 
 POST params
@@ -125,7 +125,7 @@ POST params
 def update_activity(request):
 	ret = dict()
 
-	r = authentication(request, 
+	r = authentication(request,
 						required_param=['id'],
 						require_authenticate=True,
 						require_model=True,
@@ -149,7 +149,7 @@ def update_activity(request):
 			act.cost = float(request.POST.get('cost', act.cost))
 			act.location = request.POST.get('location', act.location)
 			act.state = int(request.POST.get('amount', act.state >> 2)) << 2 + act.state % 4
-			
+
 			if 'tags' in keys:
 				tags = [t.strip() for t in request.POST.get('tags').split(',')]
 				for tag in act.tags.all():
@@ -204,7 +204,7 @@ def get_recommended_time(request, id):
 					ret['result'][x] += 1
 				temp = temp >> 1
 		for x in range(0, 28):
-			ret['result'] = ret['result'] / mem
+			ret['result'][x] = ret['result'][x] / mem
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
@@ -225,7 +225,7 @@ POST params
 def change_act_state(request):
 	ret = dict()
 
-	r = authentication(request, 
+	r = authentication(request,
 						required_param=['id', 'state'],
 						require_authenticate=True,
 						require_model=True,
@@ -248,7 +248,7 @@ def change_act_state(request):
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
-get_applications: 
+get_applications:
 	get applications of an activity
 
 POST params
@@ -329,19 +329,19 @@ def reply_application(request):
 						ret['state_code'] = 0
 
 				if ret['state_code'] == 0:
-					send_message(request.user, 
-						app.applicant, 
-						application_granted(app.applicant.name, 
-											app.application_type, 
+					send_message(request.user,
+						app.applicant,
+						application_granted(app.applicant.name,
+											app.application_type,
 											app.activity.name,
 											request.user.name))
 				app.delete()
 
 			if reply == 0:
-				send_message(request.user, 
-					app.applicant, 
-					application_rejected(app.applicant.name, 
-										app.application_type, 
+				send_message(request.user,
+					app.applicant,
+					application_rejected(app.applicant.name,
+										app.application_type,
 										app.activity.name,
 										request.user.name))
 
@@ -351,13 +351,3 @@ def reply_application(request):
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')
-
-
-
-
-
-
-
-
-
-

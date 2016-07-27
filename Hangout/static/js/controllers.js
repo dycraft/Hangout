@@ -53,19 +53,12 @@
       //js-lib: tagsinput
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
-    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', 'FileUploader', function($scope, $location, Authentication, $http, FileUploader){
+    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
       console.log('profile');
-      var uploader = $scope.uploader = new FileUploader({
-        url: '/api/user/update_portrait',
-        data: $.param({
-          'id': Authentication.getAuthenticatedAccount().user_info.id,
-        }),
-      });
       if (Authentication.isAuthenticated()) {
         var vm = this;
         vm.update_profile = function() {
           Authentication.update_profile(vm.email, vm.password, vm.username, encodeFixedTime(), $('#profile__tags').val(), vm.cellphone, vm.intro);
-          uploader.uploadAll()
         };
         vm.email = Authentication.getAuthenticatedAccount().user_info.email;
         vm.password = Authentication.getAuthenticatedAccount().user_info.password;
@@ -73,7 +66,7 @@
         vm.fix_times = Authentication.getAuthenticatedAccount().user_info.fix_times;
         vm.tags = Authentication.getAuthenticatedAccount().user_info.tags;
         vm.cellphone = Authentication.getAuthenticatedAccount().user_info.cellphone;
-        vm.intro = Authentication.getAuthenticatedAccount().user_info.intro;        
+        vm.intro = Authentication.getAuthenticatedAccount().user_info.intro;
         //js-lib: tagsinput
         $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       }
@@ -95,9 +88,9 @@
       console.log('actInfo');
       $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
         $scope.act = data.act_info;
-        $http.get('/api/user/following').success(function(data) { 
+        $http.get('/api/user/following').success(function(data) {
           console.log(data);
-          $scope.follow_list = data.following;  
+          $scope.follow_list = data.following;
           $scope.F = function(user_id) {
             for (var i = 0; i < $scope.follow_list.length; i++) {
               if (user_id == $scope.follow_list[i].id) {
@@ -206,6 +199,7 @@
         $http.get('/api/user/get_admin_act').success(
           function(data){
             $scope.acts = data.admin_acts;
+            console.log(data);
             $scope.acts.login_id = Authentication.getAuthenticatedAccount().user_info.id;
             console.log($scope.acts);
         });
@@ -315,8 +309,8 @@
           location: "",
           cost: "",
         }
-        $scope.apply = function() { 
-          console.log($scope.act);        
+        $scope.apply = function() {
+          console.log($scope.act);
           $http.post('/api/activity/create', $.param({
             'name': $scope.act.name,
             'intro': $scope.act.intro,
@@ -336,6 +330,53 @@
       }
       $scope.myActs();
     }])
+    .controller('actProfileCtrl', ['$http', '$scope', '$location', '$routeParams', 'Authentication', function($http, $scope, $location, $routeParams, Authentication){
+      $scope.week = CONST.WEEK;
+      $scope.times = CONST.TIME_SEG;
+      $scope.tags = "default";
+
+      //time picker
+      $('#act_profile__date1').combodate({
+        minYear: 2016,
+        maxYear: 2026
+      });
+      $('#act_profile__date2').combodate({
+        minYear: 2016,
+        maxYear: 2026
+      });
+
+      //get recommend time
+      $http.get('/api/activity/recommended_time/'+$routeParams.act_id).success(function(data) {
+        data.result = [0.9, 0.8, 0, 0.6, 0.5, 1, 0.3,
+                      1, 0.2, 0.3, 1, 0.5, 0.6, 0.01,
+                      0.8, 0.1, 0.99, 1, 0.55, 0.65, 0.75,
+                      1, 0.95, 1, 0.66, 1, 0.13, 0.45];
+        var tds = $('#act_profile__fixed').find('td');
+        for (var i = 0; i < 28; i++) {
+          if ((data.result[i] >= 0) && (data.result[i] < 1)) {
+            var green = parseInt(255 - data.result[i] * 128);
+            tds[i].style.backgroundColor = 'rgba(0, '+green+', 0, '+(0.2+0.8*data.result[i])+')';
+          }
+        }
+      });
+      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+
+      //submit
+      $scope.save = function() {
+        $http.post('/api/activity/update', $.param({
+          'id': $routeParams.act_id,
+          'name': $scope.name,
+          'intro': $scope.intro,
+          'tags': $scope.tags,
+          'cost': $scope.cost,
+          'location': $scope.location,
+          'time': $('#act_profile__date1').combodate('getValue', "YYYY-MM-DD HH"),
+          'end_time': $('#act_profile__date2').combodate('getValue', "YYYY-MM-DD HH")
+        })).success(function(data){
+          console.log(data);
+        });
+      };
+    }])
     .controller('tagInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
       if (Authentication.isAuthenticated()) {
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
@@ -345,9 +386,9 @@
         $scope.users = data.users;
         $scope.acts = data.acts;
         console.log(data);
-        $http.get('/api/user/following').success(function(data) { 
+        $http.get('/api/user/following').success(function(data) {
           console.log(data);
-          $scope.follow_list = data.following;  
+          $scope.follow_list = data.following;
           $scope.F = function(user_id) {
             for (var i = 0; i < $scope.follow_list.length; i++) {
               if (user_id == $scope.follow_list[i].id) {
@@ -416,7 +457,7 @@
             })
           }
         }
-        $http.get('/api/user/follower').success(function(data) { 
+        $http.get('/api/user/follower').success(function(data) {
           console.log(data);
           $scope.follower = data.follower;
         })
@@ -426,9 +467,9 @@
       var round_robin = function() {
         var timer = setInterval(function(){
           $http.post('/api/user/message/get', $.param({
-            'id': Authentication.getAuthenticatedAccount().user_info.id,
+            'id': $scope.login_id,
           })).success(function(data){
-            $scope.msgs = data.messages;
+            console.log(data);
           })
         }, 2000);
       }
@@ -446,20 +487,16 @@
         }
       });
       $rootScope.getSendUser = function(user){
-        $scope.msg_placeholder = "[" + user.name + "]:";
-        $scope.send_to_user = user;
+        $scope.msg_content = user.name + ":";
       }
       $scope.send_message = function() {
-        if ($scope.send_to_user) {
-          var msg = $scope.msg_content;
-          $http.post('/user/message/send', $.param({
-            'id': user.id,
-            'content': msg,
-          }))
+        console.log($scope.msg_content);
+        var msg = $scope.msg_content.slice($scope.msg_content.indexOf(':') + 1);
+        if (msg) {
+          alert(msg);
         }
       }
       $scope.send_content = "";
-      $scope.msgs = [];
       if (Authentication.isAuthenticated()) {
         $('#message-box').css({'display': 'block'});
         $('#message-list').css({'opacity': 0});
@@ -470,7 +507,7 @@
         $('#message-list').css({'opacity': 0});
         kill_robin();
       }
-      $rootScope.$on('login_done', function(){        
+      $rootScope.$on('login_done', function(){
         $('#message-box').css({'display': 'block'});
         $('#message-list').css({'opacity': 0});
         round_robin();
@@ -577,7 +614,7 @@
         for (var i = 0; i < len; i++) {
             fixedTimeArray[i] = parseInt(strTimeArray[i]);
         }
-        
+
         //update view
         var tds = $('#' + type + '__fixed').find('td');
         for (var j = 0; j < len; j++) {
