@@ -8,6 +8,7 @@ from .utilities import *
 from .message_templates import *
 
 import json
+import datetime
 
 '''
 has_permission:
@@ -67,6 +68,7 @@ def create_activity(request):
 				state = act_info['limit'] << 2,
 			)
 		act.admins.add(request.user)
+		act.members.add(request.user)
 		for t in act_info['tags']:
 			if not t.strip() == '':
 				act.tags.add(get_tag(t.strip()))
@@ -87,7 +89,7 @@ POST params
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| act_id    | id of act                      | REQUIRED             |
+| id        | id of act                      | REQUIRED             |
 | detailed  | get a detailed info            | 'False'              |
 |===================================================================|
 '''
@@ -115,7 +117,8 @@ POST params
 | tags      | tags of act (delimited by ',') | ''                   |
 | cost      | estimated cost of act          | 0                    |
 | location  | location of act                | 'pending'            |
-| time      | time of activity               | TO BE IMPLEMENTED    |
+| time      | time of activity               | datetime.now()       |
+| end_time  | end_time of activity           | datetime.now()       |
 |===================================================================|
 '''
 @require_http_methods(['POST'])
@@ -155,14 +158,55 @@ def update_activity(request):
 					if not tag == '':
 						act.tags.add(get_tag(tag))
 
-			### update time --- to be implemented
+			### update time
+			f = '%Y-%m-%d %H'
+			time_str = request.POST.get('time')
+			if time_str:
+				act.time = datetime.datetime.strptime(time_str, f)
 
+			end_time_str = request.POST.get('end_time')
+			if end_time_str:
+				act.end_time = datetime.datetime.strptime(end_time_str, f)
 
 			act.save()
 			ret['state_code'] = 0
 			ret['act_info'] = activity_serialize(act)
 
 	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
+get_recommended_time:
+	get a recomended time of an act based on fix_time of user
+
+
+'''
+def get_recommended_time(request, id):
+	ret = dict()
+
+	act = Activity.objects.filter(id=id)
+	if len(act) == 0:
+		ret['state_code'] = 52
+	else:
+		ret['state_code'] = 0
+		act = act[0]
+		ret['result'] = []
+		mem = 0
+		for x in range(0, 28):
+			ret['result'].append(0)
+
+		for u in act.members.all():
+			t = u.fix_times
+			temp = 1 << 27
+			for x in range(0, 28):
+				mem = mem + 1
+				if (t & temp) > 0:
+					ret['result'][x] += 1
+				temp = temp >> 1
+		for x in range(0, 28):
+			ret['result'] = ret['result'] / mem
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
 
 '''
 change_act_state:
@@ -307,8 +351,6 @@ def reply_application(request):
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')
-
-
 
 
 

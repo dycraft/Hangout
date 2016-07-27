@@ -115,3 +115,5 @@ DATABASES = {
     }
 }
 
+
+DEFAULT_FILE_STORAGE = 'Hangout.system.storage.ImageStorage'

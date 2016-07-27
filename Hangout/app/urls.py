@@ -10,11 +10,13 @@ urlpatterns = [
     url(r'^register', user.user_register),
     
     # User
+    url(r'^user/exist/(?P<email>.*?)$', user.user_exist),
     url(r'^user/login_detail$', user.login_detail),
     url(r'^user/detail/(?P<id>.*?)$', user.get_user),
     url(r'^user/update$', user.update_user),
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
+    url(r'^user/update_portrait$', user.update_portrait),
 
     url(r'^user/follow$', user.follow),
     url(r'^user/unfollow$', user.unfollow),
@@ -41,6 +43,7 @@ urlpatterns = [
     url(r'^activity/update$', activity.update_activity),
     url(r'^activity/applications$', activity.get_applications),
     url(r'^activity/reply_application$', activity.reply_application),
+    url(r'^activity/recommended_time/(?P<id>.*?)$', activity.get_recommended_time),
 
     # Tag
     url(r'^tag/get/(?P<name>.*?)$', tag.get_tag_detail),

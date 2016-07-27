@@ -97,3 +97,6 @@ __MACOSX
 
 # Database
 Hangout/hangout.db
+
+# user portraits
+Hangout/media/

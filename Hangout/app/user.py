@@ -3,6 +3,7 @@ from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
+from django.core.files.base import ContentFile
 
 import json
 
@@ -125,6 +126,40 @@ def update_user(request):
 
 
 '''
+update_portrait:
+    update the portrait of a member
+
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of user                     | REQUIRED             |
+| img(file) | portrait of user               | REQUIRED             |
+|===================================================================|
+
+'''
+def update_portrait(request):
+
+    ret = dict()
+
+    r = authentication(request, 
+                 required_param=['id'],
+                 require_authenticate=True,
+                 require_model=True,
+                 model=User,
+                 keytype='id')
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        # file_content = ContentFile(request.FILES['img'].read())
+        r['record'].portrait = request.FILES['img']
+        r['record'].save()
+        ret['state_code'] = 0
+        ret['portrait_url'] = ret['record'].portrait.url
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
 update_password:
     update user password(only by admin and user itself), automatically
     logout when succeeded
@@ -201,6 +236,27 @@ def delete_user(request):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
+user_exist:
+    check if a email is used
+
+GET params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| email     | email of user                  | REQUIRED             |
+|===================================================================|
+
+returns 
+    'used'
+'''
+def user_exist(request, email):
+    ret = dict()
+    ret['used'] = (len(User.objects.filter(email=email)) > 0)
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
 user_register:
     register a new user
 
@@ -233,7 +289,7 @@ def user_register(request):
         user_info = dict()
         user_info['name'] = request.POST.get('name', 'anonymous')
         user_info['password'] = request.POST.get('password', '')
-        user_info['portrait'] = request.POST.get('portrait')
+        # user_info['portrait'] = request.POST.get('portrait')
         user_info['email'] = request.POST.get('email', '')
         user_info['fix_times'] = request.POST.get('fix_times', 0)
         user_info['cellphone'] = request.POST.get('cellphone', '')
@@ -249,7 +305,7 @@ def user_register(request):
                             user_info['password'], 
                             name = user_info['name']
                         )
-                user.portrait = user_info['portrait']
+                # user.portrait = user_info['portrait']
                 user.fix_times = user_info['fix_times']
                 user.cellphone = user_info['cellphone']
                 user.intro = user_info['intro']
@@ -510,9 +566,12 @@ def get_message(request):
         ret['messages'] = []
         ret['state_code'] = 0
         if setting == 0:
-            for m in user.sent_messages.all():
-                ret['messages'].append(message_serialize(m))
-            for m in user.messages.all():
+            # for m in user.sent_messages.all():
+            #     ret['messages'].append(message_serialize(m))
+            # for m in user.messages.all():
+            #     ret['messages'].append(message_serialize(m))
+            msgs = sorted(user.sent_messages.all() | user.messages.all(), key=lambda x:x.time)
+            for m in msgs:
                 ret['messages'].append(message_serialize(m))
         elif setting == 1:
             for x in user.sent_messages.all():

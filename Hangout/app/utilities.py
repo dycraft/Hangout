@@ -33,7 +33,7 @@ def authentication(request, **kwargs):
         if not key:
             ret['state_code'] = 104
             return ret
-        elif not (request.user.is_admin == True or getattr(request.user, keytype) == key):
+        elif not (request.user.is_admin == True or str(getattr(request.user, keytype)) == key):
             ret['state_code'] = 3
             return ret
 
