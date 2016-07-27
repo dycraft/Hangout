@@ -537,6 +537,70 @@
         $('#otherActs').addClass('active');
       }
       $scope.myActs();
+
+      //validator
+      $scope.$on("$includeContentLoaded", function(event, templateName){
+        $('#apply_form').bootstrapValidator({
+          feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+          },
+          fields: {
+            name: {
+              validators: {
+                notEmpty: {
+                  message: '活动名称不能为空'
+                },
+                stringLength: {
+                  min: 2,
+                  max: 10,
+                  message: '活动名称必须大于2，小于10个字'
+                }
+              }
+            },
+            intro: {
+              validators: {
+                notEmpty: {
+                  message: '活动简介不能为空'
+                },
+                stringLength: {
+                  max: 100,
+                  message: '活动简介必须小于100个字'
+                }
+              }
+            },
+            location: {
+              validators: {
+                notEmpty: {
+                  message: '活动地点不能为空'
+                },
+                stringLength: {
+                  max: 20,
+                  message: '活动地点描述必须小于20个字'
+                }
+              }
+            },
+            cost: {
+              validators: {
+                notEmpty: {
+                  message: '活动花费不能为空'
+                },
+                regexp: {
+                  regexp: /^(([1-9]\d*)(\.\d{1,2})?)$|(0\.0?([1-9]\d?))$/,
+                  message: '请填入正确的金额数目'
+                }
+              }
+            }
+          }
+        })
+        .on('success.form.bv', function(e) {
+          e.preventDefault();
+          if ($('#apply_form').data('bootstrapValidator').isValid()) {
+            $scope.apply();
+          }
+        });
+      });
     }])
     .controller('actProfileCtrl', ['$http', '$scope', '$location', '$routeParams', 'Authentication', function($http, $scope, $location, $routeParams, Authentication){
       $scope.week = CONST.WEEK;
@@ -592,6 +656,68 @@
           console.log(data);
         });
       };
+
+      //validator
+      $('#act_profile_form').bootstrapValidator({
+        feedbackIcons: {
+          valid: 'fa fa-check',
+          invalid: 'fa fa-times',
+          validating: 'fa fa-refresh'
+        },
+        fields: {
+          name: {
+            validators: {
+              notEmpty: {
+                message: '活动名称不能为空'
+              },
+              stringLength: {
+                min: 2,
+                max: 10,
+                message: '活动名称必须大于2，小于10个字'
+              }
+            }
+          },
+          intro: {
+            validators: {
+              notEmpty: {
+                message: '活动简介不能为空'
+              },
+              stringLength: {
+                max: 100,
+                message: '活动简介必须小于100个字'
+              }
+            }
+          },
+          location: {
+            validators: {
+              notEmpty: {
+                message: '活动地点不能为空'
+              },
+              stringLength: {
+                max: 20,
+                message: '活动地点描述必须小于20个字'
+              }
+            }
+          },
+          cost: {
+            validators: {
+              notEmpty: {
+                message: '活动花费不能为空'
+              },
+              regexp: {
+                regexp: /^(([1-9]\d*)(\.\d{1,2})?)$|(0\.0?([1-9]\d?))$/,
+                message: '请填入正确的金额数目'
+              }
+            }
+          }
+        }
+      })
+      .on('success.form.bv', function(e) {
+        e.preventDefault();
+        if ($('#act_profile_form').data('bootstrapValidator').isValid()) {
+          $scope.save();
+        }
+      });
     }])
     .controller('tagInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
       if (Authentication.isAuthenticated()) {
