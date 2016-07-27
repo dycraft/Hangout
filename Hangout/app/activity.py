@@ -178,6 +178,37 @@ POST params
 
 
 '''
+
+
+'''
+get_recommended_time:
+	get a recomended time of an act based on fix_time of user
+
+
+'''
+def get_recommended_time(request, id):
+	ret = dict()
+
+	act = Activity.objects.filter(id=id)
+	if len(act) == 0:
+		ret['state_code'] = 52
+	else:
+		act = act[0]
+		ret['result'] = []
+		for x in range(0, 28):
+			ret['result'].append(0)
+
+		for u in act.members.all():
+			t = u.fix_times
+			temp = 1 << 27
+			for x in range(0, 28):
+				if (t & temp) > 0:
+					ret['result'][x] += 1
+				temp = temp >> 1
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+
 def change_act_state(request):
 	ret = dict()
 
@@ -307,8 +338,6 @@ def reply_application(request):
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')
-
-
 
 
 

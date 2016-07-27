@@ -201,6 +201,27 @@ def delete_user(request):
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 '''
+user_exist:
+    check if a email is used
+
+GET params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| email     | email of user                  | REQUIRED             |
+|===================================================================|
+
+returns 
+    'used'
+'''
+def user_exist(request, email):
+    ret = dict()
+    ret['used'] = (len(User.objects.filter(email=email)) > 0)
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')
+
+
+'''
 user_register:
     register a new user
 
@@ -510,9 +531,12 @@ def get_message(request):
         ret['messages'] = []
         ret['state_code'] = 0
         if setting == 0:
-            for m in user.sent_messages.all():
-                ret['messages'].append(message_serialize(m))
-            for m in user.messages.all():
+            # for m in user.sent_messages.all():
+            #     ret['messages'].append(message_serialize(m))
+            # for m in user.messages.all():
+            #     ret['messages'].append(message_serialize(m))
+            msgs = sorted(user.sent_messages.all() | user.messages.all(), key=lambda x:x.time)
+            for m in msgs:
                 ret['messages'].append(message_serialize(m))
         elif setting == 1:
             for x in user.sent_messages.all():
