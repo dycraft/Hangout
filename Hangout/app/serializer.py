@@ -115,3 +115,28 @@ def message_serialize(msg):
 	ret['time'] = msg.time.strftime('%Y-%m-%d %H:%M:%S')
 	ret['read'] = msg.read
 	return ret
+
+def serialize(obj):
+	if isinstance(obj, User):
+		return user_serialize(obj)
+	elif isinstance(obj, Activity):
+		return activity_serialize(obj)
+	elif isinstance(obj, Application):
+		return application_serialize(obj)
+	elif isinstance(obj, Message):
+		return message_serialize(obj)
+	else:
+		return {'error': 'unsupported type'}
+
+def easy_serialize(obj):
+	if isinstance(obj, User):
+		return {'id': obj.id, 'name': obj.name}
+	elif isinstance(obj, Activity):
+		return activity_serialize(obj)
+	elif isinstance(obj, Application):
+		return application_serialize(obj)
+	elif isinstance(obj, Message):
+		return message_serialize(obj)
+	else:
+		return {'error': 'unsupported type'}
+

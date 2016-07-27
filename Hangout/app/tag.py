@@ -6,12 +6,12 @@ import json
 
 def get_tag(name):
 	
-	try:
-		tag = Tag.objects.get(name=name)
-	except Tag.DoesNotExist:
-		tag = Tag.objects.create(name=name)
+	# try:
+	# 	tag = Tag.objects.get(name=name)
+	# except Tag.DoesNotExist:
+	# 	tag = Tag.objects.create(name=name)
 
-	return tag
+	return Tag.objects.get_or_create(name=name)[0]
 
 def get_tag_detail(request, name):
 	ret = dict()

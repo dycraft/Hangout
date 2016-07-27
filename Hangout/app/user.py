@@ -479,7 +479,7 @@ POST params
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| email     | email of user                  | REQUIRED             |
+| id        | id of user                     | REQUIRED             |
 | setting   | 0: all messages                | 0                    |
 |           | 1: all messages sent by user   |                      |
 |           | 2: all messages sent to user   |                      |
@@ -493,16 +493,16 @@ returns:
 @require_http_methods(['POST'])
 def get_message(request):
     ret = dict()
-    email = request.POST.get('email')
+
     setting = int(request.POST.get('setting', 0))
 
     r = authentication(request,
-                        required_param=['email'],
+                        required_param=['id'],
                         require_authenticate=True,
                         require_model=True,
                         require_permission=True,
                         model=User,
-                        keytype='email')
+                        keytype='id')
     if not r['state_code'] == 0:
         ret['state_code'] = r['state_code']
     else:
@@ -571,7 +571,7 @@ POST param
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| email     | email of user(send to)         | REQUIRED             |
+| id        | id of user(send to)            | REQUIRED             |
 | content   | content of message             | REQUIRED             |
 |===================================================================|
 
@@ -579,11 +579,11 @@ POST param
 def send_message_post(request):
     ret = dict()
     r = authentication(request, 
-                     required_param=['email','content'],
+                     required_param=['id','content'],
                      require_authenticate=True,
                      require_model=True,
                      model=User,
-                     keytype='email')
+                     keytype='id')
     if r['state_code'] == 0:
         to_user = r['record']
         content = r['param']['content']
