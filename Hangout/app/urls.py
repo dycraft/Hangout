@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^user/update$', user.update_user),
     url(r'^user/delete$', user.delete_user),
     url(r'^user/update_password$', user.update_password),
+    url(r'^user/update_portrait$', user.update_portrait),
 
     url(r'^user/follow$', user.follow),
     url(r'^user/unfollow$', user.unfollow),

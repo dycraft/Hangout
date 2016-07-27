@@ -3,6 +3,7 @@ from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
+from django.core.files.base import ContentFile
 
 import json
 
@@ -128,11 +129,34 @@ def update_user(request):
 update_portrait:
     update the portrait of a member
 
-
+POST params
+---------------------------------------------------------------------
+| param     | introduction                   | default              |
+|===================================================================|
+| id        | id of user                     | REQUIRED             |
+| img(file) | portrait of user               | REQUIRED             |
+|===================================================================|
 
 '''
 def update_portrait(request):
-    pass
+
+    ret = dict()
+
+    r = authentication(request, 
+                 required_param=['id'],
+                 require_authenticate=True,
+                 require_model=True,
+                 model=User,
+                 keytype='id')
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        # file_content = ContentFile(request.FILES['img'].read())
+        r['record'].portrait = request.FILES['img']
+        r['record'].save()
+        ret['state_code'] = 0
+        ret['portrait_url'] = ret['record'].portrait.url
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
 '''

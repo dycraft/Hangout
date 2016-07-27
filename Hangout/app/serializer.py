@@ -48,6 +48,10 @@ def user_serialize(user, detailed=True):
 	for t in user.tags.all():
 		ret['tags'].append(t.name)
 	ret['tags'] = ",".join(ret['tags'])
+
+### portrait
+	ret['portrait_url'] = user.portrait.url
+
 	return ret
 
 def activity_serialize(act, detailed=True):
