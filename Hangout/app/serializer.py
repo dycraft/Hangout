@@ -132,11 +132,13 @@ def easy_serialize(obj):
 	if isinstance(obj, User):
 		return {'id': obj.id, 'name': obj.name}
 	elif isinstance(obj, Activity):
-		return activity_serialize(obj)
+		return {'id': obj.id, 'name': obj.name, 'organizer': obj.organizer.name, 'organizer_id': obj.organizer.id}
 	elif isinstance(obj, Application):
 		return application_serialize(obj)
 	elif isinstance(obj, Message):
 		return message_serialize(obj)
+	elif isinstance(obj, Tag):
+		return {'id': obj.id, 'name': obj.name}
 	else:
 		return {'error': 'unsupported type'}
 

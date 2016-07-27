@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import user, activity, tag
+from . import user, activity, tag, query
 
 app_name = 'app'
 
@@ -44,6 +44,9 @@ urlpatterns = [
 
     # Tag
     url(r'^tag/get/(?P<name>.*?)$', tag.get_tag_detail),
+
+    # Query
+    url(r'^search/(?P<keyword>.*?)$', query.query),
 
 
 ### for testing 
