@@ -125,6 +125,17 @@ def update_user(request):
 
 
 '''
+update_portrait:
+    update the portrait of a member
+
+
+
+'''
+def update_portrait(request):
+    pass
+
+
+'''
 update_password:
     update user password(only by admin and user itself), automatically
     logout when succeeded
@@ -254,7 +265,7 @@ def user_register(request):
         user_info = dict()
         user_info['name'] = request.POST.get('name', 'anonymous')
         user_info['password'] = request.POST.get('password', '')
-        user_info['portrait'] = request.POST.get('portrait')
+        # user_info['portrait'] = request.POST.get('portrait')
         user_info['email'] = request.POST.get('email', '')
         user_info['fix_times'] = request.POST.get('fix_times', 0)
         user_info['cellphone'] = request.POST.get('cellphone', '')
@@ -270,7 +281,7 @@ def user_register(request):
                             user_info['password'], 
                             name = user_info['name']
                         )
-                user.portrait = user_info['portrait']
+                # user.portrait = user_info['portrait']
                 user.fix_times = user_info['fix_times']
                 user.cellphone = user_info['cellphone']
                 user.intro = user_info['intro']

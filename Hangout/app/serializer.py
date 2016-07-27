@@ -1,4 +1,6 @@
 from .models import *
+import datetime
+
 
 def user_serialize(user, detailed=True):
 	
@@ -75,9 +77,11 @@ def activity_serialize(act, detailed=True):
 	ret['organizer'] = {'id': act.organizer.id, 'name': act.organizer.name}
 
 ## times
-	ret['time'] = act.time.strftime('%Y-%m-%d %a %H:00')
-	ret['create_at'] = act.create_at.strftime('%Y-%m-%d, %H:%M:%S')
-	ret['modified_at'] = act.modified_at.strftime('%Y-%m-%d, %H:%M:%S')
+	delta_time = datetime.timedelta(hours=8)
+	ret['start_time'] = act.time.strftime('%Y-%m-%d %a %H:00')
+	ret['end_time'] = act.end_time.strftime('%Y-%m-%d %a %H:00')
+	ret['create_at'] = (act.create_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
+	ret['modified_at'] = (act.modified_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
 
 	if detailed == True:
 		member_fields = [
@@ -103,7 +107,8 @@ def application_serialize(app):
 		'name': app.activity.name,
 	}
 	ret['intro'] = app.intro
-	ret['time'] = app.time.strftime('%Y-%m-%d %H:%M')
+	delta_time = datetime.timedelta(hours=8)
+	ret['time'] = (app.time+delta_time).strftime('%Y-%m-%d %H:%M')
 	return ret
 
 def message_serialize(msg):
@@ -112,7 +117,8 @@ def message_serialize(msg):
 	ret['from'] = msg.from_user.email
 	ret['to'] = msg.to_user.email
 	ret['content'] = msg.content
-	ret['time'] = msg.time.strftime('%Y-%m-%d %H:%M:%S')
+	delta_time = datetime.timedelta(hours=8)
+	ret['time'] = (msg.time+delta_time).strftime('%Y-%m-%d %H:%M:%S')
 	ret['read'] = msg.read
 	return ret
 

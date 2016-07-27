@@ -71,6 +71,7 @@ class Activity(models.Model):
     cost = models.FloatField(default=0.0)
     location = models.CharField(max_length=100, default='')
     time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(auto_now_add=True)
 
     state = models.IntegerField(default=0)
     organizer = models.ForeignKey('User', related_name='org_acts')
@@ -110,7 +111,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=100)
     cellphone = models.CharField(max_length=20, blank=True)
     score = models.FloatField(default=0.0)
-    portrait = models.ImageField()
+    portrait = models.ImageField(upload_to='portrait')
     email = models.EmailField(unique=True)
     intro = models.CharField(default='', max_length=200)
     state = models.CharField(default='', max_length=50)
