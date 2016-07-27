@@ -4,30 +4,35 @@
     <h1>我的资料</h1>
 
     <div class="well">
-      <form role="form" ng-submit="vm.update_profile()">
+      <form role="form" id="profile_form">
         <div class="form-group">
           <label for="profile__email">邮箱</label>
-          <input type="email" class="form-control" id="profile__email" ng-model="vm.email" placeholder="ex. john@notgoogle.com" />
+          <input type="email" name="email" class="form-control" id="profile__email" ng-model="vm.email" placeholder="ex. john@notgoogle.com" readonly/>
         </div>
 
         <div class="form-group">
           <label for="profile__username">用户名</label>
-          <input type="text" class="form-control" id="profile__username" ng-model="vm.username" placeholder="ex. john" />
+          <input type="text" name="username" class="form-control" id="profile__username" ng-model="vm.username" placeholder="ex. john" />
         </div>
 
         <div class="form-group">
           <label for="profile__password">密码</label>
-          <input type="password" class="form-control" id="profile__password" ng-model="vm.password" placeholder="ex. thisisnotgoogleplus" />
+          <input type="password" name="password" class="form-control" id="profile__password" ng-model="vm.password" placeholder="ex. thisisnotgoogleplus" />
+        </div>
+
+        <div class="form-group">
+          <label for="profile__cfmpassword">确认密码</label>
+          <input type="password" name="cfmpassword" class="form-control" id="profile__cfmpassword" ng-model="vm.cfmpassword" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
           <label for="profile__password">手机号</label>
-          <input type="text" class="form-control" id="profile__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
+          <input type="text" name="tel" class="form-control" id="profile__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
           <label for="profile__intro">个人简介</label>
-          <textarea style="width:100%" class="form-control" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro"></textarea>
+          <textarea style="width:100%" class="form-control" name="intro" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro"></textarea>
         </div>
 
         <div class="form-group">
@@ -52,7 +57,7 @@
         </div>
 
         <div class="form-group">
-          <button type="submit" class="btn btn-primary">保存</button>
+          <button type="submit" name="submitButton" class="btn btn-primary">保存</button>
         </div>
       </form>
     </div>

@@ -3,7 +3,7 @@
 
   var CONST = {
         WEEK: ['SUN','MON','TUE','WED','THU','FRI','SAT'],
-        TIME_SEG: ['0:00-7:00', '7:00-12:00', '12:00-18:00', '18:00-24:00']
+        TIME_SEG: ['08:00-12:00', '12:00-15:00', '15:00-19:00', '19:00-22:00']
     };
 
   angular.module('hangout.controllers', [])
@@ -26,6 +26,44 @@
       function login() {
         Authentication.login(vm.email, vm.password);
       }
+
+      //validator
+      $('#login_form').bootstrapValidator({
+        fields: {
+          email: {
+            validators: {
+              notEmpty: {
+                message: '邮箱不能为空'
+              },
+              emailAddress: {
+                message: '输入不是有效的电子邮件地址'
+              }
+            }
+          },
+          password: {
+            validators: {
+              notEmpty: {
+                message: '密码不能为空'
+              },
+              stringLength: {
+                min: 6,
+                max: 15,
+                message: '密码必须大于6，小于15个字'
+              },
+              regexp: {
+                regexp: /^[a-zA-Z0-9_\.]+$/,
+                message: '密码中含有特殊字符'
+              }
+            }
+          }
+        }
+      })
+      .on('success.form.bv', function(e) {
+        e.preventDefault();
+        if ($('#login_form').data('bootstrapValidator').isValid()) {
+          vm.login();
+        }
+      });
     }])
     .controller('registerCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
       console.log('register');
@@ -41,6 +79,91 @@
           $location.url('/');
         }
       }
+      //validator
+      $('#register_form').bootstrapValidator({
+        feedbackIcons: {
+          valid: 'fa fa-check',
+          invalid: 'fa fa-times',
+          validating: 'fa fa-refresh'
+        },
+        fields: {
+          email: {
+            validators: {
+              notEmpty: {
+                message: '邮箱不能为空'
+              },
+              emailAddress: {
+                message: '输入不是有效的电子邮件地址'
+              }
+            }
+          },
+          username: {
+            validators: {
+              notEmpty: {
+                message: '用户名不能为空'
+              },
+              stringLength: {
+                min: 3,
+                max: 10,
+                message: '用户名必须大于3，小于10个字'
+              }
+            }
+          },
+          password: {
+            validators: {
+              notEmpty: {
+                message: '密码不能为空'
+              },
+              stringLength: {
+                min: 6,
+                max: 15,
+                message: '密码必须大于6，小于15个字'
+              },
+              regexp: {
+                regexp: /^[a-zA-Z0-9_\.]+$/,
+                message: '密码中含有特殊字符'
+              }
+            }
+          },
+          cfmpassword: {
+            validators: {
+              notEmpty: {
+                message: '确认密码不能为空'
+              },
+              identical: {
+                field: 'password',
+                message: '两次密码输入不一致'
+              }
+            }
+          },
+          tel: {
+            validators: {
+              notEmpty: {
+                message: '手机号码不能为空'
+              },
+              regexp: {
+                regexp: /^1[3|4|5|7|8]\d{9}$/,
+                message: '请输入正确的手机号码格式'
+              }
+            }
+          },
+          intro: {
+            validators: {
+              stringLength: {
+                max: 100,
+                message: '个人简介必须小于100个字'
+              }
+            }
+          }
+        }
+      })
+      .on('success.form.bv', function(e) {
+        e.preventDefault();
+        if ($('#register_form').data('bootstrapValidator').isValid()) {
+          vm.register();
+        }
+      });
+
       //FixedTimeTable
       vm.week = CONST.WEEK;
       vm.times = CONST.TIME_SEG;
@@ -82,6 +205,91 @@
               onSelectTime(tds.index($(this)), "profile");
           });
           decodeFixedTime(vm.fix_times, "profile");
+      });
+
+      //validator
+      $('#profile_form').bootstrapValidator({
+        feedbackIcons: {
+          valid: 'fa fa-check',
+          invalid: 'fa fa-times',
+          validating: 'fa fa-refresh'
+        },
+        fields: {
+          email: {
+            validators: {
+              notEmpty: {
+                message: '邮箱不能为空'
+              },
+              emailAddress: {
+                message: '输入不是有效的电子邮件地址'
+              }
+            }
+          },
+          username: {
+            validators: {
+              notEmpty: {
+                message: '用户名不能为空'
+              },
+              stringLength: {
+                min: 3,
+                max: 10,
+                message: '用户名必须大于3，小于10个字'
+              }
+            }
+          },
+          password: {
+            validators: {
+              notEmpty: {
+                message: '密码不能为空'
+              },
+              stringLength: {
+                min: 6,
+                max: 15,
+                message: '密码必须大于6，小于15个字'
+              },
+              regexp: {
+                regexp: /^[a-zA-Z0-9_\.]+$/,
+                message: '密码中含有特殊字符'
+              }
+            }
+          },
+          cfmpassword: {
+            validators: {
+              notEmpty: {
+                message: '确认密码不能为空'
+              },
+              identical: {
+                field: 'password',
+                message: '两次密码输入不一致'
+              }
+            }
+          },
+          tel: {
+            validators: {
+              notEmpty: {
+                message: '手机号码不能为空'
+              },
+              regexp: {
+                regexp: /^1[3|4|5|7|8]\d{9}$/,
+                message: '请输入正确的手机号码格式'
+              }
+            }
+          },
+          intro: {
+            validators: {
+              stringLength: {
+                max: 100,
+                message: '个人简介必须小于100个字'
+              }
+            }
+          }
+        }
+      })
+      .on('success.form.bv', function(e) {
+        e.preventDefault();
+        if ($('#profile_form').data('bootstrapValidator').isValid()) {
+          vm.update_profile();
+        }
       });
     }])
     .controller('actInfoCtrl', ['$scope', '$location', '$routeParams', '$http', 'Authentication', function($scope, $location, $routeParams, $http, Authentication){
@@ -334,6 +542,14 @@
       $scope.week = CONST.WEEK;
       $scope.times = CONST.TIME_SEG;
       $scope.tags = "default";
+
+      $http.get('/api/activity/detail/'+$routeParams.act_id).success(function(data) {
+        $scope.name = data.act_info.name;
+        $scope.intro = data.act_info.intro;
+        $scope.tags = data.act_info.tags;
+        $scope.cost = data.act_info.cost;
+        $scope.location = data.act_info.location;
+      });
 
       //time picker
       $('#act_profile__date1').combodate({
