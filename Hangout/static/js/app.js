@@ -3,7 +3,7 @@
 angular.module('hangout', [
     'ngRoute',
     'ngCookies',
-//    'angularFileUpload',
+    'angularFileUpload',
     'hangout.services',
     'hangout.controllers',
     'hangout.directives',

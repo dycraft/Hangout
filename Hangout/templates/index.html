@@ -12,7 +12,8 @@
         <script src="/static/lib/angular-route.min.js"></script>
         <script src="/static/lib/angular-cookies.min.js"></script>
         <script src="/static/lib/jquery-1.11.0.min.js"></script>
-        <script src="/static/lib/bootstrap.min.js"></script>
+        <script src="/static/lib/bootstrap.min.js"></script> 
+        <script src="/static/lib/fileupload/angular-file-upload.min.js"></script>
     </head>
     <body>
 
@@ -57,7 +58,7 @@
               <form class="form-inline" ng-submit="send_message()">
                 <div class="form-group">
                   <label for="send_message" class="sr-only">发送给</label>
-                  <input type="text" class="form-control" id="send_message" ng-model="msg_content" placeholder="ex. hi! how are u!" style="width:300px;" />
+                  <input type="text" class="form-control" id="send_message" ng-model="msg_content" placeholder="[[ msg_placeholder ]]" style="width:300px;" />
                 </div>
                 <button type="submit" class="btn btn-primary">发送</button>
               </form>
