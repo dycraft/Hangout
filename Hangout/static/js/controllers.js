@@ -334,6 +334,7 @@
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
       }
       $http.get('/api/tag/get/' + $routeParams.tag_name).success(function(data) {
+        $scope.tag = $routeParams.tag_name;
         $scope.users = data.users;
         $scope.acts = data.acts;
         console.log(data);
@@ -371,9 +372,12 @@
         })
       });
     }])
-    .controller('followInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
+    .controller('followInfoCtrl', ['$http', '$scope', '$rootScope', '$routeParams', 'Authentication', function($http, $scope, $rootScope, $routeParams, Authentication){
       if (Authentication.isAuthenticated()) {
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
+      }
+      $scope.sendMsgTo = function(user) {
+        $rootScope.getSendUser(user);
       }
       $http.get('/api/user/following').success(function(data) {
         $scope.following = data.following;
@@ -411,7 +415,61 @@
         })
       });
     }])
-    .controller('navbarCtrl', ['$location', '$scope', '$rootScope', 'Authentication', function($location, $scope, $rootScope, Authentication){
+    .controller('msgBoxCtrl', ['$http', '$scope', '$rootScope', 'Authentication', function($http, $scope, $rootScope, Authentication) {
+      var round_robin = function() {
+        var timer = setInterval(function(){
+          $http.post('/api/user/message/get', $.param({
+            'id': $scope.login_id,
+          })).success(function(data){
+            console.log(data);
+          })
+        }, 2000);
+      }
+      var kill_robin = function() {
+        if (timer) {
+          clearInterval(timer);
+        }
+      }
+      $('#message-box').click(function(){
+        if ($('#message-list').css('opacity') == 0) {
+          $('#message-list').animate({'opacity': 1}, 100);
+        }
+        else {
+          $('#message-list').animate({'opacity': 0}, 100);
+        }
+      });
+      $rootScope.getSendUser = function(user){
+        $scope.msg_content = user.name + ":";
+      }
+      $scope.send_message = function() {
+        console.log($scope.msg_content);
+        var msg = $scope.msg_content.slice($scope.msg_content.indexOf(':') + 1);
+        if (msg) {
+          alert(msg);
+        }
+      }
+      $scope.send_content = "";
+      if (Authentication.isAuthenticated()) {
+        $('#message-box').css({'display': 'block'});
+        $('#message-list').css({'opacity': 0});
+        round_robin();
+      }
+      else {
+        $('#message-box').css({'display': 'none'});
+        $('#message-list').css({'opacity': 0});
+        kill_robin();
+      }
+      $rootScope.$on('login_done', function(){        
+        $('#message-box').css({'display': 'block'});
+        $('#message-list').css({'opacity': 0});
+        round_robin();
+      });
+      $rootScope.$on('logout_done', function(){
+        $('#message-box').css({'display': 'none'});
+        $('#message-list').css({'opacity': 0});
+      });
+    }])
+    .controller('navbarCtrl', ['$location', '$http', '$scope', '$rootScope', 'Authentication', function($location, $http, $scope, $rootScope, Authentication){
       function login() {
         $location.url('/login');
       }

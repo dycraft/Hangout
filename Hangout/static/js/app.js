@@ -7,6 +7,7 @@ angular.module('hangout', [
     'hangout.services',
     'hangout.controllers',
     'hangout.directives',
+    'angular-notification-icons',
     ]).
     constant('urls', {'part': '/static/partials', 'api': '/api'}).
     config(['$interpolateProvider', function($interpolateProvider){
