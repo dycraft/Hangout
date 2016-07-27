@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.css">
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1>活动资料</h1>
+
+    <div class="well">
+      <form role="form" ng-submit="save()">
+
+        <div class="form-group">
+          <label for="act_profile__name">活动名称</label>
+          <input type="text" class="form-control" id="act_profile__name" ng-model="name" placeholder="untitled" />
+        </div>
+
+        <div class="form-group">
+          <label for="act_profile__intro">活动简介</label>
+          <input type="text" class="form-control" id="act_profile__intro" ng-model="intro" placeholder="No intro available" />
+        </div>
+
+        <div class="form-group">
+          <label for="act_profile__tags">活动标签</label>
+          <br>
+          <input type="text" class="form-control" id="act_profile__tags" ng-model="tags" data-role="tagsinput" />
+        </div>
+
+        <div class="form-group">
+          <label for="act_profile__cost">活动花费</label>
+          <input type="text" class="form-control" id="act_profile__cost" ng-model="cost" placeholder="0" />
+        </div>
+
+        <div class="form-group">
+          <label for="act_profile__location">活动地址</label>
+          <input type="text" class="form-control" id="act_profile__location" ng-model="location" placeholder="pending" />
+        </div>
+
+        <div class="form-group">
+            <label for="act_profile__fixed">推荐活动时间</label>
+            <table class="table table-selectable" id="act_profile__fixed" ng-model="vm.fix_times">
+                <thead>
+                    <tr>
+                        <th ng-repeat='day in week'>[[ day ]]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-unselectable" ng-repeat='time in times' on-finish-render-filters>
+                        <td ng-repeat='n in week track by $index'>[[ time ]]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group">
+          <label for="act_profile__date">活动时间</label>
+          <br>
+          开始时间：  <input type="text" class="form-control" id="act_profile__date1" ng-model="date1" placeholder="点击选择日期" data-format="YYYY-MM-DD HH" data-template="YYYY 年 MM 月 DD 日 HH时" />
+          <br>
+          结束时间：  <input type="text" class="form-control" id="act_profile__date2" ng-model="date2" placeholder="点击选择日期" data-format="YYYY-MM-DD HH" data-template="YYYY 年 MM 月 DD 日 HH时" />
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

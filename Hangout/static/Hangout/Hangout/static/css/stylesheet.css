@@ -1,0 +1,37 @@
+/*backtotop*/
+.back-to-top {
+	position: fixed;
+	bottom: 15px;
+	right: 10px;
+	z-index: 1;
+	width: 40px;
+	height: 40px;
+	background: #DDD;
+	opacity: 0.3;
+	display: none;
+  text-align: center;
+  font-size: 20px;
+}
+
+.back-to-top i {
+  color: #FFF;
+}
+
+.back-to-top:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/*timetable*/
+.tr-selectable td {
+    background-color: #EBEBEB;
+}
+
+.tr-selectable td:hover{
+    background-color: #FFF;
+    cursor: pointer;
+}
+
+.tr-unselectable td {
+  background-color: #EBEBEB;
+}

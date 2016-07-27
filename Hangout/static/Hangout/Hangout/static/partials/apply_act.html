@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.css">
+<div class="well">
+  <form role="form" ng-submit="apply()">
+    <div class="form-group">
+      <label for="apply__name">活动名称</label>
+      <input type="text" class="form-control" id="apply__name" ng-model="act.name" placeholder="ex. john@notgoogle.com" />
+    </div>
+
+    <div class="form-group">
+      <label for="apply__intro">活动简介</label>
+      <textarea class="form-control" id="apply__intro" ng-model="act.intro" placeholder="ex. john"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="apply__location">地点</label>
+      <input type="text" class="form-control" id="apply__location" ng-model="act.location" placeholder="ex. thisisnotgoogleplus" />
+    </div>
+
+    <div class="form-group">
+      <label for="apply__tags">活动标签</label>
+      <input type="text" class="form-control" id="apply__tags" ng-model="act.tags" data-role="tagsinput" />
+    </div>
+
+    <div class="form-group">
+      <label for="apply__cost">活动花费</label>
+      <input type="text" class="form-control" id="apply__cost" ng-model="act.cost" />
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">创建</button>
+    </div>
+  </form>
+</div>
