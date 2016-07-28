@@ -33,6 +33,60 @@
           $scope.users = data.user;
         });
       }
+      $scope.B = function(state) {
+        return {
+          0: "停止报名",
+          1: "开放报名",
+          2: "",
+        }[state];
+      }
+      $scope.L2 = function(state) {
+        return {
+          0: "danger",
+          1: "success",
+          2: "",
+        }[state];
+      }
+      $scope.U = function(act) {
+        if (act.state == 0) {
+          $http.post('/api/activity/change_state', $.param({
+            'id': act.id,
+            'state': 1,
+          })).success(function(){
+            act.state = 1;
+          });
+        }
+        else {
+          $http.post('/api/activity/change_state', $.param({
+            'id': act.id,
+            'state': 0,
+          })).success(function(){
+            act.state = 0;
+          });
+        }
+      }
+      $scope.D = function(act) {
+        $http.post('/api/activity/change_state', $.param({
+          'id': act.id,
+          'state': 2,
+        })).success(function(){
+          act.state = 2;
+        });
+      }
+      $scope.T = function(state) {
+        return {
+          0: "接受报名",
+          1: "结束报名",
+          2: "已结束",
+        }[state];
+      }
+      $scope.L1 = function(state) {
+        return {
+          0: "success",
+          1: "danger",
+          2: "default",
+        }[state];
+      }
     }])
     .controller('loginCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
       console.log('login');
