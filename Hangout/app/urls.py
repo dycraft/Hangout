@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^user/following$', user.check_following),
     url(r'^user/follower$', user.check_follower),
 
+    url(r'^user/recommend$', user.get_recommend),
+
     # User messages
     url(r'^user/message/get$', user.get_message),
     url(r'^user/message/send$', user.send_message_post),

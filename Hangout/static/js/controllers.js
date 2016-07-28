@@ -273,8 +273,17 @@
       //js-lib: tagsinput
       $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
     }])
-    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', function($scope, $location, Authentication, $http){
+    .controller('profileCtrl', ['$scope', '$location', 'Authentication', '$http', 'FileUploader', function($scope, $location, Authentication, $http, FileUploader){
       console.log('profile');
+
+      //uploader
+      var uploader = $scope.uploader = new FileUploader({
+        url: '/api/user/update_portrait',
+        data: $.param({
+          'id': Authentication.getAuthenticatedAccount().user_info.id,
+        }),
+      });
+
       if (Authentication.isAuthenticated()) {
         var vm = this;
         vm.update_profile = function() {
@@ -335,15 +344,14 @@
             }
           },
           password: {
-              stringLength: {
-                min: 6,
-                max: 15,
-                message: '密码必须大于6，小于15个字',
-              },
-              regexp: {
-                regexp: /^[a-zA-Z0-9_\.]+$/,
-                message: '密码中含有特殊字符',
-              }
+            stringLength: {
+              min: 6,
+              max: 15,
+              message: '密码必须大于6，小于15个字'
+            },
+            regexp: {
+              regexp: /^[a-zA-Z0-9_\.]+$/,
+              message: '密码中含有特殊字符'
             }
           },
           cfmpassword: {
@@ -373,7 +381,8 @@
               }
             }
           }
-        })
+        }
+      })
       .on('success.form.bv', function(e) {
         e.preventDefault();
         if ($('#profile_form').data('bootstrapValidator').isValid()) {

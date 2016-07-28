@@ -1,31 +1,12 @@
 from .models import Activity, User, Tag
 from .serializer import easy_serialize, serialize
+from .utilities import cmp_to_key
 from django.http import HttpResponse
 from django.db.models import Q
 
 
 import json
 from itertools import chain
-
-def cmp_to_key(mycmp):
-    'Convert a cmp= function into a key= function'
-    class K:
-        def __init__(self, obj, *args):
-            self.obj = obj
-        def __lt__(self, other):
-            return mycmp(self.obj, other.obj) < 0
-        def __gt__(self, other):
-            return mycmp(self.obj, other.obj) > 0
-        def __eq__(self, other):
-            return mycmp(self.obj, other.obj) == 0
-        def __le__(self, other):
-            return mycmp(self.obj, other.obj) <= 0
-        def __ge__(self, other):
-            return mycmp(self.obj, other.obj) >= 0
-        def __ne__(self, other):
-            return mycmp(self.obj, other.obj) != 0
-    return K
-
 
 def weight(obj, keyword):
 	weight = 0

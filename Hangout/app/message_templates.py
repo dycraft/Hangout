@@ -2,9 +2,9 @@
 
 def send_application(user_name, act_name, admin_name, app_type):
 	tmp = ''
-	if app_type == 1:
+	if app_type == '1':
 		tmp = 'a member'
-	elif app_type == 2:
+	elif app_type == '2':
 		tmp = 'an admin'
 	else:
 		tmp = 'something'
