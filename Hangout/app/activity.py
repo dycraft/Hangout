@@ -172,6 +172,8 @@ def update_activity(request):
 			ret['state_code'] = 0
 			ret['act_info'] = activity_serialize(act)
 
+			send_update_activity_message(request.user, act)
+
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
@@ -334,7 +336,10 @@ def reply_application(request):
 						application_granted(app.applicant.name,
 											app.application_type,
 											app.activity.name,
-											request.user.name))
+											request.user.name),
+						2,
+						admin_id=request.user.id,
+						act_id=app.activity.id)
 				app.delete()
 
 			if reply == 0:
@@ -343,7 +348,10 @@ def reply_application(request):
 					application_rejected(app.applicant.name,
 										app.application_type,
 										app.activity.name,
-										request.user.name))
+										request.user.name),
+					2,
+					admin_id=request.user.id,
+					act_id=app.activity.id)
 
 				app.delete()
 				ret['state_code'] = 0
