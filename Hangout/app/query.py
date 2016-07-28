@@ -1,5 +1,5 @@
 from .models import Activity, User, Tag
-from .serializer import easy_serialize
+from .serializer import easy_serialize, serialize
 from django.http import HttpResponse
 from django.db.models import Q
 
