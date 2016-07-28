@@ -278,10 +278,7 @@
 
       //uploader
       var uploader = $scope.uploader = new FileUploader({
-        url: '/api/user/update_portrait',
-        data: $.param({
-          'id': Authentication.getAuthenticatedAccount().user_info.id,
-        }),
+        url: '/api/user/update_portrait'
       });
 
       if (Authentication.isAuthenticated()) {
