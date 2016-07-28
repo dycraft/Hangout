@@ -7,7 +7,7 @@
 		<h3><i class="fa fa-users" style="font-size: 20px"></i> 活动人数 / 预计人数：[[ act.member_count ]] / [[ act.member_limit ]]</h3>
 		<h3><i class="fa fa-cny" style="font-size: 30px"></i> 预计花费：[[ act.cost == 0 ? "无花费" : "¥ " + act.cost ]]</h3>
 		<h3><i class="fa fa-calendar"></i> 活动时间：[[ act.time ]]</h3>
-		<h3><i class="fa fa-book"></i> 活动简介：[[ act.intro ]]</h3>
+		<h3><i class="fa fa-book"></i> 活动简介：<show-more limit="50" text="act.intro"></show-more></h3>
 
 		<div id="act_info_share"></div>
 
@@ -40,7 +40,7 @@
 		    <div class="thumbnail" style="background-color:rgba(235, 204, 209, 0.5);">
 		      <img src="[[ user.portrait_url ]]" alt="...">
 		      <div class="caption">
-		        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a> 
+		        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a>
 		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="allow_apply(user.id)" class="btn btn-success" role="button"> 同意 </a></p>
 		      </div>
 		    </div>
