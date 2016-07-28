@@ -648,6 +648,39 @@
         $scope.act_type = "recommend_act";
         $('.act-nav').not('#otherActs').removeClass("active");
         $('#otherActs').addClass('active');
+        $http.get('/api/user/recommend').success(
+          function(data){
+            console.log(data);
+            $scope.acts = data.acts;
+        });
+        $scope.B = function(state) {
+          return {
+            0: "退出活动",
+            1: "退出活动",
+            2: "",
+          }[state];
+        }
+        $scope.T = function(state) {
+          return {
+            0: "接受报名",
+            1: "结束报名",
+            2: "活动结束",
+          }[state];
+        }
+        $scope.L = function(state) {
+          return {
+            0: "success",
+            1: "danger",
+            2: "default",
+          }[state];
+        }
+        $scope.Q = function(act) {
+          $http.post('/api/user/quit_act', $.param({
+            'act_id': act.id,
+          })).success(function(data) {
+            $route.reload();
+          })
+        }
       }
       $scope.myActs();
 

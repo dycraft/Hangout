@@ -8,7 +8,7 @@
         link: function(scope, element, attrs) {
           scope.contentUrl = '/static/partials/' + attrs.ver + '.html';
           attrs.$observe("ver", function(v) {
-          	scope.contentUrl = '/static/partials/' + v + '.html?639';
+          	scope.contentUrl = '/static/partials/' + v + '.html?6391';
           });
         },
         template: '<div ng-include="contentUrl"></div>'

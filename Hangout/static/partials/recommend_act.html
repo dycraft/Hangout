@@ -2,10 +2,10 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">组织的活动</div>
 	 	<ul class="list-group">
-			<li class="list-group-item" ng-repeat="act in user.admin_acts" ng-if="act.organizer.id == user.id">
+			<li class="list-group-item" ng-repeat="act in acts">
 			  <div>
-					<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">人数 <span class="badge">[[ act.count ]]</span><button ng-click="apply_for(act.id)" class="btn btn-primary" type="button">加入活动</button></p>
-					<p><span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span></p>
+					<h4><a ng-href="/act_info/[[ act.act.id ]]">[[ act.act.name ]]</a> <a ng-href="/user_info/[[ act.act.organizer.id ]]"><small>[[ act.act.organizer.name ]]</small></a></h4><p style="float:right;">人数 <span class="badge">[[ act.act.count ]]</span><button ng-click="apply_for(act.act.id)" class="btn btn-primary" type="button">加入活动</button></p>
+					<p><span class="label label-[[ L1(act.act.state) ]]" style="font-size: 16px;">[[ T(act.act.state) ]]</span></p>
 			  </div>
 			</li>
   	</ul>
