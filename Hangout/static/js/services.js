@@ -72,7 +72,7 @@
 
       function updateSuccessFn(data, status, headers, config) {
         console.log(data.data);
-        $http.get('/api/user/detail/' + getAuthenticatedAccount().user_info.email).then(function(data, status, hearders, config) {
+        $http.get('/api/user/detail/' + getAuthenticatedAccount().user_info.id).then(function(data, status, hearders, config) {
           setAuthenticatedAccount(data.data);
           $rootScope.$broadcast('login_done')
         })
