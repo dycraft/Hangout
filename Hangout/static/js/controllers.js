@@ -19,7 +19,10 @@
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
       }
       $scope.join_act = function(act) {
-
+        $http.post('/api/user/apply', $.param({
+          'act_id': act.id,
+          'type': 1,
+        }))
       }
       $scope.search = function() {
         $http.get('/api/search/' + $scope.search_content).success(function(data) {
