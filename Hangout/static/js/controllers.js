@@ -7,10 +7,16 @@
     };
 
   angular.module('hangout.controllers', [])
-    .controller('homepageCtrl', ['$scope', '$location', function($scope, $location){
+    .controller('homepageCtrl', ['$scope', '$location', '$http', function($scope, $location, $http){
       console.log('homepage');
-      $scope.login = function(){
-        $location.url('/login');
+      $('#search_content').css({
+        'width': '500px',
+      })
+      $scope.search = function() {
+        console.log(1);
+        $http.get('/api/search/' + $scope.search_content).success(function(data) {
+          console.log(data);
+        });
       }
     }])
     .controller('loginCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
@@ -71,7 +77,7 @@
       vm.tags = "student";
       vm.register = register;
       function register() {
-        Authentication.register(vm.email, vm.password, vm.username, encodeFixedTime(), $('#register__tags').val(), vm.cellphone, vm.intro);
+        Authentication.register(vm.email, vm.password, vm.username);
       }
       activate();
       function activate() {
@@ -136,25 +142,6 @@
               }
             }
           },
-          tel: {
-            validators: {
-              notEmpty: {
-                message: '手机号码不能为空'
-              },
-              regexp: {
-                regexp: /^1[3|4|5|7|8]\d{9}$/,
-                message: '请输入正确的手机号码格式'
-              }
-            }
-          },
-          intro: {
-            validators: {
-              stringLength: {
-                max: 100,
-                message: '个人简介必须小于100个字'
-              }
-            }
-          }
         }
       })
       .on('success.form.bv', function(e) {
@@ -807,25 +794,25 @@
     }])
     .controller('msgBoxCtrl', ['$http', '$scope', '$rootScope', 'Authentication', function($http, $scope, $rootScope, Authentication) {
       var round_robin = function() {
-        var timer = setInterval(function(){
+        $scope.timer = setInterval(function(){
           $http.post('/api/user/message/get', $.param({
-            'id': $scope.login_id,
+            'id': Authentication.getAuthenticatedAccount().user_info.id,
           })).success(function(data){
             console.log(data);
           })
         }, 2000);
       }
       var kill_robin = function() {
-        if (timer) {
-          clearInterval(timer);
+        if ($scope.timer) {
+          clearInterval($scope.timer);
         }
       }
       $('#message-box').click(function(){
         if ($('#message-list').css('opacity') == 0) {
-          $('#message-list').animate({'opacity': 1}, 100);
+          $('#message-list').css({'display': 'block'}).animate({'opacity': 1}, 100);
         }
         else {
-          $('#message-list').animate({'opacity': 0}, 100);
+          $('#message-list').animate({'opacity': 0}, 100).css({'display': 'none'});
         }
       });
       $rootScope.getSendUser = function(user){
@@ -841,22 +828,22 @@
       $scope.send_content = "";
       if (Authentication.isAuthenticated()) {
         $('#message-box').css({'display': 'block'});
-        $('#message-list').css({'opacity': 0});
+        $('#message-list').css({'opacity': 0}).css({'display': 'none'});
         round_robin();
       }
       else {
         $('#message-box').css({'display': 'none'});
-        $('#message-list').css({'opacity': 0});
-        kill_robin();
+        $('#message-list').css({'opacity': 0}).css({'display': 'none'});
       }
       $rootScope.$on('login_done', function(){
         $('#message-box').css({'display': 'block'});
-        $('#message-list').css({'opacity': 0});
+        $('#message-list').css({'opacity': 0}).css({'display': 'none'});
         round_robin();
       });
       $rootScope.$on('logout_done', function(){
         $('#message-box').css({'display': 'none'});
-        $('#message-list').css({'opacity': 0});
+        $('#message-list').css({'opacity': 0}).css({'display': 'none'});
+        kill_robin();
       });
     }])
     .controller('navbarCtrl', ['$location', '$http', '$scope', '$rootScope', 'Authentication', function($location, $http, $scope, $rootScope, Authentication){

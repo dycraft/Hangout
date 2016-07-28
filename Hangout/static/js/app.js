@@ -21,7 +21,11 @@ angular.module('hangout', [
         //Route configure
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix = '';
-        $routeProvider.when('/', {templateUrl: urls.part + '/homepage.html', controller: 'homepageCtrl', title: 'homepage', tag_name: 'homepage'});
+        $routeProvider.when('/', {
+            templateUrl: urls.part + '/homepage.html',
+            controller: 'homepageCtrl',
+            title: 'homepage',
+            tag_name: 'homepage'});
 	    $routeProvider.when('/login',{
             templateUrl: urls.part + '/login.html',
             controller: 'loginCtrl',

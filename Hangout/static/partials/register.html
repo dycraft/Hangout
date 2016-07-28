@@ -36,38 +36,6 @@
           <input type="password" name="cfmpassword" class="form-control" id="register__cfmpassword" ng-model="vm.cfmpassword" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
-
-        <div class="form-group">
-          <label for="register__password">手机号</label>
-          <input type="text" name="tel" class="form-control" id="register__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
-        </div>
-
-        <div class="form-group">
-          <label for="register__intro">个人简介</label>
-          <textarea type="text" name="intro" class="form-control" id="register__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="register__fixed">选择可活动时间</label>
-            <table class="table table-selectable" id="register__fixed" ng-model="vm.fix_times">
-                <thead>
-                    <tr>
-                        <th ng-repeat='day in vm.week'>[[ day ]]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="tr-selectable" ng-repeat='time in vm.times' on-finish-render-filters>
-                        <td ng-repeat='n in vm.week track by $index'>[[ time ]]</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="form-group">
-          <label for="register__tags">个人标签</label>
-          <input type="text" class="form-control" id="register__tags" ng-model="vm.tags" data-role="tagsinput" />
-        </div>
-
         <div class="form-group">
           <button type="submit" name="submitButton" class="btn btn-primary">注册</button>
         </div>

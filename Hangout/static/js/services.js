@@ -29,16 +29,11 @@
     };
     return Authentication;
 
-    function register(email, password, username, fix_times, tags, cellphone, intro) {
+    function register(email, password, username) {
       return $http.post('/api/register', $.param({
         name: username,
         password: password,
         email: email,
-        fix_times: fix_times,
-        tags: tags,
-        cellphone: cellphone,
-        intro: intro,
-        portrait: 'afda',
       })).then(registerSuccessFn, registerErrorFn);
 
       function registerSuccessFn(data, status, headers, config) {
