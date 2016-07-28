@@ -122,8 +122,9 @@ def application_serialize(app):
 def message_serialize(msg):
 	ret = dict()
 	ret['id'] = msg.id
-	ret['from'] = msg.from_user.email
-	ret['to'] = msg.to_user.email
+	ret['from'] = msg.from_user.name
+	ret['from_id'] = msg.from_user.id
+	ret['to'] = msg.to_user.id
 	ret['content'] = msg.content
 	delta_time = datetime.timedelta(hours=8)
 	ret['time'] = (msg.time+delta_time).strftime('%Y-%m-%d %H:%M:%S')
