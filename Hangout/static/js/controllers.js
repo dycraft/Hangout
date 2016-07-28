@@ -240,15 +240,14 @@
             }
           },
           password: {
-              stringLength: {
-                min: 6,
-                max: 15,
-                message: '密码必须大于6，小于15个字'
-              },
-              regexp: {
-                regexp: /^[a-zA-Z0-9_\.]+$/,
-                message: '密码中含有特殊字符'
-              }
+            stringLength: {
+              min: 6,
+              max: 15,
+              message: '密码必须大于6，小于15个字'
+            },
+            regexp: {
+              regexp: /^[a-zA-Z0-9_\.]+$/,
+              message: '密码中含有特殊字符'
             }
           },
           cfmpassword: {
