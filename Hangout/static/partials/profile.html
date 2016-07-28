@@ -6,43 +6,43 @@
     <div class="well">
       <form role="form" id="profile_form">
         <div class="form-group">
-          <label for="profile__email">邮箱</label>
+          <label for="profile__email"><i class="fa fa-envelope"></i> 邮箱</label>
           <input type="email" name="email" class="form-control" id="profile__email" ng-model="vm.email" placeholder="ex. john@notgoogle.com" readonly/>
         </div>
 
         <div class="form-group">
-          <label for="profile__username">用户名</label>
+          <label for="profile__username"><i class="fa fa-user"></i> 用户名</label>
           <input type="text" name="username" class="form-control" id="profile__username" ng-model="vm.username" placeholder="ex. john" />
         </div>
 
         <div class="form-group">
-          <label for="profile__password">密码</label>
+          <label for="profile__password"><i class="fa fa-lock"></i> 密码</label>
           <input type="password" name="password" class="form-control" id="profile__password" ng-model="vm.password" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
-          <label for="profile__cfmpassword">确认密码</label>
+          <label for="profile__cfmpassword"><i class="fa fa-repeat"></i> 确认密码</label>
           <input type="password" name="cfmpassword" class="form-control" id="profile__cfmpassword" ng-model="vm.cfmpassword" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
-          <label for="profile__password">手机号</label>
+          <label for="profile__password"><i class="fa fa-mobile" style="font-size: 20px;"></i> 手机号</label>
           <input type="text" name="tel" class="form-control" id="profile__cellphone" ng-model="vm.cellphone" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
-          <label for="profile__intro">个人简介</label>
+          <label for="profile__intro"><i class="fa fa-pencil"></i> 个人简介</label>
           <textarea style="width:100%" class="form-control" name="intro" id="profile__intro" ng-model="vm.intro" placeholder="ex. this is not a self-intro"></textarea>
         </div>
 
         <div class="form-group">
-          <label for="profile__intro">修改头像</label>
+          <label for="profile__intro"><i class="fa fa-meh-o"></i> 修改头像</label>
           <input type="file" nv-file-select uploader="uploader">
-          <button ng-click="uuploader.queue[0].upload()">上传</button>
+          <button ng-click="uuploader.queue[0].upload()"><i class="fa fa-cloud-upload"></i> 上传</button>
         </div>
 
         <div class="form-group">
-            <label for="profile__fixed">选择可活动时间</label>
+            <label for="profile__fixed"><i class="fa fa-table"></i> 选择可活动时间</label>
             <table class="table table-selectable" id="profile__fixed" ng-model="vm.fix_times">
                 <thead>
                     <tr>
@@ -58,12 +58,12 @@
         </div>
 
         <div class="form-group">
-          <label for="profile__tags">个人标签</label>
+          <label for="profile__tags"><i class="fa fa-tags"></i> 个人标签</label>
           <input type="text" class="form-control" id="profile__tags" ng-model="vm.tags" data-role="tagsinput" />
         </div>
 
         <div class="form-group">
-          <button type="submit" name="submitButton" class="btn btn-primary">保存</button>
+          <button type="submit" name="submitButton" class="btn btn-primary"><i class="fa fa-save"></i> 保存</button>
         </div>
       </form>
     </div>

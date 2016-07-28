@@ -1,28 +1,28 @@
 <div>
 	<div class="jumbotron">
 		<h1>[[ act.name ]]</h1>
-		<h3>活动地点：[[ act.location ]]</h3>
+		<h3><i class="fa fa-map-marker" style="font-size: 30px"></i> 活动地点：[[ act.location ]]</h3>
 		<h3 ng-if="act.tags.length">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag"><span class="label label-primary">a[[ tag ]] </span></a></h3>
-		<h3>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 20px;">[[ T(act.state) ]]</span></h3>
-		<h3>活动人数 / 预计人数：[[ act.member_count ]] / [[ act.member_limit ]]</h3>
-		<h3>预计花费：[[ act.cost == 0 ? "无花费" : "¥ " + act.cost ]]</h3>
-		<h3>活动时间：[[ act.time ]]</h3>
-		<h3>活动简介：[[ act.intro ]]</h3>
+		<h3><i class="fa fa-play"></i> 活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 20px;">[[ T(act.state) ]]</span></h3>
+		<h3><i class="fa fa-users" style="font-size: 20px"></i> 活动人数 / 预计人数：[[ act.member_count ]] / [[ act.member_limit ]]</h3>
+		<h3><i class="fa fa-cny" style="font-size: 30px"></i> 预计花费：[[ act.cost == 0 ? "无花费" : "¥ " + act.cost ]]</h3>
+		<h3><i class="fa fa-calendar"></i> 活动时间：[[ act.time ]]</h3>
+		<h3><i class="fa fa-book"></i> 活动简介：[[ act.intro ]]</h3>
 
 		<div id="act_info_share"></div>
 
 		<br ng-if="org_act()"/>
-		<a ng-href="/act_profile/[[ act.id ]]" class="btn btn-primary" role="button" style="font-size: 20px;" ng-if="org_act()">修改活动信息</a>
+		<a ng-href="/act_profile/[[ act.id ]]" class="btn btn-primary" role="button" style="font-size: 20px;" ng-if="org_act()"><i class="fa fa-pencil"></i> 修改活动信息</a>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">活动成员</div>
+		<div class="panel-heading"><i class="fa fa-users"></i> 活动成员</div>
 		<div class="panel-body">
 			<div class="col-md-2">
 		    <div class="thumbnail" style="background-color:rgb(223, 240, 216);">
 		      <img src="/static/img/thumb1.jpg" alt="...">
 		      <div class="caption">
-		        <a ng-href="/user_info/[[ act.organizer.id ]]"><h4>[[ act.organizer.name ]]</h4></a>
-		        <p><a href="#" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(act.organizer.id)" class="follow-btn btn btn-primary" ng-if="login_user && act.organizer.id != login_user.id" role="button">[[ F(act.organizer.id) ]]</a></p>
+		        <a ng-href="/user_info/[[ act.organizer.id ]]"><h4><i class="fa fa-user"></i> [[ act.organizer.name ]]</h4></a>
+		        <p><a href="#" class="btn btn-default" role="button"><i class="fa fa-comment"></i> 消息</a> <a href="#" ng-click="change_follow(act.organizer.id)" class="follow-btn btn btn-primary" ng-if="login_user && act.organizer.id != login_user.id" role="button">[[ F(act.organizer.id) ]]</a></p>
 		      </div>
 		    </div>
 		  </div>
