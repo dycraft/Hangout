@@ -7,7 +7,7 @@
     };
 
   angular.module('hangout.controllers', [])
-    .controller('homepageCtrl', ['$scope', '$location', '$http', function($scope, $location, $http){
+    .controller('homepageCtrl', ['$rootScope', '$scope', '$location', '$http', 'Authentication', function($rootScope, $scope, $location, $http, Authentication){
       console.log('homepage');
       $('#search_content').css({
         'width': '500px',
@@ -15,6 +15,12 @@
       $('#result').css({
         'display': 'none',
       })
+      if (Authentication.isAuthenticated()) {
+        $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
+      }
+      $scope.join_act = function(act) {
+
+      }
       $scope.search = function() {
         $http.get('/api/search/' + $scope.search_content).success(function(data) {
           console.log(data);
@@ -31,6 +37,41 @@
           $scope.acts = data.act;
           $scope.tags = data.tag;
           $scope.users = data.user;
+          $http.get('/api/user/following').success(function(data) {
+            console.log(data);
+            $scope.follow_list = data.following;
+            $scope.F = function(user_id) {
+              for (var i = 0; i < $scope.follow_list.length; i++) {
+                if (user_id == $scope.follow_list[i].id) {
+                  return "取关";
+                }
+              }
+              return "关注";
+            }
+            $scope.sendMsgTo = function(user) {
+              $rootScope.getSendUser(user);
+            }
+            $scope.change_follow = function(user_id) {
+              if ($scope.F(user_id) == "关注") {
+                $http.post('/api/user/follow', $.param({'id': user_id})).success(function(data) {
+                  $scope.follow_list.push(user_id);
+                })
+              }
+              else {
+                $http.post('/api/user/unfollow', $.param({'id': user_id})).success(function(data) {
+                  $scope.follow_list.push(user_id);
+                })
+              }
+            }
+            $('.follow-btn').click(function(){
+              if ($(this).html() == "取关") {
+                $(this).html("关注");
+              }
+              else {
+                $(this).html("取关");
+              }
+            })
+          })
         });
       }
       $scope.B = function(state) {
@@ -770,7 +811,7 @@
         }
       });
     }])
-    .controller('tagInfoCtrl', ['$http', '$scope', '$routeParams', 'Authentication', function($http, $scope, $routeParams, Authentication){
+    .controller('tagInfoCtrl', ['$http', '$rootScope', '$scope', '$routeParams', 'Authentication', function($http, $rootScope, $scope, $routeParams, Authentication){
       if (Authentication.isAuthenticated()) {
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
       }
@@ -789,6 +830,9 @@
               }
             }
             return "关注";
+          }
+          $scope.sendMsgTo = function(user) {
+            $rootScope.getSendUser(user);
           }
           $scope.change_follow = function(user_id) {
             if ($scope.F(user_id) == "关注") {
@@ -817,9 +861,6 @@
       if (Authentication.isAuthenticated()) {
         $scope.login_user = Authentication.getAuthenticatedAccount().user_info;
       }
-      $scope.sendMsgTo = function(user) {
-        $rootScope.getSendUser(user);
-      }
       $http.get('/api/user/following').success(function(data) {
         $scope.following = data.following;
         console.log(data);
@@ -830,6 +871,9 @@
             }
           }
           return "关注";
+        }
+        $scope.sendMsgTo = function(user) {
+          $rootScope.getSendUser(user);
         }
         $scope.change_following = function(user_id, user_name) {
           if ($scope.F1(user_id) == "关注") {
@@ -856,15 +900,26 @@
         })
       });
     }])
-    .controller('msgBoxCtrl', ['$http', '$scope', '$rootScope', 'Authentication', function($http, $scope, $rootScope, Authentication) {
+    .controller('msgBoxCtrl', ['$http', '$sce', '$scope', '$rootScope', 'Authentication', function($http, $sce, $scope, $rootScope, Authentication) {
       var round_robin = function() {
         $scope.timer = setInterval(function(){
           $http.post('/api/user/message/get', $.param({
             'id': Authentication.getAuthenticatedAccount().user_info.id,
           })).success(function(data){
             console.log(data);
+            for (var i = 0; i < data.messages.length; i++) {
+              if (data.messages[i].content[0] == '0' && data.messages[i].read == false && data.messages[i].to == Authentication.getAuthenticatedAccount().user_info.id) {
+                //message_list.push("来自@" + data.messages[i].from + ": " + data.messages[i].content.slice(3));
+                $scope.msgs.push($sce.trustAsHtml("来自@<a href='/user_info/" + data.messages[i].from_id + "'>" + data.messages[i].from + "</a>: " + data.messages[i].content.slice(3)));
+                $http.get('/api/user/message/set_state/' + data.messages[i].id + '/1').success(function(data){
+                  console.log(data);
+                });
+              }else
+              if (data.messages[i].content[0] == '1' && data.messages[i].read == false) {
+              }
+            }
           })
-        }, 2000);
+        }, 5000);
       }
       var kill_robin = function() {
         if ($scope.timer) {
@@ -881,14 +936,25 @@
       });
       $rootScope.getSendUser = function(user){
         $scope.msg_content = user.name + ":";
+        $rootScope.send_to_user = user;
+        $('#message-list').css({'display': 'block'}).animate({'opacity': 1}, 100);
+      }
+      $rootScope.writeMsg = function(msg) {
+        $('#message-list').css({'display': 'block'}).animate({'opacity': 1}, 100);
       }
       $scope.send_message = function() {
         console.log($scope.msg_content);
         var msg = $scope.msg_content.slice($scope.msg_content.indexOf(':') + 1);
         if (msg) {
-          alert(msg);
+          $http.post('/api/user/message/send', $.param({
+            'id': $rootScope.send_to_user.id,
+            'content': msg,
+          })).success(function(){
+            $scope.msg_content = '';
+          });
         }
       }
+      $scope.msgs = [];
       $scope.send_content = "";
       if (Authentication.isAuthenticated()) {
         $('#message-box').css({'display': 'block'});

@@ -661,7 +661,7 @@ def send_message_post(request):
                      keytype='id')
     if r['state_code'] == 0:
         to_user = r['record']
-        content = r['param']['content']
+        content = r['params']['content']
         send_message(request.user, to_user, content, 0)
         ret['state_code'] = 0
     else:

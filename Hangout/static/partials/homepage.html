@@ -31,7 +31,7 @@
 					    <div class="caption">
 								<h3><a href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <span href="/act_profile/[[ act.id ]]" style="font-size:10px;cursor:pointer;" ng-if="act.organizer == acts.name"><a> [修改活动信息] </a></span><a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h3>
 								<div><p style="word-break:break-all;" show-more limit="100" text="'活动介绍:	 ' + act.intro + 'akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj akkakakakk kfjlkda jfkl;d sanovkn qnf;jdf jdaln vkdlns avkld;s jafkl ;dnasv  kdsjal fdjakl;v ndalsk; fdlka sjlk fvdsna vl; dsalfj'"></p></div>
-					      <p>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a ng-if="act.organizer.id == acts.login_id && (act.state == 0 || act.state == 1)" href="#" ng-click="U(act)" class="btn btn-[[ L2(act.state) ]]" style="float:right" role="button">[[ B(act.state) ]]</a><a ng-if="act.state == 1" href="#" ng-click="D(act)" class="btn btn-danger" style="float:right;margin-right:5px" role="button">结束活动</a></p>
+					      <p>活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span><a ng-if="act.organizer.id == acts.login_id && (act.state == 0 || act.state == 1)" href="#" ng-click="U(act)" class="btn btn-[[ L2(act.state) ]]" style="float:right" role="button">[[ B(act.state) ]]</a><a ng-if="act.state == 0" href="#" ng-click="join_act(act)" class="btn btn-danger" style="float:right;margin-right:5px" role="button">申请加入</a></p>
 					      <p ng-if="act.tags.length > 1">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag" style="margin-right:5px;"><span class="label label-primary">[[ tag ]] </span></a></p>
 					    </div>
 					  </div>
@@ -48,7 +48,8 @@
 			      <img src="/static/img/thumb1.jpg" alt="...">
 			      <div class="caption">
 			        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a>
-			        <p><a href="#" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
+			        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> 
+			        <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
 			      </div>
 			    </div>
 			  </div>
