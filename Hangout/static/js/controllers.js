@@ -33,6 +33,60 @@
           $scope.users = data.user;
         });
       }
+      $scope.B = function(state) {
+        return {
+          0: "停止报名",
+          1: "开放报名",
+          2: "",
+        }[state];
+      }
+      $scope.L2 = function(state) {
+        return {
+          0: "danger",
+          1: "success",
+          2: "",
+        }[state];
+      }
+      $scope.U = function(act) {
+        if (act.state == 0) {
+          $http.post('/api/activity/change_state', $.param({
+            'id': act.id,
+            'state': 1,
+          })).success(function(){
+            act.state = 1;
+          });
+        }
+        else {
+          $http.post('/api/activity/change_state', $.param({
+            'id': act.id,
+            'state': 0,
+          })).success(function(){
+            act.state = 0;
+          });
+        }
+      }
+      $scope.D = function(act) {
+        $http.post('/api/activity/change_state', $.param({
+          'id': act.id,
+          'state': 2,
+        })).success(function(){
+          act.state = 2;
+        });
+      }
+      $scope.T = function(state) {
+        return {
+          0: "接受报名",
+          1: "结束报名",
+          2: "已结束",
+        }[state];
+      }
+      $scope.L1 = function(state) {
+        return {
+          0: "success",
+          1: "danger",
+          2: "default",
+        }[state];
+      }
     }])
     .controller('loginCtrl', ['$scope', '$location', 'Authentication', function($scope, $location, Authentication){
       console.log('login');
@@ -214,59 +268,58 @@
         feedbackIcons: {
           valid: 'fa fa-check',
           invalid: 'fa fa-times',
-          validating: 'fa fa-refresh'
+          validating: 'fa fa-refresh',
         },
         fields: {
           email: {
             validators: {
               notEmpty: {
-                message: '邮箱不能为空'
+                message: '邮箱不能为空',
               },
               emailAddress: {
-                message: '输入不是有效的电子邮件地址'
+                message: '输入不是有效的电子邮件地址',
               }
             }
           },
           username: {
             validators: {
               notEmpty: {
-                message: '用户名不能为空'
+                message: '用户名不能为空',
               },
               stringLength: {
                 min: 3,
                 max: 10,
-                message: '用户名必须大于3，小于10个字'
+                message: '用户名必须大于3，小于10个字',
               }
             }
           },
           password: {
-              stringLength: {
-                min: 6,
-                max: 15,
-                message: '密码必须大于6，小于15个字'
-              },
-              regexp: {
-                regexp: /^[a-zA-Z0-9_\.]+$/,
-                message: '密码中含有特殊字符'
-              }
+            stringLength: {
+              min: 6,
+              max: 15,
+              message: '密码必须大于6，小于15个字'
+            },
+            regexp: {
+              regexp: /^[a-zA-Z0-9_\.]+$/,
+              message: '密码中含有特殊字符'
             }
           },
           cfmpassword: {
             validators: {
               identical: {
                 field: 'password',
-                message: '两次密码输入不一致'
+                message: '两次密码输入不一致',
               }
             }
           },
           tel: {
             validators: {
               notEmpty: {
-                message: '手机号码不能为空'
+                message: '手机号码不能为空',
               },
               regexp: {
                 regexp: /^1[3|4|5|7|8]\d{9}$/,
-                message: '请输入正确的手机号码格式'
+                message: '请输入正确的手机号码格式',
               }
             }
           },
@@ -274,7 +327,7 @@
             validators: {
               stringLength: {
                 max: 100,
-                message: '个人简介必须小于100个字'
+                message: '个人简介必须小于100个字',
               }
             }
           }
