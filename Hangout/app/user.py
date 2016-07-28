@@ -22,7 +22,7 @@ GET param
 | param     | introduction                   | default              |
 |===================================================================|
 | id        | id of user                     | REQUIRED             |
-|===================================================================|    
+|===================================================================|
 
 returns:
     'state_code'
@@ -56,7 +56,7 @@ def login_detail(request):
     user = request.user
     if not user.is_authenticated():
         ret['state_code'] = 1
-    else: 
+    else:
         ret['user_info'] = user_serialize(user)
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
@@ -97,7 +97,7 @@ def update_user(request):
     else:
         try:
             user = User.objects.get(email=email)
-            
+
             ### update normal fields
             editable_fields = [
                 'name',
@@ -143,13 +143,17 @@ def update_portrait(request):
 
     ret = dict()
 
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=[],
                  require_authenticate=True)
+
+
+
     if not r['state_code'] == 0:
         ret['state_code'] = r['state_code']
     else:
         # file_content = ContentFile(request.FILES['img'].read())
+
         user = request.user
         user.portrait = request.FILES['img']
         user.save()
@@ -217,7 +221,7 @@ returns:
 @require_http_methods(['POST'])
 def delete_user(request):
     ret = dict()
-    email = request.POST.get('email') 
+    email = request.POST.get('email')
     user = request.user
     if not email:
         ret['state_code'] = 4
@@ -245,7 +249,7 @@ GET params
 | email     | email of user                  | REQUIRED             |
 |===================================================================|
 
-returns 
+returns
     'used'
 '''
 def user_exist(request, email):
@@ -304,8 +308,8 @@ def user_register(request):
                 ret['state_code'] = 10
             else:
                 user = User.objects.create_user(
-                            user_info['email'], 
-                            user_info['password'], 
+                            user_info['email'],
+                            user_info['password'],
                             name = user_info['name']
                         )
                 # user.portrait = user_info['portrait']
@@ -327,7 +331,7 @@ def user_register(request):
         else:
             ret['state_code'] = 9
     return HttpResponse(json.dumps(ret), content_type='application/json')
-            
+
 '''
 user_login:
     user login
@@ -471,7 +475,7 @@ def apply_for_activity(request):
         if len(act) == 0:
            ret['state_code'] = 51
         elif len(act[0].applications.filter(
-                        applicant_id=request.user.id, 
+                        applicant_id=request.user.id,
                         application_type=app_type)) > 0:
             ret['state_code'] = 53
         elif app_type == '1' and len(act[0].members.filter(id=request.user.id)) > 0:
@@ -489,7 +493,7 @@ def apply_for_activity(request):
                 )
             app.save()
             for admin in act[0].admins.all():
-                send_message(request.user, admin, 
+                send_message(request.user, admin,
                             send_application(
                                 request.user.name,
                                 act[0].name,
@@ -615,7 +619,7 @@ returns:
 def set_message_state(request, id, state):
     ret = dict()
     msg = Message.objects.filter(id=id)
-    if len(msg) == 0: 
+    if len(msg) == 0:
         ret['state_code'] = 31
     else:
         msg = msg[0]
@@ -623,7 +627,7 @@ def set_message_state(request, id, state):
             ret['state_code'] = 3
         else:
             if state == '1':
-                msg.read = True            
+                msg.read = True
                 ret['state_code'] = 0
                 msg.save()
             elif state == '0':
@@ -650,7 +654,7 @@ POST param
 '''
 def send_message_post(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                      required_param=['id','content'],
                      require_authenticate=True,
                      require_model=True,
@@ -684,7 +688,7 @@ returns:
 @require_http_methods(['POST'])
 def follow(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=['id'],
                  require_authenticate=True,
                  require_model=True,
@@ -724,7 +728,7 @@ returns:
 @require_http_methods(['POST'])
 def unfollow(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=['id'],
                  require_authenticate=True,
                  require_model=True,
@@ -758,7 +762,7 @@ returns:
 '''
 def check_following(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=[],
                  require_authenticate=True)
     if not r['state_code'] == 0:
@@ -769,7 +773,7 @@ def check_following(request):
             ret['following'].append({'id': r.id, 'name': r.name})
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
-    
+
 
 
 '''
@@ -784,7 +788,7 @@ returns:
 '''
 def check_follower(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=[],
                  require_authenticate=True)
     if not r['state_code'] == 0:
@@ -795,7 +799,7 @@ def check_follower(request):
             ret['follower'].append({'id': r.id, 'name': r.name})
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
-    
+
 
 
 
@@ -808,7 +812,7 @@ get_recommend:
 '''
 def get_recommend(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                  required_param=[],
                  require_authenticate=True)
     if not r['state_code'] == 0:
@@ -843,7 +847,7 @@ def get_recommend(request):
 
 def testauthentication(request):
     ret = dict()
-    r = authentication(request, 
+    r = authentication(request,
                      required_param=['id'],
                      require_authenticate=True,
                      require_model=True,
@@ -855,5 +859,3 @@ def testauthentication(request):
     else:
         ret['state_code'] = r['state_code']
     return HttpResponse(json.dumps(ret), content_type='application/json')
-
-
