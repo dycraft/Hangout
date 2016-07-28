@@ -281,6 +281,7 @@
     }])
     .controller('actInfoCtrl', ['$scope', '$location', '$routeParams', '$http', 'Authentication', function($scope, $location, $routeParams, $http, Authentication){
       console.log('actInfo');
+      $('#act_info_share').share();
       $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
         $scope.act = data.act_info;
         $http.get('/api/user/following').success(function(data) {

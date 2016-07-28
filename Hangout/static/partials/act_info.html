@@ -8,6 +8,9 @@
 		<h3>预计花费：[[ act.cost == 0 ? "无花费" : "¥ " + act.cost ]]</h3>
 		<h3>活动时间：[[ act.time ]]</h3>
 		<h3>活动简介：[[ act.intro ]]</h3>
+
+		<div id="act_info_share"></div>
+
 		<br ng-if="org_act()"/>
 		<a ng-href="/act_profile/[[ act.id ]]" class="btn btn-primary" role="button" style="font-size: 20px;" ng-if="org_act()">修改活动信息</a>
 	</div>
