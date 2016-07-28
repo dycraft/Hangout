@@ -393,7 +393,7 @@
         }
       });
     }])
-    .controller('actInfoCtrl', ['$scope', '$route', '$location', '$routeParams', '$http', 'Authentication', function($scope, $route, $location, $routeParams, $http, Authentication){
+    .controller('actInfoCtrl', ['$scope', '$rootScope', '$route', '$location', '$routeParams', '$http', 'Authentication', function($scope, $rootScope, $route, $location, $routeParams, $http, Authentication){
       console.log('actInfo');
       $('#act_info_share').share();
       $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
@@ -411,6 +411,9 @@
               }
             }
             return "关注";
+          }
+          $scope.sendMsgTo = function(user) {
+            $rootScope.getSendUser(user);
           }
           $scope.change_follow = function(user_id) {
             if ($scope.F(user_id) == "关注") {
@@ -470,7 +473,7 @@
         }
       });
     }])
-    .controller('userInfoCtrl', ['$http', '$routeParams', '$scope', 'Authentication', function($http, $routeParams, $scope, Authentication) {
+    .controller('userInfoCtrl', ['$http', '$rootScope', '$routeParams', '$scope', 'Authentication', function($http, $rootScope, $routeParams, $scope, Authentication) {
       $http.get('/api/user/detail/' + $routeParams.user_id).success(function(data) {
         $scope.user = data.user_info;
         console.log($scope.user);
@@ -494,6 +497,9 @@
           1: "danger",
           2: "default",
         }[state];
+      }      
+      $scope.sendMsgTo = function(user) {
+        $rootScope.getSendUser(user);
       }
       $scope.overview = function() {
         $('.profile-tab').removeClass('active');
