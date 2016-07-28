@@ -387,11 +387,12 @@
         }
       });
     }])
-    .controller('actInfoCtrl', ['$scope', '$location', '$routeParams', '$http', 'Authentication', function($scope, $location, $routeParams, $http, Authentication){
+    .controller('actInfoCtrl', ['$scope', '$route', '$location', '$routeParams', '$http', 'Authentication', function($scope, $route, $location, $routeParams, $http, Authentication){
       console.log('actInfo');
       $('#act_info_share').share();
       $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
         $scope.act = data.act_info;
+        console.log($scope.act);
         $http.get('/api/user/following').success(function(data) {
           console.log(data);
           $scope.follow_list = data.following;
@@ -414,6 +415,16 @@
                 $scope.follow_list.push(user_id);
               })
             }
+          }
+          $scope.allow_apply = function(user_id) {
+            $http.post('/api/activity/reply_application', $.param({
+              'act_id': $scope.act.id,
+              'user_id': user_id,
+              'reply': 1,
+            })).success(function(data){
+              console.log(data);
+              $route.reload();
+            });
           }
           $('.follow-btn').click(function(){
             if ($(this).html() == "取关") {
@@ -456,6 +467,12 @@
         $scope.user = data.user_info;
         console.log($scope.user);
       })
+      $scope.apply_for = function(act_id) {
+        $http.post('/api/user/apply', $.param({
+          'act_id': act_id,
+          'type': 1,
+        }))
+      }
       $scope.T = function(state) {
         return {
           0: "接受报名",
@@ -912,7 +929,7 @@
           $http.post('/api/user/message/get', $.param({
             'id': Authentication.getAuthenticatedAccount().user_info.id,
           })).success(function(data){
-            console.log(data);
+//            console.log(data);
             for (var i = 0; i < data.messages.length; i++) {
               if (data.messages[i].content[0] == '0' && data.messages[i].read == false && data.messages[i].to == Authentication.getAuthenticatedAccount().user_info.id) {
                 //message_list.push("来自@" + data.messages[i].from + ": " + data.messages[i].content.slice(3));

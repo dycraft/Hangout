@@ -53,7 +53,7 @@ def user_serialize(user, detailed=True):
 	if user.portrait:
 		ret['portrait_url'] = user.portrait.url
 	else:
-		ret['portrait_url'] = ''
+		ret['portrait_url'] = '/static/lib/img/thumb.jpg'
 
 
 	return ret
@@ -76,13 +76,14 @@ def activity_serialize(act, detailed=True):
 	ret['state'] = act.state % 4
 	ret['member_limit'] = act.state >> 2
 	ret['member_count'] = len(act.members.all())
+	ret['app_count'] = len(act.applications.all())
 
 ### tags
 	ret['tags'] = []
 	for t in act.tags.all():
 		ret['tags'].append(t.name)
 
-	ret['organizer'] = {'id': act.organizer.id, 'name': act.organizer.name}
+	ret['organizer'] = easy_serialize(act.organizer)
 
 ## times
 	delta_time = datetime.timedelta(hours=8)
@@ -90,6 +91,11 @@ def activity_serialize(act, detailed=True):
 	ret['end_time'] = act.end_time.strftime('%Y-%m-%d %a %H:00')
 	ret['create_at'] = (act.create_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
 	ret['modified_at'] = (act.modified_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
+
+	ret['applicants'] = []
+	for app in act.applications.all():
+		m = app.applicant
+		ret['applicants'].append(easy_serialize(m))
 
 	if detailed == True:
 		member_fields = [
@@ -100,7 +106,7 @@ def activity_serialize(act, detailed=True):
 		for field in member_fields:
 			ret[field] = []
 			for m in getattr(act, field).all():
-				ret[field].append({'id': m.id, 'name': m.name})
+				ret[field].append(easy_serialize(m))
 
 	return ret
 
@@ -145,7 +151,10 @@ def serialize(obj):
 
 def easy_serialize(obj):
 	if isinstance(obj, User):
-		return {'id': obj.id, 'name': obj.name}
+		if obj.portrait:
+			return {'id': obj.id, 'name': obj.name, 'portrait_url': obj.portrait.url}
+		else:
+			return {'id': obj.id, 'name': obj.name, 'portrait_url': '/static/img/thumb1.jpg'}
 	elif isinstance(obj, Activity):
 		return {'id': obj.id, 'name': obj.name, 'organizer': obj.organizer.name, 'organizer_id': obj.organizer.id}
 	elif isinstance(obj, Application):

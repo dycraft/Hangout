@@ -2,7 +2,7 @@
 	<div class="jumbotron">
 		<h1>[[ act.name ]]</h1>
 		<h3><i class="fa fa-map-marker" style="font-size: 30px"></i> 活动地点：[[ act.location ]]</h3>
-		<h3 ng-if="act.tags.length">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag"><span class="label label-primary">a[[ tag ]] </span></a></h3>
+		<h3 ng-if="act.tags.length">活动标签：<a ng-repeat="tag in act.tags" ng-href="/tag_info/[[ tag ]]" ng-if="tag" sytle="margin-right:5px;"><span class="label label-primary"> [[ tag ]] </span></a></h3>
 		<h3><i class="fa fa-play"></i> 活动状态：<span class="label label-[[ L1(act.state) ]]" style="font-size: 20px;">[[ T(act.state) ]]</span></h3>
 		<h3><i class="fa fa-users" style="font-size: 20px"></i> 活动人数 / 预计人数：[[ act.member_count ]] / [[ act.member_limit ]]</h3>
 		<h3><i class="fa fa-cny" style="font-size: 30px"></i> 预计花费：[[ act.cost == 0 ? "无花费" : "¥ " + act.cost ]]</h3>
@@ -14,33 +14,43 @@
 		<br ng-if="org_act()"/>
 		<a ng-href="/act_profile/[[ act.id ]]" class="btn btn-primary" role="button" style="font-size: 20px;" ng-if="org_act()"><i class="fa fa-pencil"></i> 修改活动信息</a>
 	</div>
+
 	<div class="panel panel-default">
 		<div class="panel-heading"><i class="fa fa-users"></i> 活动成员</div>
 		<div class="panel-body">
 			<div class="col-md-2">
 		    <div class="thumbnail" style="background-color:rgb(223, 240, 216);">
-		      <img src="/static/img/thumb1.jpg" alt="...">
+		      <img width="100%" height="100%" src="[[ act.organizer.portrait_url ]]" alt="...">
 		      <div class="caption">
 		        <a ng-href="/user_info/[[ act.organizer.id ]]"><h4><i class="fa fa-user"></i> [[ act.organizer.name ]]</h4></a>
-		        <p><a href="#" class="btn btn-default" role="button"><i class="fa fa-comment"></i> 消息</a> <a href="#" ng-click="change_follow(act.organizer.id)" class="follow-btn btn btn-primary" ng-if="login_user && act.organizer.id != login_user.id" role="button">[[ F(act.organizer.id) ]]</a></p>
+		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button"><i class="fa fa-comment"></i> 消息</a> <a href="#" ng-click="change_follow(act.organizer.id)" class="follow-btn btn btn-primary" ng-if="login_user && act.organizer.id != login_user.id" role="button">[[ F(act.organizer.id) ]]</a></p>
 		      </div>
 		    </div>
 		  </div>
 		  <div class="col-md-2" ng-repeat="user in act.admins" ng-if="user.id != act.organizer.id">
 		    <div class="thumbnail" style="background-color:rgb(252, 248, 227);">
-		      <img src="/static/img/thumb1.jpg" alt="...">
+		      <img src="[[ user.portrait_url ]]" alt="...">
 		      <div class="caption">
 		        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a>
-		        <p><a href="#" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
+		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
+		      </div>
+		    </div>
+		  </div>
+		  <div class="col-md-2" ng-repeat="user in act.applicants" ng-if="user.id != act.organizer.id">
+		    <div class="thumbnail" style="background-color:rgba(235, 204, 209, 0.5);">
+		      <img src="[[ user.portrait_url ]]" alt="...">
+		      <div class="caption">
+		        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a> 
+		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="allow_apply(user.id)" class="btn btn-success" role="button"> 同意 </a></p>
 		      </div>
 		    </div>
 		  </div>
 		  <div class="col-md-2" ng-repeat="user in act.members" ng-if="user.id != act.organizer.id">
 		    <div class="thumbnail">
-		      <img src="/static/img/thumb1.jpg" alt="...">
+		      <img src="[[ user.portrait_url ]]" alt="...">
 		      <div class="caption">
 		        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a>
-		        <p><a href="#" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
+		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(user.id)" class="follow-btn btn btn-primary" ng-if="login_user && user.id != login_user.id" role="button">[[ F(user.id) ]]</a></p>
 		      </div>
 		    </div>
 		  </div>
