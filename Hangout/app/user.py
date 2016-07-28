@@ -117,7 +117,7 @@ def update_user(request):
                 user.tags.add(get_tag(tag.strip()))
 
             user.save()
-
+            user.update_feature()
             ret['state_code'] = 0
             ret['user_info'] = user_serialize(user, False)
         except User.DoesNotExist:

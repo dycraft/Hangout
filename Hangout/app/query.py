@@ -1,5 +1,5 @@
 from .models import Activity, User, Tag
-from .serializer import easy_serialize
+from .serializer import easy_serialize, serialize
 from django.http import HttpResponse
 from django.db.models import Q
 
@@ -88,7 +88,7 @@ def query(request, keyword):
 	for obj in result_user:
 		ret['user'].append(easy_serialize(obj))
 	for obj in result_act:
-		ret['act'].append(easy_serialize(obj))
+		ret['act'].append(serialize(obj))
 	for obj in result_tag:
 		ret['tag'].append(easy_serialize(obj))
 

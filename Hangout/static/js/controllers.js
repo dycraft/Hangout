@@ -214,28 +214,28 @@
         feedbackIcons: {
           valid: 'fa fa-check',
           invalid: 'fa fa-times',
-          validating: 'fa fa-refresh'
+          validating: 'fa fa-refresh',
         },
         fields: {
           email: {
             validators: {
               notEmpty: {
-                message: '邮箱不能为空'
+                message: '邮箱不能为空',
               },
               emailAddress: {
-                message: '输入不是有效的电子邮件地址'
+                message: '输入不是有效的电子邮件地址',
               }
             }
           },
           username: {
             validators: {
               notEmpty: {
-                message: '用户名不能为空'
+                message: '用户名不能为空',
               },
               stringLength: {
                 min: 3,
                 max: 10,
-                message: '用户名必须大于3，小于10个字'
+                message: '用户名必须大于3，小于10个字',
               }
             }
           },
@@ -254,18 +254,18 @@
             validators: {
               identical: {
                 field: 'password',
-                message: '两次密码输入不一致'
+                message: '两次密码输入不一致',
               }
             }
           },
           tel: {
             validators: {
               notEmpty: {
-                message: '手机号码不能为空'
+                message: '手机号码不能为空',
               },
               regexp: {
                 regexp: /^1[3|4|5|7|8]\d{9}$/,
-                message: '请输入正确的手机号码格式'
+                message: '请输入正确的手机号码格式',
               }
             }
           },
@@ -273,7 +273,7 @@
             validators: {
               stringLength: {
                 max: 100,
-                message: '个人简介必须小于100个字'
+                message: '个人简介必须小于100个字',
               }
             }
           }

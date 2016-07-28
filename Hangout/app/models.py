@@ -79,6 +79,19 @@ class Activity(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+### recommendation
+    feature = models.CharField(max_length=300, default='')
+    def update_feature(self):
+        f = []
+        if len(self.feature) == 0:
+            f = ['0'] * 300
+        else:
+            f = list(self.feature)
+        for x in self.tags.all():
+            f[x.id] = '9'
+            
+        self.feature = ''.join(f)
+        self.save()
 
     def __str__(self):
         return self.name
@@ -130,6 +143,24 @@ class User(AbstractBaseUser):
                                      symmetrical=False,
                                      related_name='followed')
     is_admin = models.BooleanField(default=False)
+
+
+
+### recommendation
+    feature = models.CharField(max_length=300, default='')
+    def update_feature(self):
+        f = []
+        if len(self.feature) == 0:
+            f = ['0'] * 300
+        else:
+            f = list(self.feature)
+        for x in self.tags.all():
+            f[x.id] = '9'
+            
+        self.feature = ''.join(f)
+        self.save()
+
+
 
     objects = UserManager()
     USERNAME_FIELD = 'email'

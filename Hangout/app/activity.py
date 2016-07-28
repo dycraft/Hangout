@@ -72,7 +72,9 @@ def create_activity(request):
 		for t in act_info['tags']:
 			if not t.strip() == '':
 				act.tags.add(get_tag(t.strip()))
+
 		act.save()
+		act.update_feature()
 		ret['state_code'] = 0
 
 
@@ -157,6 +159,8 @@ def update_activity(request):
 				for tag in tags:
 					if not tag == '':
 						act.tags.add(get_tag(tag))
+
+			act.update_feature()
 
 			### update time
 			f = '%Y-%m-%d %H'
