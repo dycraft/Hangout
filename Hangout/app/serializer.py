@@ -50,7 +50,11 @@ def user_serialize(user, detailed=True):
 	ret['tags'] = ",".join(ret['tags'])
 
 ### portrait
-	ret['portrait_url'] = user.portrait.url
+	if user.portrait:
+		ret['portrait_url'] = user.portrait.url
+	else:
+		ret['portrait_url'] = ''
+
 
 	return ret
 

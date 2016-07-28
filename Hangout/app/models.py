@@ -111,7 +111,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=100)
     cellphone = models.CharField(max_length=20, blank=True)
     score = models.FloatField(default=0.0)
-    portrait = models.ImageField(upload_to='portrait')
+    portrait = models.ImageField(upload_to='portrait', blank=True)
     email = models.EmailField(unique=True)
     intro = models.CharField(default='', max_length=200)
     state = models.CharField(default='', max_length=50)

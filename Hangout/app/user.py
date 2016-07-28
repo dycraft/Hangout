@@ -152,10 +152,11 @@ def update_portrait(request):
         ret['state_code'] = r['state_code']
     else:
         # file_content = ContentFile(request.FILES['img'].read())
-        r['record'].portrait = request.FILES['img']
-        r['record'].save()
+        user = r['record']
+        user.portrait = request.FILES['img']
+        user.save()
         ret['state_code'] = 0
-        ret['portrait_url'] = ret['record'].portrait.url
+        ret['portrait_url'] = user.portrait.url
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
@@ -296,10 +297,14 @@ def user_register(request):
         user_info['intro'] = request.POST.get('intro', '')
         user_info['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
         if user_info['email'] != '' and user_info['password'] != '':
-            try:
-                User.objects.get(email=user_info['email'])
-                user_info['state_code'] = 10
-            except User.DoesNotExist:
+            # try:
+            #     User.objects.get(email=user_info['email'])
+            #     ret['state_code'] = 10
+            # except User.DoesNotExist:
+            u = User.objects.filter(email=user_info['email'])
+            if not len(u) == 0:
+                ret['state_code'] = 10
+            else:
                 user = User.objects.create_user(
                             user_info['email'], 
                             user_info['password'], 
