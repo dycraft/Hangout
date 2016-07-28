@@ -292,10 +292,10 @@ def user_register(request):
         user_info['password'] = request.POST.get('password', '')
         # user_info['portrait'] = request.POST.get('portrait')
         user_info['email'] = request.POST.get('email', '')
-        user_info['fix_times'] = request.POST.get('fix_times', 0)
-        user_info['cellphone'] = request.POST.get('cellphone', '')
-        user_info['intro'] = request.POST.get('intro', '')
-        user_info['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
+        # user_info['fix_times'] = request.POST.get('fix_times', 0)
+        # user_info['cellphone'] = request.POST.get('cellphone', '')
+        # user_info['intro'] = request.POST.get('intro', '')
+        # user_info['tags'] = [s.strip() for s in request.POST.get('tags', '').split(',')]
         if user_info['email'] != '' and user_info['password'] != '':
             # try:
             #     User.objects.get(email=user_info['email'])
@@ -311,18 +311,18 @@ def user_register(request):
                             name = user_info['name']
                         )
                 # user.portrait = user_info['portrait']
-                user.fix_times = user_info['fix_times']
-                user.cellphone = user_info['cellphone']
-                user.intro = user_info['intro']
-                for s in user_info['tags']:
-                    if not s == '':
-                        try:
-                            tag = Tag.objects.get(name=s)
-                        except:
-                            tag = Tag()
-                            tag.name = s
-                            tag.save()
-                        user.tags.add(tag)
+                # user.fix_times = user_info['fix_times']
+                # user.cellphone = user_info['cellphone']
+                # user.intro = user_info['intro']
+                # for s in user_info['tags']:
+                #     if not s == '':
+                #         try:
+                #             tag = Tag.objects.get(name=s)
+                #         except:
+                #             tag = Tag()
+                #             tag.name = s
+                #             tag.save()
+                #         user.tags.add(tag)
                 user.save()
                 ret['state_code'] = 0
                 ret['user_info'] = user_serialize(user)
