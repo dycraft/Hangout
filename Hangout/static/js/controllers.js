@@ -397,8 +397,10 @@
         $scope.act = data.act_info;
         console.log($scope.act);
         $http.get('/api/user/following').success(function(data) {
-          console.log(data);
+          console.log($scope.act);
           $scope.follow_list = data.following;
+          console.log($scope.act.start_time);
+          $scope.act.time = "[BEGIN]: " + $scope.act.start_time + " - [END]: " + $scope.act.end_time;
           $scope.F = function(user_id) {
             for (var i = 0; i < $scope.follow_list.length; i++) {
               if (user_id == $scope.follow_list[i].id) {
