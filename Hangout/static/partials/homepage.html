@@ -45,7 +45,7 @@
 			<div class="panel-body">
 				<div class="col-md-2" ng-repeat="user in users">
 			    <div class="thumbnail">
-			      <img src="/static/img/thumb1.jpg" alt="...">
+			      <img src="[[ user.portrait_url ]]" alt="...">
 			      <div class="caption">
 			        <a ng-href="/user_info/[[ user.id ]]"><h4>[[ user.name ]]</h4></a>
 			        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a>

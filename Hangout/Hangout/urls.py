@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, patterns, include
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 
 admin.autodiscover()
 
@@ -26,3 +28,8 @@ urlpatterns = [
     
     url(r'^', 'app.views.index'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += patterns('', 
+        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/path/to/media'}),
+    )
