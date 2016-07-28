@@ -26,7 +26,7 @@
             'left': '10%',
           })
           $('#result').css({
-            'display': 'block', 
+            'display': 'block',
           })
           $scope.acts = data.act;
           $scope.tags = data.tag;
@@ -240,10 +240,6 @@
             }
           },
           password: {
-            validators: {
-              notEmpty: {
-                message: '密码不能为空'
-              },
               stringLength: {
                 min: 6,
                 max: 15,
@@ -257,9 +253,6 @@
           },
           cfmpassword: {
             validators: {
-              notEmpty: {
-                message: '确认密码不能为空'
-              },
               identical: {
                 field: 'password',
                 message: '两次密码输入不一致'
@@ -643,7 +636,7 @@
           }
         }
       });
-      
+
 
       //submit
       $scope.save = function() {
