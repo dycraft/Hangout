@@ -153,9 +153,10 @@ def update_portrait(request):
         ret['state_code'] = r['state_code']
     else:
         # file_content = ContentFile(request.FILES['img'].read())
-
+        print(123)
+        print(request.FILES)
         user = request.user
-        user.portrait = request.FILES['img']
+        user.portrait = request.FILES['file']
         user.save()
         ret['state_code'] = 0
         ret['portrait_url'] = user.portrait.url

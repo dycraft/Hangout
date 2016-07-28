@@ -237,10 +237,7 @@
 
       //uploader
       var uploader = $scope.uploader = new FileUploader({
-        url: '/api/user/update_portrait',
-        data: $.param({
-          'id': Authentication.getAuthenticatedAccount().user_info.id,
-        }),
+        url: '/api/user/update_portrait'
       });
 
       if (Authentication.isAuthenticated()) {
@@ -873,7 +870,7 @@
           })).success(function(data){
             console.log(data);
           })
-        }, 2000);
+        }, 2100000);
       }
       var kill_robin = function() {
         if ($scope.timer) {
