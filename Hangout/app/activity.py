@@ -324,6 +324,7 @@ def reply_application(request):
 						ret['state_code'] = 55
 					else:
 						app.activity.members.add(app.applicant)
+						update_feature(app.activity, app.applicant)
 						ret['state_code'] = 0
 				elif app.application_type == 2:
 					if len(app.activity.members.filter(id=app.applicant.id)) == 0:

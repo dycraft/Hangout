@@ -9,8 +9,9 @@ import json
 
 from .serializer import *
 from .message_templates import send_application
-from .utilities import send_message, authentication
+from .utilities import send_message, authentication, cmp_to_key
 from .tag import get_tag
+from .feature import update_feature, similarity, compare_construct
 
 '''
 ger_user:
@@ -134,7 +135,6 @@ POST params
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| id        | id of user                     | REQUIRED             |
 | img(file) | portrait of user               | REQUIRED             |
 |===================================================================|
 
@@ -144,16 +144,13 @@ def update_portrait(request):
     ret = dict()
 
     r = authentication(request, 
-                 required_param=['id'],
-                 require_authenticate=True,
-                 require_model=True,
-                 model=User,
-                 keytype='id')
+                 required_param=[],
+                 require_authenticate=True)
     if not r['state_code'] == 0:
         ret['state_code'] = r['state_code']
     else:
         # file_content = ContentFile(request.FILES['img'].read())
-        user = r['record']
+        user = request.user
         user.portrait = request.FILES['img']
         user.save()
         ret['state_code'] = 0
@@ -704,6 +701,7 @@ def follow(request):
         if not c == True:
             ret['state_code'] = 13
         else:
+            update_feature(request.user, r['record'], False)
             ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -802,8 +800,32 @@ def check_follower(request):
 
 
 
+'''
+get_recommend:
+    get recommend users and activities based on feature
 
 
+'''
+def get_recommend(request):
+    ret = dict()
+    r = authentication(request, 
+                 required_param=[],
+                 require_authenticate=True)
+    if not r['state_code'] == 0:
+        ret['state_code'] = r['state_code']
+    else:
+        ret['state_code'] = 0
+        ret['users'] = []
+        ret['acts'] = []
+        users = sorted(User.objects.all(), reverse=True, key=cmp_to_key(compare_construct(request.user)))[0:10]
+        activities = sorted(Activity.objects.all(), reverse=True, key=cmp_to_key(compare_construct(request.user)))[0:10]
+        for u in users:
+            ret['users'].append({'user': serialize(u), 'score': similarity(u.feature, request.user.feature)})
+        for a in activities:
+            # ret['acts'].append(serialize(a))
+            ret['acts'].append({'act': serialize(a), 'score': similarity(a.feature, request.user.feature)})
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
 
