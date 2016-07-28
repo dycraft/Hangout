@@ -26,7 +26,7 @@
             'left': '10%',
           })
           $('#result').css({
-            'display': 'block',
+            'display': 'block', 
           })
           $scope.acts = data.act;
           $scope.tags = data.tag;
@@ -526,7 +526,7 @@
             'name': $scope.act.name,
             'intro': $scope.act.intro,
             'location': $scope.act.location,
-            'tags': $('#apply_tags').val(),
+            'tags': $('#apply__tags').val(),
             'cost': $scope.act.cost,
           })).then(function(){
             $scope.myActs();
@@ -613,9 +613,10 @@
       $http.get('/api/activity/detail/'+$routeParams.act_id).success(function(data) {
         $scope.name = data.act_info.name;
         $scope.intro = data.act_info.intro;
-        $scope.tags = data.act_info.tags;
+        $scope.tags = data.act_info.tags.join(',');
         $scope.cost = data.act_info.cost;
         $scope.location = data.act_info.location;
+        $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
       });
 
       //time picker
@@ -642,10 +643,11 @@
           }
         }
       });
-      $.getScript('/static/lib/bootstrap-tagsinput/bootstrap-tagsinput.js');
+      
 
       //submit
       $scope.save = function() {
+        console.log($('#act_profile__tags').val());
         $http.post('/api/activity/update', $.param({
           'id': $routeParams.act_id,
           'name': $scope.name,
