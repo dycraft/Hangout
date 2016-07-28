@@ -60,7 +60,7 @@
 
 			<div class="sub_tab wall" id="org_acts_sub_tab">
 				<div class="panel panel-default">
-					<div class="panel-heading">组织的活动</div>
+					<div class="panel-heading"><i class="fa fa-cogs"></i> 组织的活动</div>
 				 	<ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.admin_acts" ng-if="act.organizer.id == user.id">
 						  <div>
@@ -71,7 +71,7 @@
 			  	</ul>
 				</div>
 				<div class="panel panel-default">
-				  <div class="panel-heading">管理的活动</div>
+				  <div class="panel-heading"><i class="fa fa-gears"></i> 管理的活动</div>
 				  <ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.admin_acts" ng-if="act.organizer.id != user.id">
 						  <div>
@@ -85,7 +85,7 @@
 
 			<div class="sub_tab wall" id="join_acts_sub_tab">
 				<div class="panel panel-default">
-				  <div class="panel-heading">参与的活动</div>
+				  <div class="panel-heading"><i class="fa fa-external-link"></i> 参与的活动</div>
 				  <ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.join_acts">
 						  <div>
