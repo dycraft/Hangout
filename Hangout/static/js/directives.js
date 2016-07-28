@@ -33,7 +33,7 @@
       return {
         restrict: 'E',
         replace: true,
-        template: '<div class="back-to-top"><i class="fa fa-chevron-up"></i></div>',
+        template: '<div class="back-to-top"><i class="fa fa-arrow-up"></i></div>',
         link: function($scope, element, attrs) {
           $(window).scroll(function(){
             if ($(window).scrollTop() <= 0) {
