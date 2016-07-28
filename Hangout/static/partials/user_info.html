@@ -9,10 +9,10 @@
 	    </a>
     </div>
     <div class="col-md-8 col-md-offset-3">
-			<h1>[[ user.name ]]</h1>
+			<h1><i class="fa fa-user"></i> [[ user.name ]]</h1>
 			<hr style="margin-top:0px;margin-bottom:10px;" />
-			<p>电子邮箱：[[ user.email ]]</p>
-			<p>联系方式：[[ user.cellphone ]]</p>
+			<p><i class="fa fa-envelope" style="font-size: 10px;"></i> 电子邮箱：[[ user.email ]]</p>
+			<p><i class="fa fa-mobile"></i> 联系方式：[[ user.cellphone ]]</p>
 			<hr style="margin-top:0px;margin-bottom:-5px;" />
 			<div class="row" style="text-align:center;">
 				<div class="col-md-6">
@@ -25,7 +25,7 @@
 				</div>
 			</div>
 			<hr style="margin-top:10px;margin-bottom:10px;" />
-			<p ng-if="user.tags.split(',').length">用户标签：<br /><a ng-repeat="tag in user.tags.split(',')" ng-href="/tag_info/[[ tag ]]" ng-if="tag" style="margin:3px;"><span class="label label-primary">[[ tag ]] </span></a></p>
+			<p ng-if="user.tags.split(',').length"><i class="fa fa-tags"></i> 用户标签：<br /><a ng-repeat="tag in user.tags.split(',')" ng-href="/tag_info/[[ tag ]]" ng-if="tag" style="margin:3px;"><span class="label label-primary">[[ tag ]] </span></a></p>
 		</div>
 	</div>
 	<div class="col-md-8">
@@ -39,19 +39,19 @@
 
 			<div class="sub_tab wall" id="overview_sub_tab" style="display:none;">
 				<div class="panel panel-default">
-				  <div class="panel-heading">积分</div>
+				  <div class="panel-heading"><i class="fa fa-database"></i> 积分</div>
 				  <div class="panel-body">
 						<p>[[ user.score ]]</p>
 				  </div>
 				</div>
 				<div class="panel panel-default">
-				  <div class="panel-heading">动态</div>
+				  <div class="panel-heading"><i class="fa fa-child"></i> 动态</div>
 				  <div class="panel-body">
 						<p>[[ user.state == "" ? "无最近动态" : user.state ]]</p>
 				  </div>
 				</div>
 				<div class="panel panel-default">
-				  <div class="panel-heading">简介</div>
+				  <div class="panel-heading"><i class="fa fa-book"></i> 简介</div>
 				  <div class="panel-body">
 				  	<p>[[ user.intro ]]</p>
 				  </div>
