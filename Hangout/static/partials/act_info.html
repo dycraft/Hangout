@@ -20,7 +20,7 @@
 		<div class="panel-body">
 			<div class="col-md-2">
 		    <div class="thumbnail" style="background-color:rgb(223, 240, 216);">
-		      <img src="/static/img/thumb1.jpg" alt="...">
+		      <img width="100%" height="100%" src="[[ act.organizer.portrait_url ]]" alt="...">
 		      <div class="caption">
 		        <a ng-href="/user_info/[[ act.organizer.id ]]"><h4>[[ act.organizer.name ]]</h4></a>
 		        <p><a href="#" ng-click="sendMsgTo(user)" class="btn btn-default" role="button">消息</a> <a href="#" ng-click="change_follow(act.organizer.id)" class="follow-btn btn btn-primary" ng-if="login_user && act.organizer.id != login_user.id" role="button">[[ F(act.organizer.id) ]]</a></p>
