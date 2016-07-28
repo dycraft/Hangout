@@ -12,10 +12,25 @@
       $('#search_content').css({
         'width': '500px',
       })
+      $('#result').css({
+        'display': 'none',
+      })
       $scope.search = function() {
-        console.log(1);
         $http.get('/api/search/' + $scope.search_content).success(function(data) {
           console.log(data);
+          $('#search_content').css({
+            'width': '200px',
+          })
+          $('#search_form').css({
+            'top': '10%',
+            'left': '10%',
+          })
+          $('#result').css({
+            'display': 'block',
+          })
+          $scope.acts = data.act;
+          $scope.tags = data.tag;
+          $scope.users = data.user;
         });
       }
     }])
@@ -592,7 +607,7 @@
     .controller('actProfileCtrl', ['$http', '$scope', '$location', '$routeParams', 'Authentication', function($http, $scope, $location, $routeParams, Authentication){
       $scope.week = CONST.WEEK;
       $scope.times = CONST.TIME_SEG;
-      $scope.tags = "default";
+      $scope.tags = "";
 
       $http.get('/api/activity/detail/'+$routeParams.act_id).success(function(data) {
         $scope.name = data.act_info.name;
@@ -634,7 +649,7 @@
           'id': $routeParams.act_id,
           'name': $scope.name,
           'intro': $scope.intro,
-          'tags': $scope.tags,
+          'tags': $('#act_profile__tags').val(),
           'cost': $scope.cost,
           'location': $scope.location,
           'time': $('#act_profile__date1').combodate('getValue', "YYYY-MM-DD HH"),
