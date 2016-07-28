@@ -43,8 +43,16 @@ Error code
 103: record does not exist
 104: no key to check permission with
 
+Message types
 
-authentication params
+0: normal messages               &&content
+1: apply for activity            &&<user_id>&&<act_id>&&content
+2: application reply             &&<admin_id>&&<act_id>&&content
+3: activity update               &&<act_id>&&content
+
+
+
+Authentication params
 	required_param
 	require_authenticate
 	require_model

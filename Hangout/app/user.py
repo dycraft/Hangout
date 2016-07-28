@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 import json
 
 from .serializer import *
+from .message_templates import send_application
 from .utilities import send_message, authentication
 from .tag import get_tag
 
@@ -460,15 +461,15 @@ returns:
 def apply_for_activity(request):
     ret = dict()
     act_id = request.POST.get('act_id')
+    app_type = request.POST.get('type', 1)
     if not request.user.is_authenticated():
         ret['state_code'] = 1
     elif not act_id:
         ret['state_code'] = 51
-    elif not act_id in ['1', '2']:
+    elif not app_type in ['1', '2']:
         ret['state_code'] = 11
     else:
         act = Activity.objects.filter(id=act_id)
-        app_type = request.POST.get('type', 1)
         intro = request.POST.get('intro', 'no introduction')
         if len(act) == 0:
            ret['state_code'] = 51
@@ -490,6 +491,16 @@ def apply_for_activity(request):
                     intro=intro
                 )
             app.save()
+            for admin in act[0].admins.all():
+                send_message(request.user, admin, 
+                            send_application(
+                                request.user.name,
+                                act[0].name,
+                                admin.name,
+                                app_type),
+                            1,
+                            user_id=request.user.id,
+                            act_id=act[0].id)
 
             request.user.save()
             ret['state_code'] = 0
@@ -651,7 +662,7 @@ def send_message_post(request):
     if r['state_code'] == 0:
         to_user = r['record']
         content = r['param']['content']
-        send_message(request.user, to_user, content)
+        send_message(request.user, to_user, content, 0)
         ret['state_code'] = 0
     else:
         ret['state_code'] = r['state_code']
