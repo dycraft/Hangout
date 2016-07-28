@@ -64,7 +64,7 @@
 				 	<ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.admin_acts" ng-if="act.organizer.id == user.id">
 						  <div>
-								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">[[ act.count ]]</p>
+								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">人数 <span class="badge">[[ act.count ]]</span><button ng-click="apply_for(act.id)" class="btn btn-primary" type="button">加入活动</button></p>
 								<p><span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span></p>
 						  </div>
 						</li>
@@ -75,7 +75,7 @@
 				  <ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.admin_acts" ng-if="act.organizer.id != user.id">
 						  <div>
-								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">[[ act.count ]]</p>
+								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">人数 <span class="badge">[[ act.count ]]</span></p>
 								<p><span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span></p>
 						  </div>
 						</li>
@@ -89,7 +89,7 @@
 				  <ul class="list-group">
     				<li class="list-group-item" ng-repeat="act in user.join_acts">
 						  <div>
-								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">[[ act.count ]]</p>
+								<h4><a ng-href="/act_info/[[ act.id ]]">[[ act.name ]]</a> <a ng-href="/user_info/[[ act.organizer.id ]]"><small>[[ act.organizer.name ]]</small></a></h4><p style="float:right;">人数 <span class="badge">[[ act.count ]]</span></p>
 								<p><span class="label label-[[ L1(act.state) ]]" style="font-size: 16px;">[[ T(act.state) ]]</span></p>
 						  </div>
 						</li>

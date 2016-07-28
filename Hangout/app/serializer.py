@@ -76,6 +76,7 @@ def activity_serialize(act, detailed=True):
 	ret['state'] = act.state % 4
 	ret['member_limit'] = act.state >> 2
 	ret['member_count'] = len(act.members.all())
+	ret['app_count'] = len(act.applications.all())
 
 ### tags
 	ret['tags'] = []
@@ -90,6 +91,11 @@ def activity_serialize(act, detailed=True):
 	ret['end_time'] = act.end_time.strftime('%Y-%m-%d %a %H:00')
 	ret['create_at'] = (act.create_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
 	ret['modified_at'] = (act.modified_at+delta_time).strftime('%Y-%m-%d, %H:%M:%S')
+
+	ret['applicants'] = []
+	for app in act.applications.all():
+		m = app.applicant
+		ret['applicants'].append({'id': m.id, 'name': m.name})
 
 	if detailed == True:
 		member_fields = [

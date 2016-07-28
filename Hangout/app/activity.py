@@ -6,6 +6,7 @@ from .serializer import *
 from .models import *
 from .utilities import *
 from .message_templates import *
+from .feature import update_feature
 
 import json
 import datetime
@@ -297,7 +298,8 @@ POST params
 ---------------------------------------------------------------------
 | param     | introduction                   | default              |
 |===================================================================|
-| app_id    | id of an application           | REQUIRED             |
+| user_id   | id of user                     | REQUIRED             |
+| user_id   | id of user                     | REQUIRED             |
 | reply     | 1 for granted / 0 for refused  | REQUIRED             |
 |===================================================================|
 
@@ -306,14 +308,15 @@ returns:
 '''
 def reply_application(request):
 	ret = dict()
-	app_id = request.POST.get('app_id')
+	user_id = request.POST.get('user_id')
+	act_id = request.POST.get('act_id')
 	reply = int(request.POST.get('reply'))
 	if not request.user.is_authenticated():
 		ret['state_code'] = 1
-	elif not app_id:
-		ret['state_code'] = 71
+	elif not user_id or not act_id:
+		ret['state_code'] = 101
 	else:
-		app = Application.objects.filter(id=app_id)
+		app = Application.objects.filter(activity__id=act_id ,applicant__id=user_id)
 		if len(app) == 0:
 			ret['state_code'] = 72
 		elif has_permission(request.user, app[0].activity):
