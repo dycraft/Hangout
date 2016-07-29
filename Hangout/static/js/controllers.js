@@ -760,8 +760,8 @@
                   message: '活动简介不能为空'
                 },
                 stringLength: {
-                  max: 100,
-                  message: '活动简介必须小于100个字'
+                  max: 1000,
+                  message: '活动简介必须小于1000个字'
                 }
               }
             },
@@ -823,10 +823,10 @@
 
       //get recommend time
       $http.get('/api/activity/recommended_time/'+$routeParams.act_id).success(function(data) {
-        data.result = [0.9, 0.8, 0, 0.6, 0.5, 1, 0.3,
+/*        data.result = [0.9, 0.8, 0, 0.6, 0.5, 1, 0.3,
                       1, 0.2, 0.3, 1, 0.5, 0.6, 0.01,
                       0.8, 0.1, 0.99, 1, 0.55, 0.65, 0.75,
-                      1, 0.95, 1, 0.66, 1, 0.13, 0.45];
+                      1, 0.95, 1, 0.66, 1, 0.13, 0.45];*/
         var tds = $('#act_profile__fixed').find('td');
         for (var i = 0; i < 28; i++) {
           if ((data.result[i] >= 0) && (data.result[i] < 1)) {
@@ -881,8 +881,8 @@
                 message: '活动简介不能为空'
               },
               stringLength: {
-                max: 100,
-                message: '活动简介必须小于100个字'
+                max: 1000,
+                message: '活动简介必须小于1000个字'
               }
             }
           },
@@ -903,7 +903,7 @@
                 message: '活动花费不能为空'
               },
               regexp: {
-                regexp: /^(([1-9]\d*)(\.\d{1,2})?)$|(0\.0?([1-9]\d?))$/,
+                regexp: /^(([0-9]\d*)(\.\d{1,2})?)$|(0\.0?([0-9]\d?))$/,
                 message: '请填入正确的金额数目'
               }
             }
