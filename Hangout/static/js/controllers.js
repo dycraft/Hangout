@@ -763,8 +763,8 @@
                   message: '活动简介不能为空'
                 },
                 stringLength: {
-                  max: 1000,
-                  message: '活动简介必须小于1000个字'
+                  max: 200,
+                  message: '活动简介必须小于200个字'
                 }
               }
             },
@@ -884,8 +884,8 @@
                 message: '活动简介不能为空'
               },
               stringLength: {
-                max: 1000,
-                message: '活动简介必须小于1000个字'
+                max: 200,
+                message: '活动简介必须小于200个字'
               }
             }
           },
