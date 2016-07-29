@@ -771,7 +771,7 @@ def check_following(request):
     else:
         ret['following'] = []
         for r in request.user.follow.filter(to_people__from_user=request.user):
-            ret['following'].append({'id': r.id, 'name': r.name})
+            ret['following'].append(easy_serialize(r))
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -797,7 +797,7 @@ def check_follower(request):
     else:
         ret['follower'] = []
         for r in request.user.followed.all():
-            ret['follower'].append({'id': r.id, 'name': r.name})
+            ret['follower'].append(easy_serialize(r))
         ret['state_code'] = 0
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
