@@ -6,7 +6,7 @@ from .serializer import *
 from .models import *
 from .utilities import *
 from .message_templates import *
-from .feature import update_feature
+from .feature import update_feature, feature_length
 
 import json
 import datetime
@@ -207,10 +207,11 @@ def get_recommended_time(request, id):
 			t = u.fix_times
 			temp = 1 << 27
 			for x in range(0, 28):
-				mem = mem + 1
+				# mem = mem + 1
 				if (t & temp) > 0:
 					ret['result'][x] += 1
 				temp = temp >> 1
+		mem = feature_length(ret['result'])
 		for x in range(0, 28):
 			ret['result'][x] = ret['result'][x] / mem
 	return HttpResponse(json.dumps(ret), content_type='application/json')
