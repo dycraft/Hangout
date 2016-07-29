@@ -37,6 +37,9 @@
           $('#result').css({
             'display': 'block',
           })
+          $('#logo').css({
+            'display': 'none',
+          })
           $scope.acts = data.act;
           $scope.tags = data.tag;
           $scope.users = data.user;
