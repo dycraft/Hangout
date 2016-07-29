@@ -387,6 +387,7 @@
         e.preventDefault();
         if ($('#profile_form').data('bootstrapValidator').isValid()) {
           vm.update_profile();
+          $location.url('/user_info/' + Authentication.getAuthenticatedAccount().user_info.id);
         }
       });
     }])
@@ -400,7 +401,7 @@
           console.log($scope.act);
           $scope.follow_list = data.following;
           console.log($scope.act.start_time);
-          $scope.act.time = "[BEGIN]: " + $scope.act.start_time + " - [END]: " + $scope.act.end_time;
+          $scope.act.time = "[开始]: " + $scope.act.start_time + " - [结束]: " + $scope.act.end_time;
           $scope.F = function(user_id) {
             for (var i = 0; i < $scope.follow_list.length; i++) {
               if (user_id == $scope.follow_list[i].id) {
@@ -433,6 +434,43 @@
               console.log(data);
               $route.reload();
             });
+          }
+          $scope.deny_apply = function(user_id) {
+            $http.post('/api/activity/reply_application', $.param({
+              'act_id': $scope.act.id,
+              'user_id': user_id,
+              'reply': 0,
+            })).success(function(data){
+              console.log(data);
+              $route.reload();
+            });
+          }
+          $scope.promote = function(user_id) {
+            $http.post('/api/activity/promote', $.param({
+              'id': $scope.act.id,
+              'user_id': user_id,
+            })).success(function(data){
+              console.log('promote')
+              console.log(data);
+              $route.reload();
+            });
+          }
+          $scope.kick = function(user_id) {
+            $http.post('/api/activity/kick', $.param({
+              'id': $scope.act.id,
+              'user_id': user_id,
+            })).success(function(data){
+              console.log(data);
+              $route.reload();
+            });
+          }
+          $scope.is_admin = function(user_id) {
+            for (var i = 0; i < $scope.act.admins.length; i++) {
+              if ($scope.act.admins[i].id == user_id) {
+                return true;
+              }
+            }
+            return false;
           }
           $('.follow-btn').click(function(){
             if ($(this).html() == "取关") {
@@ -764,7 +802,7 @@
       $scope.times = CONST.TIME_SEG;
       $scope.tags = "";
 
-      $http.get('/api/activity/detail/'+$routeParams.act_id).success(function(data) {
+      $http.get('/api/activity/detail/' + $routeParams.act_id).success(function(data) {
         $scope.name = data.act_info.name;
         $scope.intro = data.act_info.intro;
         $scope.tags = data.act_info.tags.join(',');
@@ -813,6 +851,7 @@
           'end_time': $('#act_profile__date2').combodate('getValue', "YYYY-MM-DD HH")
         })).success(function(data){
           console.log(data);
+          $location.url('/act_info/' + $routeParams.act_id);
         });
       };
 
@@ -986,7 +1025,7 @@
               }
             }
           })
-        }, 5000);
+        }, 2000);
       }
       var kill_robin = function() {
         if ($scope.timer) {

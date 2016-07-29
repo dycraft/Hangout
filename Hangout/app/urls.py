@@ -39,7 +39,9 @@ urlpatterns = [
     # Activity
     url(r'^activity/create$', activity.create_activity),
     url(r'^activity/detail/(?P<id>.*?)$', activity.get_activity_detail),
-    url(r'^activity/change_state', activity.change_act_state),
+    url(r'^activity/change_state$', activity.change_act_state),
+    url(r'^activity/kick$', activity.kick_out),
+    url(r'^activity/promote$', activity.promote),
 
     # Activity admin
     url(r'^activity/update$', activity.update_activity),

@@ -106,6 +106,7 @@ def get_activity_detail(request, id):
 		ret['state_code'] = 52
 	return HttpResponse(json.dumps(ret), content_type='application/json')
 
+
 '''
 update_activity:
 	Update activity info. Similar to create_activity
@@ -289,6 +290,79 @@ def get_applications(request):
 		else:
 			ret['state_code'] = 3
 	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+promote:
+	
+id: id of activity
+user_id: id of user 
+'''
+def promote(request):
+	ret = dict()
+	r = authentication(request,
+					required_param=['id'],
+					require_authenticate=True,
+					require_model=True,
+					model=Activity,
+					keytype='id')
+	if not r['state_code'] == 0:
+		ret['state_code'] = r['state_code']
+	else:
+		act = r['record']
+		user_id = request.POST.get('user_id')
+		user = User.objects.filter(id=user_id)
+		if len(user) == 0:
+			ret['state_code'] = 2
+		else:
+			user = user[0]
+			if len(act.members.filter(id=user.id)) > 0 and len(act.admins.filter(id=user.id)) == 0 :
+				act.admins.add(user)
+				act.members.remove(user)
+			ret['state_code'] = 0
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
+'''
+kick_out:
+
+id: id of activity
+user_id: id of user 
+'''
+def kick_out(request):
+	ret = dict()
+	r = authentication(request,
+					required_param=['id'],
+					require_authenticate=True,
+					require_model=True,
+					model=Activity,
+					keytype='id')
+	if not r['state_code'] == 0:
+		ret['state_code'] = r['state_code']
+	else:
+		act = r['record']
+		user_id = request.POST.get('user_id')
+		user = User.objects.filter(id=user_id)
+		if len(user) == 0:
+			ret['state_code'] = 2
+		else:
+			user = user[0]
+			if len(act.members.filter(id=user.id)) > 0:
+				act.admins.remove(user)
+				act.members.remove(user)
+				ret['state_code'] = 0
+
+				send_message(request.user,
+						user,
+						kicked_out(act.name,
+									request.user.name,
+									user.name),
+						2,
+						admin_id=request.user.id,
+						act_id=act.id)
+
+			else:
+				ret['state_code'] = 54
+	return HttpResponse(json.dumps(ret), content_type='application/json')
+
 
 '''
 reply_application:

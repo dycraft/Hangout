@@ -50,3 +50,8 @@ def activity_update(act_name, admin_name, user_name):
 	Information of activity \'''' + act_name + '\' is updated by ' + admin_name + '. Please check it out now!'
 	return msg
 
+def kicked_out(act_name, admin_name, user_name):
+	msg = 'Dear ' + user_name + ''':
+	Your have been kicked out of activity \'''' + act_name + '\' by ' + admin_name + '.'
+	return msg
+
