@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from .models import *
+from .serializer import easy_serialize
 
 import json
 
@@ -24,8 +25,8 @@ def get_tag_detail(request, name):
 		ret['users'] = []
 		ret['acts'] = []
 		for u in tag.users.all():
-			ret['users'].append({'id': u.id, 'name': u.name})
+			ret['users'].append(easy_serialize(u))
 		for a in tag.acts.all():
-			ret['acts'].append({'id': a.id, 'name': a.name})
+			ret['acts'].append(easy_serialize(a))
 	
 	return HttpResponse(json.dumps(ret), content_type='application/json')
