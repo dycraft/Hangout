@@ -379,8 +379,8 @@
           intro: {
             validators: {
               stringLength: {
-                max: 100,
-                message: '个人简介必须小于100个字',
+                max: 200,
+                message: '个人简介必须小于200个字',
               }
             }
           }
